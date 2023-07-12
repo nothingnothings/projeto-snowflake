@@ -1,0 +1,515 @@
+
+
+
+
+
+
+
+
+
+AGORA QUE VIMOS QUE PRECISAMOS DE NOSSAS WAREHOUSES 
+
+
+PARA 
+
+CONSEGUIR 
+
+""COMPUTE POWER"",
+
+
+
+
+COMPUTE POWER QUE É USADO PARA O _ PROCESSAMENTO DE NOSSAS QUERIES (
+
+    processamento em PARALELO das queries é o objetivo,
+
+    para reduzir o tempo de filas/eliminar filas...
+),
+
+
+
+
+
+
+
+
+QUEREMOS _ _SABER _ COMO 
+
+
+PODEMOS 
+
+CRIAR __ 
+
+
+
+1 DESSAS WAREHOUSES,
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ 2 MANEIRAS DE CRIAR ESSAS WAREHOUSES...
+
+
+
+
+
+
+
+
+
+
+1a MANEIRA --> É POR MEIO DO USO DA INTERFACE GRÁFICA...
+
+
+
+
+2a MANEIRA --> POR MEIO DE SQL COMMANDS, NAS NOSSAS WORKSHEETS...
+
+
+
+
+
+
+--> BASTA CLICAR NA SECTION DE ""Admin""...
+
+
+
+
+
+
+
+
+
+--> DENTRO DE ""Admin"",
+
+
+
+TEMOS VÁRIAS COISAS...
+
+
+
+
+
+
+TEMOS:
+
+
+
+
+1) USAGE 
+
+
+
+
+2) WAREHOUSES...
+
+
+
+3) RESOURCE MONITORS 
+
+
+
+4) USERS E ROLES 
+
+
+
+5) SECURITY 
+
+
+
+6) BILLING E TERMS 
+
+7) CONTACTS 
+
+
+8) ACCOUNTS 
+
+
+9) PARTNER CONNECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO..
+
+
+
+
+
+
+
+CLICAMOS EM ""WAREHOUSES""....
+
+
+
+
+
+
+
+
+--> DENTRO DE WAREHOUSES,
+
+
+
+temos 1 lista de warehouses...
+
+
+
+
+
+
+
+
+
+-> NA MINHA CONTA FREE,
+
+
+
+FIQUEI COM 1 WAREHOUSE DE TAMANHO XS,
+POR DEFAULT...
+
+
+
+
+
+
+OS DADOS QUE TEMOS SAO:
+
+
+
+
+
+NAME -> COMPUTE_WH 
+
+
+
+
+SIZE -> XS 
+
+
+STATUS -> STARTED 
+
+
+
+CLUSTERS ->  | 
+
+
+--> RUNNING -> 2  (number of sql statements that are being executed by the warehouse)
+
+
+
+
+--> QUEUED --> 0 
+
+
+
+--> OWNER --> ACCOUNTADMIN
+
+
+
+
+
+
+--> RESUMED --> 5 MINUTES AGO
+
+
+
+
+
+
+
+
+
+
+
+
+-> por fim, temos as options 
+
+""EDIT""
+
+
+""SUSPEND""
+
+""DROP""
+
+
+""TRANSFER OWNERSHIP"""
+
+
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+PODEMOS CRIAR 1 NOVA WAREHOUSE,
+
+
+
+COM O BUTTON DE +WAREHOUSE...
+
+
+
+
+
+
+
+
+
+--> PARA CRIAR 1 NOVA WAREHOUSE,
+
+
+TEMOS QUE PROVIDENCIAR ALGUMAS NOVAS OPTIONS,
+
+E 1 NOME...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR COLOCA:
+
+
+
+
+""COMPUTE_WH"" (é tipo 1 default)...
+
+
+
+
+
+DEPOIS DISSO, PODEMOS ESPECIFICAR O _ TAMANHO _DE NOSSO WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA TEMOS 
+
+
+
+5X-LARGE 
+
+
+E 
+
+6X-LARGE ...
+
+
+
+
+
+
+
+
+
+MAIOR O TAMANHO DE NOSSA WAREHOUSE,
+
+MAIOR SERÁ O SEU CUSTO,
+
+
+
+MAS MAIOR SERÁ O COMPUTE POWER...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAIORES COMPUTE 
+POWERS SAO UTILIZADOS __ PRINCIPALMENTE PARA RODAR 
+
+QUERIES MAIS __ COMPLEXAS...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NO NOSSO CASO,
+QUEREMOS APENAS USAR 1 WAREHOUSE 
+
+
+BEM PEQUENA (XS)...
+
+
+
+
+
+
+
+
+
+-> DEPOIS DISSO,
+PODEMOS 
+
+
+COLOCAR ALGUMA DESCRIPTION PARA ESSA WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> TEMOS OUTRA OPTION,
+
+QUE É 
+
+
+""""QUERY ACCELERATION"""--> NO NOSSO CASO,
+
+
+NAO PRECISAMOS 
+
+HABILITAR... -->  É UMA FEATURE BEM NOVA,
+
+
+
+QUE, PARA _ ALGUMAS SPECIFIC QUERIES,
+
+
+PODEMOS NOS BENEFICIAR DE UM CERTO 
+
+"""DYNAMIC SCALING"" -->  PARA CASOS EM QUE 
+
+
+TEMOS 
+
+
+
+UMA ANÁLISE AD HOC RÁPIDA,
+
+
+OU ENTAO 
+
+
+__LARGOS TABLE SCANS... -> É UM DYNAMIC ACCELERATION,
+
+MAS 
+
+É MAIS CARO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS O QUE QUEREMOS SELECIONAR É 
+
+O RECURSO 
+
+DO 
+
+
+
+"""""MULTI-CLUSTER WAREHOUSE"""" --> ISSO DEVE SER HABILITADO,
+
+GERALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+-> O RECURSO MULTI-CLUSTER WAREHOUSE 
+É RECOMENDADO 
+
+
+ESPECIALMENTE EM COMPANHIAS MAIORES,
+
+EM QUE 
+
+
+TEMOS 
+
+DYNAMIC WORKLOADS (
+
+    EX: ""DURANTE A TARDE, TEMOS MT MAIS USERS... 
+    NESSAS HORAS, QUEREMOS ESCALONAR NOSSOS WAREHOUSES,
+    ADICIONAR MAIS COMPUTE POWER, DE UMA FORMA BEM DINAMICA""...
+)
