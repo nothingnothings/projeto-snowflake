@@ -1,0 +1,1423 @@
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS FALAR 1 POUCO SOBRE A ARQUITETURA 
+
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+PQ ISSO 
+
+
+NOS AJUDA 
+
+A ENTENDER 
+
+O CONCEITO 
+
+
+DE SNOWFLAKE,
+
+
+E TAMBÉM 
+
+
+DEIXA 
+
+MAIS FÁCIL O TRABALHO COM O SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+TEMOS 3 LAYERS, ESSENCIALMENTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) CLOUD SERVICES 
+
+
+
+
+2) QUERY PROCESSING -----    (VIRTUAL WAREHOUSE)     (VIRTUAL WAREHOUSE)     (VIRTUAL WAREHOUSE)
+
+
+
+
+3) STORAGE ----------- """HYBRID COLUMNAR STORAGE""" (DATA SAVED IN BLOBS)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PRIMEIRO LAYER DO SNOWFLAKE É 
+
+
+___ O STORAGE__ ... ->  É O LOCAL EM QUE A DATA É ACTUALLY __ ARMAZENADA...
+
+
+
+
+
+
+
+
+
+
+
+
+-> NÓS SABEMOS, NO CASO,
+
+QUE __ A DATA __ NAO É ARMAZENADA __ NO SNOWFLAKE EM SI....
+
+
+
+
+
+
+
+
+
+-> NO NOSSO CASO,
+
+
+A
+ __ DATA_ _ É ARMAZENADA __ NO AMAZON S3 BUCKETS... 
+
+
+(PQ ESSA É A OPTION QUE ESCOLHEMOS)
+
+
+
+
+
+
+
+
+-->  ISSO, ESSE DETALHE, 
+
+NAO É TAO IMPORTANTE 
+
+TECNICAMENTE,
+
+
+
+____ _MAS, NESSE CASO,
+
+
+
+
+__ A DATA_ É ARMAZENADA __  EM __ 
+
+
+
+
+
+
+""""""HYBRID COLUMNAR STORAGE"""""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HYBRID COLUMNAR STORAGE --> É DIFERENTE DA FORMA TRADICIONAL 
+
+DE STORE DE DATA, EM QUE SALVAMOS A DATA EM ROWS (entries)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO ""HYBRID COLUMNAR STORAGE"",
+
+
+
+NÓS NAO SALVAMOS A DATA EM ROWS,
+
+
+
+
+
+E SIM ___ NÓS __ ARMAZENAMOS E __ COMPRIMIMOS __ 
+
+
+ESSA DATA __ TODA __ EM ___ BLOBS__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ, QUANDO FAZEMOS O QUERY DA DATA, 
+
+
+
+
+NÓS NAO FETCHEAMOS ___ ESSES ROWS (como no sql),
+
+
+E SIM 
+
+
+
+___fETCHEAMOS __ ESSES BLOBS...
+
+
+
+
+
+
+
+
+
+
+
+--> FETCHEAMOS ESSES BLOBS INTEIROS....
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSA """HYBRID COLUMNAR STORAGE"" 
+
+
+
+
+
+É USADAS _ UM MONTE __ EM CONTEXTOS _ DE BIG DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSE CONCEITO É USADO TAMBÉM AQUI... PQ __ ELE 
+
+
+
+DEIXA O STORE E QUERY DE DATA BEM MAIS RÁPIDO E EFICIENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSE É O PRIMEIRO LAYER,
+
+
+EM QUE __ NOSSA __ DATA É ARMAZENADA...
+
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS DO PRIMEIRO LAYER,
+
+
+TEMOS 
+
+
+
+
+
+O SEGUNDO LAYER...
+
+
+
+
+
+
+
+
+
+2) QUERY PROCESSING ----> É _ AQUI __ QUE 
+
+
+
+AS QUERIES SQL __ SAO PROCESSADAS,
+
+
+
+E É _ AQUI 
+
+
+
+QUE __ O CONCEITO ___ DE 
+
+
+""""VIRTUAL WAREHOUSES'""" entra em jogo...
+
+
+
+
+
+
+
+
+
+--> O SEGUNDO LAYER, DO QUERY PROCESSING,
+
+
+É O __ VERDADEIRO ___MÚSCULO__ DO SISTEMA...
+
+
+
+
+
+
+--> ELE REALIZA ""MASSIVE PARALLEL PROCESSING"" (MPP)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VIRTUAL WAREHOUSES --> SAO _TOTALMENTE__ DIFERENTES 
+
+
+
+
+DE __ DATA WAREHOUSES... (nao sao o redshift, no caso)...
+
+
+
+
+
+
+
+
+
+
+
+--> NAO DEVEM SER CONFUNDIDOS COM DATA WAREHOUSES..
+
+
+
+
+
+
+
+
+-> MAS VIRTUAL WAREHOUSES 
+
+
+
+SAO __ ACTUALLY  O _""""VIRTUAL COMPUTE RESOURCE""""
+
+
+
+QUE PODEMOS USAR __ PARA __ PROCESSAR __ TODAS 
+
+NOSSAS QUERIES 
+
+
+
+E __ TODAS AS OPERATIONS QUE ESTAMOS REALIZANDO...
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O SEGUNDO LAYER É CHAMADO __ MUSCULO _ DO 
+
+SISTEMA...
+
+
+
+
+
+
+
+
+
+
+--> E, AQUI, ESSAS VIRTUAL WAREHOUSES 
+
+
+PODEM 
+
+
+
+REALIZAR 
+
+
+
+___MASSIVE PARALLEL PROCESSING,
+
+
+
+O _ QUE __ DEIXA __ 
+
+
+
+
+O PROCESSAMENTO DE QUERIES __ SUPER EFICIENTE.....
+
+
+
+
+
+
+
+
+
+O PROCESSAMENTO DE QUERIES FICA SUPER EFICIENTE 
+
+
+____ESPECIALMENTE EM CASOS ___ 
+
+EM 
+QUE 
+
+
+TEMOS 
+
+
+
+__LARGAS QUANTIDADES DE DATA.... MAS TAMBÉM QUANDO 
+
+TEMOS 
+
+QUERIES 
+
+MT COMPLEXAS.... ------> PQ ISSO __ PERMITE QUE 
+
+
+MÚLTIPLAS QUERIES SEJAM PROCESSADAS POR 
+
+
+MÚLTIPLOS SERVERS, AO MESMO TEMPO (
+
+    por isso 
+
+    """"MASSIVE PARALLEL PROCESSING""""
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... --> ISSO DEIXA __ MT EFICIENTE 
+
+
+O PROCESSAMENTO DE NOSSAS QUERIES...
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. QUER DIZER QUE ESSES VIRTUAL WAREHOUSES 
+
+
+
+
+
+SAO __ SUPER IMPORTANTES,
+
+
+
+E É EXATAMENTE POR ISSO QUE FALAREMOS MAIS SOBRE ELES,
+
+
+NESSA SECTION...
+
+
+
+
+
+
+
+
+
+
+MAS ANTES DE FAZERMOS ISSO,
+
+DEVEMOS 
+
+
+DAR 
+
+1 OLHADA NO ÚLTIMO LAYER, QUE É CHAMADO 
+
+
+DE ""CLOUD SERVICES"", QUE É PRATICAMENTE ___ O CÉREBRO DO SISTEMA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+3) CLOUD SERVICES -------> CÉREBRO DO SISTEMA... -->  FAZ MANAGE DA INFRAESTRUTURA, 
+                                                      ACCESS CONTROL, SECURITY,
+                                                      OPTIMIZER, METADATA, ETC...
+
+
+
+
+
+
+É NO LAYER DO __cLOUD SERVICES__ QUE 
+
+
+FAZEMOS __ 
+
+
+
+TODO O MANAGING..
+
+
+
+
+
+
+
+
+
+-> POR EXEMPLO,
+
+
+
+NESSE LAYER FAZEMOS MANAGE DA __ INFRAESTRUTURA,
+
+
+DO ACCESS CONTROL , SECURITY, MUDAMOS METADATA,
+
+
+OPTIMIZAMOS NOSSAS QUERIES E ASSIM POR DIANTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+
+CHAMAMOS ESSE LAYER DE ""BRAIN"",
+
+
+
+PQ __ PODEMOS MANAGEAR TODOS ESSES TÓPICOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.. TUDO ISSO QUE VIMOS É UM 
+
+
+UNDERSTANDING ___ HIGH LEVEL__ 
+
+
+
+
+DO SNOWFLAKE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É BEM ÚTIL TER ISSO, PARA SABER COMO 
+
+
+
+TRABALHAR 
+
+COM O SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, AGORA O PROFESSOR FALA 1 POUCO DESSAS VIRTUAL WAREHOUSES....
+
+
+
+
+
+TEMOS ISTO:
+
+
+
+
+
+
+
+
+
+
+
+XS -->  []              1 
+
+
+S --> [] []             2
+
+M --> [] [] [] []       4
+
+
+L --> [] [] [] [] [] [] [] []    8
+
+
+XL --> [] [] [] [] [] [] [] []    16
+       [] [] [] [] [] [] [] []
+
+
+
+
+4XL --> [] [] [] [] [] [] [] []    128
+        [] [] [] [] [] [] [] []
+        [] [] [] [] [] [] [] []
+        [] [] [] [] [] [] [] []
+        [] [] [] [] [] [] [] []
+        [] [] [] [] [] [] [] []
+        [] [] [] [] [] [] [] []
+        [] [] [] [] [] [] [] []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSAS VIRTUAL WAREHOUSES.... ----> SAO __ VIRTUAL __ COMPUTE 
+INSTANCES.... 
+
+
+
+VIRTUAL COMPUTE INSTANCES --> SAO SERVERS --> SERVERS QUE PODEMOS _ USAR __ 
+
+
+PARA __ PROCESSAR __ AS QUERIES __ NA NOSSA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE 
+ESSAS VIRTUAL WAREHOUSES 
+
+
+
+PODEM TER DIFERENTES TAMANHOS...
+
+
+
+
+
+
+
+XS --> EXTRASMALL --> É APENAS 1 SERVER...
+
+
+
+
+
+
+
+
+
+
+--> SE NOSSAS QUERIES NAO SAO TAO COMPLEXAS,
+
+
+PODEMOS USAR 
+
+ESTE TAMANHO PEQUENO...
+
+
+
+
+
+
+
+
+
+
+--> MAS SE NOSSAS QUERIES FICAM MAIS COMPLEXAS,
+
+
+ELAS CONSOMEM MAIS TEMPO, E AÍ TEMOS DE ESPERAR MAIS TEMPO...
+
+
+
+
+
+
+
+
+
+--> SE NOSSAS QUERIES CONSOMEM MT TEMPO,
+
+PODEMOS 
+
+
+_ AUMENTAR O TAMANHO DA NOSSA WAREHOUSE,
+
+
+OU 
+
+ENTAO 
+
+
+CRIAR _ OUTRAS WAREHOUSES,
+
+COM TAMANHOS MAIORES....
+
+
+
+
+
+
+
+
+
+
+--> OK... CADA __ STEP QUE _ AVANCAMOS,
+
+
+_DUPLICAMOS A QUANTIDADE 
+
+DE 
+
+SERVERS 
+
+UTILIZADA..
+
+
+
+
+
+
+
+EX: XS -> S -> M -> L -> XL 
+    1     2    4    8    16
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O SIZE MAIS LARGO É 
+
+
+
+4XL --> 128 _ SERVERS....
+
+
+
+
+
+
+
+
+
+
+
+
+-> CERTO... OUTRA COISA IMPORTANTE.. --> QUANTO MAIS LARGO 
+
+
+É 1 WAREHOUSE,
+
+É CLARO QUE MAIOR SERÁ O PRECO...
+
+
+
+
+
+
+
+
+
+
+--> PARA O XS, DE 1 SERVER,
+
+
+TEMOS 1 QUANTIDADE 
+
+DE 
+
+1 CREDIT... -> 1 CREDIT É CONSUMIDO __ SEMPRE QUE __ ESSA 
+
+
+WAREHOUSE 
+
+ESTÁ ACTIVE...
+
+
+
+
+
+
+
+
+
+""""CREDITS"""" --> FALAREMOS SOBRE ELES EM ALGUMAS LECTURES...
+
+
+
+
+
+
+
+
+
+
+
+CREDITS -> SAO O QUE USAMOS PARA PAGAR...
+
+
+
+
+
+
+
+
+DOLLARS E EUROS SAO TRANSFORMADOS EM CREDITS,
+
+E ENTAO 
+
+ESSES CREDITS SAO CONSUMIDOS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM O WAREHOUSE EXTRASMALL,
+
+
+
+
+TEMOS 1 _ CREDIT _SENDO CONSUMIDO POR HORA,
+
+
+
+
+POR HORA EM QUE ESSE WAREHOUSE ESTÁ ACTIVE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1 CREDIT POR HORA --> ""BILLED BY SECONDS"" (with 1 minute as minimum)...
+
+
+
+
+
+
+
+
+
+
+-> QUER DIZER QUE 
+
+SE RODAMOS NOSSA WAREHOUSE POR APENAS 30 MINUTOS,
+
+
+PAGAMOS APENAS 
+
+""HALF OF A CREDIT""...
+
+
+
+
+
+
+
+
+------> OK.... QUER DIZER QUE OS CREDITS SAO 
+
+""BILLED BY SECONDS""",
+
+
+
+
+mas com 1 limit mínimo de 1 minuto...
+
+
+
+
+
+
+
+
+-> QUER DIZER QUE 
+
+
+
+SE __ TIVERMOS ESSA INSTANCE ACTIVE POR _ APENAS _ ALGUNS SECONDS,
+
+
+
+
+__ TEREMOS 1 CONSUMPTION DE __ APENAS 1 ÚNICO MINUTO...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> MAS PODEMOS, EM VEZ DE AUMENTAR O __ TAMANHO _ 
+
+
+DE NOSSO SERVER/VIRTUAL WAREHOUSE,
+
+
+
+
+
+
+
+
+
+_APENAS _ AUMENTAR O NÚMERO __ 
+
+
+
+
+
+DE VIRTUAL WAREHOUSES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A CONFIGURACAO S (SMALL), de 2 instances,
+
+
+É IDEAL 
+
+PARA NOSSO SETUP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS DIGAMOS QUE TEMOS 1 VIRTUAL WAREHOUSE DE 2 INSTANCES...
+
+
+COMO O NOSSO...
+
+
+
+
+
+
+
+
+__ ELE É APROPRIADO, PODEMOS QUERIAR A DATA,
+
+E ISSO FUNCIONA -> MAS DIGAMOS QUE 
+
+
+
+HÁ 1 CENÁRIO ESPECÍFICO,
+
+EM QUE 
+
+
+
+
+
+1 MONTE DE PESSOAS 
+
+
+
+
+
+FAZEM O QUERY DE DATA... --> UM MONTE DE QUERIES... ---->
+
+
+
+
+QUANDO ISSO ACONTECER,
+
+
+
+
+ESSAS  QUERIES NAO VAO CONSEGUIR SEREM PROCESSADAS 
+
+APENAS 
+
+
+
+
+
+NESSE 
+
+""SMALL SERVER"" ---> COMO EXISTIRÁO 
+
+MTAS QUERIES,
+
+
+ELAS 
+
+ACABARAO 
+
+
+
+""""QUEUED"""" ---> e como teremos 1 queue,
+
+
+
+ELAS SERAO PROCESSADAS 
+
+
+
+""1 APÓS A OUTRA"" (lentidao)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> E ISSO É UM PROBLEMA,
+
+PQ PESSOAS TERAO DE ESPERAR MT TEMPO, ATÉ SUA QUERY SER RETORNADA..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO,
+
+É POR ISSO QUE TEMOS, NO SNOWFLAKE,
+
+A DEPENDER DE SUA ACCOUNT,
+
+
+O 
+
+
+
+RECURSO 
+
+
+
+DE 
+
+
+""""MULTI-CLUSTERING"""" -> ISSO QUER DIZER:
+
+
+
+
+
+"""SE TEMOS MTAS QUERIES, QUERIES DEMAIS EM 1 CERTO MOMENTO,
+
+TANTAS QUERIES _ QUE _ ELAS NAO CONSEGUEM MAIS SER PROCESSADAS
+
+POR APENAS 1 GIVEN INSTANCE __ SEM OCORRER QUEUING (filas),
+
+PODEMOS ___ AUMENTAR/ESCALAR 
+
+O NÚMERO DE WAREHOUSES...
+
+
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE FICAMOS COM UM __ CLUSTER DE WAREHOUSES,
+
+
+
+
+se ocorre esse aumento de demanda....
+
+
+
+
+
+
+
+
+
+quer dizer que nossas instances, que estavam assim:
+
+
+
+
+
+
+
+
+
+
+
+ 
+S [] []
+
+
+
+
+
+
+
+
+
+
+VAO FICAR ASSIM:
+
+
+
+
+
+S [] []
+
+S [] []
+
+S [] []
+
+
+
+
+
+
+
+
+
+
+
+
+---> NESSE CASO, NÓS ""CLUSTERED""
+
+
+
+3 WAREHOUSES 
+
+
+
+JUNTAS...
+
+
+
+
+
+
+
+
+
+--> POR MEIO DESSE PROCESSO,
+
+AS __ QUERIES __ PODEM __ SER DIVIDIDAS 
+
+NESSAS 3 WAREHOUSES... (warehouses de tipo SMALL)...
+
+
+
+
+
+
+
+
+
+
+
+OK... O PROFESSOR AGORA DIZ QUE CHEGA DE TEORIA,
+
+
+
+
+__ MAS ELE _ ACHA QUE 
+
+ESSE 
+
+HIGH LEVEL OVERVIEW 
+
+DEIXA MAIS FÁCIL O TRABALHO COM O 
+
+SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+-> MAS AGORA O PROFESSOR QUER NOS MOSTRAR COMO PODEMOS __ CRIAR 
+
+ESSES WAREHOUSES USANDO 
+
+
+SQL COMMANDS,
+
+
+
+E TAMBÉM COMO OS CRIAR USANDO A INTERFACE SNOWSITE...
