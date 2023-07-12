@@ -1,0 +1,231 @@
+
+
+
+
+
+
+
+
+
+
+PARA APRENDERMOS MAIS,
+DEVEMOS SETTAR 1 CONTA 
+
+SNOWFLAKE 
+
+JUNTO COM O PROFESSOR...
+
+
+PARA QUE CONSIGAMOS 
+
+
+
+
+APLICAR TUDO 
+JUNTO DO PROFESSOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS COMECAR NOSSO 30-DAY FREE TRIAL...
+
+
+
+
+
+-> NESSE 30-DAY FREE TRIAL,
+
+GANHAMOS CREDITO DE 400USD DOLARS...
+
+
+
+
+
+
+-> SELECIONAMOS A EDITION DO SNOWFLAKE.... -> ISSO É IMPORTANTE PARA CONSEGUIRMOS 
+
+ACESSAR 
+
+TODAS AS FEATURES...
+
+
+
+
+
+STANDARD EDITION TEM MENOS FEATURES DO QUE O ENTERPRISE...
+
+
+
+
+
+
+BUSINESS CRITICAL É 
+
+
+A COM MAIS FEATURES,
+
+
+
+MAS 
+
+
+É CARA...
+
+
+
+
+
+--> PARA QUE CONSIGAMOS PRATICAR TUDO, DEVEMOS ESCOLHER BUSINESS CRITICAL...
+
+
+
+
+
+
+
+
+
+
+--> SELECIONE AMAZON, PQ VAMOS PRATICAR COM O AWS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE QUEREMOS SETTAR ESSA CONTA PARA PRODUCTIVE ENVIRONMENT,
+
+DEVEMOS 
+
+PENSAR EM:
+
+
+
+
+1) QUAL CLOUD PROVIDER ESTAMOS USANDO 
+
+
+2) ONDE ESTÁ LOCALIZADA SUA DATA 
+
+
+
+3) ONDE ESTAO LOCALIZADOS TODOS OS USERS...
+
+
+
+
+
+
+
+--> mas aqui é fine escolher aws e us east...
+
+
+
+
+
+PODEMOS SKIPPAR A SURVEY..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> precisamos ir no email e ativar nossa conta...
+
+
+
+
+
+
+
+
+
+--> ativamos nossa conta...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.. .ATIVAMOS NOSSA CONTA..
+
+
+
+
+
+
+AGORA ENTRAMOS NO APP...
+
+
+
+
+
+
+
+
+ESTAMOS NA NOSSA CONTA SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA PODEMOS CONSEGUIR UM QUICK OVERVIEW 
+
+SOBRE ESSA INTERFACE,
+PARA ENTENDER COMO 
+
+PODEMOS 
+
+NAVEGÁ-LA EFETIVAMENTE...
+
+
+
+
+
+
+É ISSO QUE VEREMOS, NA PRÓXIMA AULA...
