@@ -1,0 +1,871 @@
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS ENTENDER A 
+
+
+INTERFACE DO SNOW SITE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO LOGGAMOS NA NOSSA CONTA,
+
+FICAMOS 
+
+NA 
+
+SECAO 
+
+
+
+DE 
+
+""HELP E SUPPORT"" --> isso nos dá alguma ajuda sobre as foundations do site...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS A PARTE MAIS IMPORTANTE DA INTERFACE FICA NO LADO ESQUERDO,
+
+
+
+
+
+NA PARTE DE ""WORKSHEETS""...
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS OLHAR ESSES 
+WORKSHEETS EM BREVE...
+
+
+
+
+
+NA PARTE SUPERIOR ESQUERDA,
+
+TEMOS O NOSSO USER...
+
+
+
+
+
+
+
+-> TAMBÉM TEMOS O ROLE...
+
+
+
+
+
+
+
+--> SOMOS ""ACCOUNT ADMIN"" --> É UM ROLE...
+
+
+
+E 
+
+PODEMOS TROCAR ESSE ROLE,
+
+BASTA CLICAR 
+
+NAQUELE BOTAO DE "SWITCH ROLE"...
+
+
+
+
+
+
+
+
+
+
+-----> TEMOS ""PUBLIC"", SECURITYADMIN, SYSADMIN, USERADMIN...
+
+
+
+
+
+
+
+
+
+temos diferentes privilegios,
+
+
+que nos deixam ver diferentes coisas, fazer diferentes coisas....
+
+
+
+
+
+
+
+
+
+--> falaremos sobre isso em mais detalhes, mais tarde no curso...
+
+
+
+
+
+
+
+
+
+-> ok... por enquanto, queremos dar 1 olhada mais aprofundada nessas worksheets..
+
+
+
+
+
+
+
+
+
+
+--> pq gastaremos mais tempo nesses worksheets --> essa é a section em que 
+
+ESCREVEREMOS 
+
+NOSSAS SQL QUERIES,
+
+
+
+
+
+
+E EM QUE _ PODEMOS _ EXECUTAR NOSSOS COMANDOS... ->
+
+
+
+
+
+
+
+
+
+
+NO MOMENTO,
+
+
+NAO TEMOS NENHUMA WORKSHEET... MAS PODEMOS CRIAR 1 NOVA WORKSHEET,
+
+POR MEIO DO BOTAO AZUL SUPERIOR DIREITO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ANTIGAMENTE, EXISTIAM APENAS SQL WORKSHEETS,
+MAS AGORA 
+
+
+É POSSÍVEL CRIAR PYTHON WORKSHEETS...
+
+
+
+
+
+
+
+
+--> PODEMOS CRIAR 1 NOVA WORKSHEET...
+
+
+
+
+
+
+
+
+
+--> DENTRO DESSE ESPACO,
+
+PODEMOS 
+
+
+
+RODAR QUERIES...
+
+
+
+PODEMOS 
+
+
+
+RODAR 
+
+
+
+
+SELECT * "FROM table_name";  para queriar 
+
+
+
+
+
+
+DATA DE ALGUMA TABLE...
+
+
+
+
+
+
+
+
+
+TEMOS TAMBÉM 1 AUTOCOMPLETE...
+
+
+
+
+
+
+
+
+--> SE APERTAMOS TAB,
+
+USAMOS O SUGGESTED AUTO COMPLETE...
+
+
+
+
+
+
+
+-- OK, MAS DE QUE TABLE QUERO FAZER QUERY?
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA VISUALIZAR TODAS AS TABLES A QUE TEMOS ACESSO 
+
+NA NOSSA CONTA,
+
+
+PODEMOS APERTAR EM ""DATABASES""...
+
+
+
+
+
+
+
+
+
+-> na verdade, já temos 1 visao disso, aqui....
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS ESSA DATABASE ""SNOWFLAKE'"
+
+
+
+
+
+
+
+
+--> PODEMOS EXPANDIR NOSSA DATABASE,
+
+E AÍ 
+
+
+
+PERCEBER QUE ESSA DATABASE JÁ TEM ALGUNS SCHEMAS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.. MAS PRIMEIRAMENTE QUEREMOS GANHAR ACESSO 
+
+A 
+
+A ALGUMA SAMPLE DATA, PARA QUE PÓSSAMOS TRABALHAR COM ELA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS NAO É EXATAMENTE IGUAL AO SQL...
+
+
+
+
+
+
+
+
+
+
+-_> JÁ TEMOS 1 DATABASE DE SAMPLE DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> temos ""from share"" --> COM ISSO PODEMOS USAR 
+
+
+DATA DE OUTRA ACCOUNT...
+
+
+
+
+
+--> DEPOIS GARANTIMOS TODAS AS PERMISSIONS, 
+
+tipo assim:
+
+
+
+
+
+
+
+-- Create a database from the share.
+create database snowflake_sample_data from share sfc_samples.sample_data;
+
+-- Grant the PUBLIC role access to the database.
+-- Optionally change the role name to restrict access to a subset of users.
+grant imported privileges on database snowflake_sample_data to role public;
+
+
+
+
+
+
+
+
+
+
+
+
+ok... rodei o segundo statement... agora todos os roles tem acesso 
+
+a essa data....
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+CTRL + ENTER NO NOSSO TECLADO TAMBÉM EXECUTA ESSA QUERY...
+
+
+
+
+
+
+
+
+
+
+--> SE REFRESHAMOS NOSSA DATABASE,
+ 
+
+ VEREMOS QUE 
+
+
+
+  ESSA DATABASE TERÁ SIDO ADICIONADA...
+
+
+
+
+
+
+
+
+--> TEMOS ALGUNS SCHEMAS....
+
+
+
+
+
+
+
+
+
+--> TEMOS 
+
+
+""TPCH_SF1"" ---------> É ONDE TEMOS AS TABLES 
+MENORES...
+
+
+
+
+--> temos a table de 
+
+"""CUSTOMER"" --> O QUE QUEREMOS FAZER, AQUI,
+
+É 
+
+
+FAZER 1 QUERY 
+DESSA TABLE...
+
+
+
+
+
+SE CLICAMOS NA TABLE DE ""CUSTOMER"" E COLOCAMOS 
+
+""PLACE NAME IN EDITOR"",
+
+
+conseguimos 
+
+colar 
+
+
+o name 
+dessa table (SNOWFLAKE_SAMPLE_DATA.TCPH_SF1.CUSTOMER)
+
+
+
+DIRETAMENTE NA QUERY,
+COMO SE FOSSE 
+1 OBJECT...
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE ESCREVEMOS 
+
+
+"""
+
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TCPH_SF1.CUSTOMER
+
+
+
+
+""""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.. 
+
+
+
+
+
+
+
+
+ISSO PRODUZIU UM RESULT SET 
+
+
+
+DE 
+
+150.000 customers,
+
+MAS APENAS 
+
+
+10.000 CUSTOMERS SAO DISPLADOS 
+
+
+NA 
+
+INTERFACE VISUAL...
+
+
+
+
+
+
+
+
+PUDE VISUALIZAR ISSO COM:
+
+
+SELECT COUNT(*) FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.CUSTOMER;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS EXECUTAR ESSAS QUERIES 
+
+
+
+COM __"""CONTROL + ENTER'"""
+
+
+
+
+
+
+
+
+
+
+
+
+MAS O COMANDO DO PROFESSOR FALHOU, POR ALGUMA RAZAO...
+
+
+
+
+
+
+
+
+
+
+ELE FALHOU PQ 
+
+
+
+RECEBEMOS O ERROR 
+
+
+DE 
+
+""NO ACTIVE WAREHOUSE SELECTED IN THE CURRENT SESSION""
+
+
+
+
+
+
+
+
+---> QUER DIZER QUE DEVEMOS __ ESCOLHER __ 
+
+
+
+
+
+
+
+UMA """"aCTIVE WAREHOUSE""""",
+
+
+por meio 
+
+
+do 
+
+comando 
+de 
+
+
+
+""""USE WAREHOUSE""""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> MAS O QUE É ISSO, E COMO ISSO FUNCIONA...
+
+
+
+
+
+
+
+BEM, VEREMOS ISSO NA PRÓXIMA AULA...
+
+
+
+
+WAREHOUSES SAO NECESSÁRIAS...
+
+
+
+
+
+
+
+
+
+
+--> MAS PQ SAO NECESSÁRIAS...
+
+
+
+
+
+
+-----> ANTES DISSO,
+
+O PROFESSOR QUER MENCIONAR QUE, NO NOSSO CURRENT WORKSHEET,
+
+
+
+
+TEMOS 
+
+O __NOME _ DO WORKSHEET__ NA 
+
+
+
+
+
+
+
+ABA DO CHROME... 
+
+
+
+
+
+
+
+
+
+
+-> NO CASO, TEMOS O DATE E O TIME 
+
+DE QUANDO ESSA WORKSHEET FOI CRIADA...
+
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS DAR 1 NOME A ESSA WORKSHEET.. -> OUR FIRST WORKSHEET...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO MUDA O NOME DA NOSSA WORKSHEET, E MUDA O NOME 
+
+
+
+
+NO BROWSER TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+--> NAS WORKSHEETS, JÁ PODEMOS VISUALIZAR NOSSA WORKSHEET...
+
+
+
+
+
+
+
+
+
+-_> SE CLICAMOS NA WORKSHEET,
+
+
+
+PODEMOS VER TODOS OS COMANDOS QUE 
+
+FORAM ESCRITOS NESSA WORKSHEET...
+
+
+
+
+
+
+
+
+CERTO... 
+
+
+
+
+
+MAS AGORA QUEREMOS SABER O QUE SAO ESSAS WAREHOUSES,
+
+
+
+PQ PRECISAMOS DELAS,
+
+E COMO 
+PODEMOS 
+
+FAZER SENTIDO DELAS....
+
+
+
+
+
+É ISSO QUE VEREMOS NA PRÓXIMA AULA...
