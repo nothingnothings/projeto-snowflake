@@ -1,0 +1,1539 @@
+
+
+
+
+
+
+AGORA QUE VIMOS 
+
+COMO PODEMOS CRIAR WAREHOUSES 
+
+
+
+USANDO A INTERFACE,
+
+
+
+
+VEREMOS COMO FAZER A MESMA COISA,
+
+
+MAS USANDO 
+
+SQL COMMANDS...
+
+
+
+
+
+
+
+
+
+--> ISSO É MT ÚTIL,
+
+PQ GASTAREMOS A MAIOR PARTE 
+DO TEMPO 
+
+
+NAS NOSSAS WORKSHEETS,
+
+RODANDO 
+
+
+SQL COMMANDS...
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE VAMOS ESCREVER 
+
+
+
+NOSSO 
+
+PRIMEIRO COMANDO SQL...
+
+
+
+
+
+
+TUDO QUE ESCREVEMOS, DE QUERIES SQL,
+
+
+É SALVO AUTOMATICAMENTE...
+
+
+
+
+
+
+
+--> É TUDO SALVO AUTOMATICAMENTE...
+
+
+
+
+
+
+
+TAMBÉM É POSSÍVEL TER 1 HISTORY
+ 
+
+DE CADA COMANDO EXECUTADO...
+
+
+
+
+
+
+
+
+certo... isso é bem interessante...
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA QUEREMOS 
+VER 
+
+COMO PODEMOS 
+
+CRIAR 1 WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+escrevemos 
+
+
+
+CREATE WAREHOUSE  (comando),
+
+
+
+E DEPOIS 
+
+COLOCAMOS O NOME DA WAREHOUSE (
+    compute_warehouse
+)
+
+
+
+NOSSA 
+
+
+WAREHOUSE 
+
+TERÁ SIDO AUTOMATICAMENTE 
+STARTADA,
+MAIS UMA VEZ...
+
+
+
+
+
+
+OK.... VIMOS COMO PODEMOS 
+STARTAR 
+
+ESSA WORKHOUSE COM 
+
+A USER INTERFACE...
+
+
+
+
+
+
+
+
+
+
+
+
+-. MAS AGORA 
+
+
+
+VEREMOS ___ COMO PODEMOS FAZER A 
+
+MESMA COISA,
+
+MAS USANDO ___SQL __ COMMANDS, DE DENTRO 
+
+
+
+DE 1 WORKSHEET...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... DEPOIS DISSO,
+
+ADICIONAMOS a
+
+KEYWORD 
+
+""WITH"",
+
+
+para conseguirmos adicionar 
+
+
+AS __PROPRIEDADES_ DESSA WAREHOUSE...
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+ok.... quais serao as propriedades...
+
+
+
+
+
+A PRIMEIRA PROPRIEDADE, E A MAIS IMPORTANTE,
+
+
+É O __NÚMERO DE __CLUSTERS__ QUE 
+
+GOSTARÍAMOS DE TER...
+
+
+
+
+
+
+
+--> PARA ISSO, PRECISAMOS DA KEYWORD
+
+
+"WAREHOUSE_SIZE"
+
+
+
+
+
+
+
+-> COM ISSO,
+
+ESCREVEMOS:
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; 
+WITH
+WAREHOUSE_SIZE=X
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> NO NOSSO CASO,
+
+QUEREMOS 
+
+
+
+EXTRA SMALL...
+
+
+
+
+
+PARA ISSO,
+
+ESCREVEMOS 
+
+
+"""XSMALL"''...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+PERCEBA QUE, 
+
+
+
+SE VC NAO ESPECIFICAR OS OUTROS PARAMETERS,
+
+
+ELES VAO IMEDIATAMENTE SER DEFINIDOS 
+
+
+COMO SENDO OS VALUES __DEFAULT__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+outro parameter possível é 
+
+
+MAX_CLUSTER_COUNT
+
+
+
+
+
+
+--> SE NAO ESPECIFICAMOS O 
+""MAX_CLUSTER_COUNT"",
+
+ELE SERÁ, POR DEFAULT, 1...
+
+
+
+
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+
+COLOCAMOS UM VALOR DE 3,
+
+
+PQ QUEREMOS 3...
+
+
+
+
+
+
+
+
+--> NO MIN_CLUSTER_COUNT,
+
+
+
+SE NAO COLOCARMOS NADA,
+ O DEFAULT É 1...
+
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+
+
+
+
+
+
+
+
+
+---> depois disso,
+
+
+PODEMOS DEFINIR O PARAMETER DE 
+
+
+""AUTO_SUSPEND"", QUE 
+É A QUANTIDADE 
+
+___ DE _ TEMPO __ 
+
+
+
+ATÉ A WAREHOUSE SER SUSPENSA,
+
+SE NAO ESTIVER EM USO...
+
+
+
+
+
+
+--> COLOCAMOS 600 (10 minutos),
+
+
+
+
+E O CÓDIGO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+AUTO-SUSPEND = 600 -- após 600 segundos (10 minutos) sem uso, nossa warehouse será SUSPENSA.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... 300 seconds -> suspensa 
+
+depois de 5 minutos....
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, TEMOS A OPTION DE
+
+
+""AUTO-RESUME"", que podemos definir COMO
+
+TRUE,
+
+
+PQ É UMA BEST-PRACTICE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+AUTO_SUSPEND = 600 -- após 600 segundos (10 minutos) sem uso, nossa warehouse será SUSPENSA.
+AUTO_RESUME = TRUE -- se a warehouse for suspensa, ela será automaticamente resumida quando for requisitada novamente (Quando forem rodadas sql queries contra ela)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEVEMOS ESCREVER 
+
+
+
+
+COMMENT='Uma String';
+
+
+
+
+
+
+
+
+
+
+DEVEMOS ESCREVER 
+
+
+
+
+COMMENT='Uma String';
+
+
+
+
+
+
+
+
+
+
+DEVEMOS ESCREVER 
+
+
+
+
+COMMENT='Uma String';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE TENTAMOS EXECUTAR ISSO AÍ,
+
+
+VEREMOS QUE
+
+
+FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+AUTO_SUSPEND = 600 -- após 600 segundos (10 minutos) sem uso, nossa warehouse será SUSPENSA.
+AUTO_RESUME = TRUE -- se a warehouse for suspensa, ela será automaticamente resumida quando for requisitada novamente (Quando forem rodadas sql queries contra ela)...
+COMMENT = 'This is a Snowflake warehouse';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+E, É CLARO, 
+
+
+AS PROPERTIES QUE NAO FOREM ESPECIFICADAS 
+
+
+
+RECEBERAO SEUS VALUES DEFAULT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok... agora executamos esse comand,
+
+
+
+e vemos como 
+
+essa warehouse 
+
+é criada...
+
+
+
+
+
+--> E, QUANDO ESSA WAREHOUSE É CRIADA,
+
+ELA INICIALMENTE FICA __aTIVA...
+
+
+
+
+
+
+
+
+
+
+
+ESSE É O COMPORTAMENTO __DEFAULT (ATIVA NO INÍCIO)...
+
+
+
+
+
+
+
+
+
+-> MAS PODEMOS _ DESABILITAR 
+
+ESSE COMPORTAMENTO DEFAULT,
+
+
+BASTA 
+
+
+DEFINIR 
+
+
+O PARAMETRO 
+
+
+DE 
+
+"INITIALLY_SUSPENDED=TRUE"...
+
+
+
+(o value default é FALSE)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEVEMOS ESCREVER 
+
+
+
+
+COMMENT='Uma String';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+AUTO_SUSPEND = 600 -- após 600 segundos (10 minutos) sem uso, nossa warehouse será SUSPENSA.
+AUTO_RESUME = TRUE -- se a warehouse for suspensa, ela será automaticamente resumida quando for requisitada novamente (Quando forem rodadas sql queries contra ela)...
+INITIALLY_SUSPENDED= TRUE -- usamos isto se queremos que a instance COMECE DE FORMA SUSPENDED (o comportamento default é comecar de forma ACTIVE, com ela já ACTIVE)
+COMMENT = 'This is a Snowflake warehouse';
+
+
+
+
+
+
+CREATE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+AUTO_SUSPEND = 600 -- após 600 segundos (10 minutos) sem uso, nossa warehouse será SUSPENSA.
+AUTO_RESUME = TRUE -- se a warehouse for suspensa, ela será automaticamente resumida quando for requisitada novamente (Quando forem rodadas sql queries contra ela)...
+INITIALLY_SUSPENDED= TRUE -- usamos isto se queremos que a instance COMECE DE FORMA SUSPENDED (o comportamento default é comecar de forma ACTIVE, com ela já ACTIVE)
+COMMENT = 'This is a Snowflake warehouse';
+
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, TEMOS 1 COMANDO 
+
+
+
+QUE CONSEGUE __ 
+
+RECRIAR __ 1 WAREHOUSE ANTERIOR...
+
+
+
+
+
+
+BASTA ESCREVER O COMANDO 
+
+
+
+""CREATE OR REPLACE WAREHOUSE"",
+
+
+
+EM VEZ DE 
+
+
+""CREATE WAREHOUSE""
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE WAREHOUSE COMPUTE_WAREHOUSE; -- sintaxe SNOWFLAKE... ISTO CRIA 1 COMPUTE WAREHOUSE...
+WITH -- OUTRA KEYWORD SNOWFLAKE, usada para definir as PROPRIEDADES DA WAREHOUSE QUE CRIAREMOS...
+
+WAREHOUSE_SIZE=XSMALL   -- outra keyword snowflake. É usada para DEFINIR O TAMANHO DE NOSSO WAREHOUSE (quantos clusters), e é uma das propriedades mais importantes...
+-- tamanhos podem ser XSMALL, SMALL, MEDIUM, LARGE, XLARGE, ETC.....
+
+MAX_CLUSTER_COUNT=1  -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o maximo de clusters que queremos que nossa warehouse tenha...
+-- MIN_CLUSTER_COUNT=1 -- se nao especificarmos nada, ficamos com 1 cluster, mas podemos especificar o minimo de clusters que queremos que nossa warehouse tenha...
+
+AUTO_SUSPEND = 600 -- após 600 segundos (10 minutos) sem uso, nossa warehouse será SUSPENSA.
+AUTO_RESUME = TRUE -- se a warehouse for suspensa, ela será automaticamente resumida quando for requisitada novamente (Quando forem rodadas sql queries contra ela)...
+INITIALLY_SUSPENDED= TRUE -- usamos isto se queremos que a instance COMECE DE FORMA SUSPENDED (o comportamento default é comecar de forma ACTIVE, com ela já ACTIVE)
+COMMENT = 'This is a Snowflake warehouse';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, NOSSA WAREHOUSE VAI SER RECRIADA,
+
+SE ELA JÁ 
+
+EXISTIA/EXISTE...
+
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, NESSA INTERFACE,
+
+
+É POSSÍVEL OBSERVAR QUE 
+
+
+
+PODEMOS __ 
+
+
+ESCOLHER __ QUAL WAREHOUSE QUEREMOS 
+
+UTILIZAR 
+
+PARA RODAR 
+
+NOSSAS SQL QUERIES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> APENAS 1 WAREHOUSE 
+
+
+EXECUTA 1 QUERY....
+
+
+
+PELO MENOS FOI ISSO QUE ENTENDI....
+
+
+
+
+
+
+
+
+
+
+
+-> SE QUEREMOS EXECUTAR 1 QUERY COM OUTRA 
+
+
+
+WAREHOUSE, DEVEMOS A SELECIONAR ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUANDO RODAMOS UMA QUERY, 
+
+PODEMOS 
+
+SELECIONAR 1 TABLE POR MEIO 
+
+
+DE SEU 
+""FULLY-QUALIFIED NAME"" (como SNOWFLAKE_SAMPLE_DATA.TCPH_SF1.CUSTOMER),
+
+
+
+
+
+
+MAS TAMBÉM É POSSÍVEL 
+
+
+USAR O ____cONTEXT____ DO SNOWFLAKE,
+
+PARA SELECIONAR 
+
+AS TABLES....
+
+
+
+
+
+
+
+
+para isso,
+
+comece usando a GUI....
+
+
+
+
+
+
+CLIQUE NO DROPDOWN,
+
+E AÍ TROQUE 
+
+PARA 
+
+"""SNOWFLAKE_SAMPLE_DATA.TPCH_SF1"""....
+
+
+
+
+
+
+
+
+SE VC FIZER ISSO, VAI PODER SELECIONAR 
+
+
+DAS NESTED TABLES _ SEM PRECISAR 
+
+
+USAR A DOT NOTATION...
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+SELECT * FROM CUSTOMER;
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... FAZ TOTAL SENTIDO...
+
+
+
+
+
+
+
+
+
+COM ISSO, USAMOS UMA __dIMENSAO ADICIONAL 
+
+
+DO NOSSO CONTEXT...
+
+
+
+
+
+
+
+
+
+
+
+
+-> com isso, nessa interface, sempre 
+temos de:
+
+
+1) SELECIONAR A WAREHOUSE (xs, s, m, l, xl, 2xl, etc)
+QUE VAI RODAR A QUERY DE FORMA OPTIMIZADA 
+
+
+
+
+
+2) SELECIONAR A__ database,
+
+O CONTEXTO DA DATABASE (E podemos fazer isso 
+com o dropdown)...
+
+
+
+
+
+
+
+
+
+
+
+--> aqui, no caso,
+
+definimos a database 
+
+
+como sendo 
+
+
+SNOWFLAKE_SAMPLE_DATA,
+
+
+
+
+E O SCHEMA COMO SENDO O DE TPCH_SF1...
+
+
+
+
+
+--> O BENEFÍCIO DISSO 
+É QUE 
+
+
+NAO PRECISAMOS 
+
+ESPECIFICAR 
+
+
+
+O NOME INTEIRO DA DATABASE>SCHEMA>TABLE,
+
+PODENDO ESPECIFICAR __ APENAS O TABLE NAME...
+
+
+
+
+
+
+--> ex:
+
+
+
+
+
+
+SELECT * FROM customers;
+
+
+
+
+
+
+
+
+
+
+
+----> PERCEBA QUE, ADICIONALMENTE 
+
+
+
+AO SELECT DA WAREHOUSE 
+
+
+E 
+
+
+__ O SELECT DO __ CONTEXT
+
+DA DATABASE,
+
+
+
+
+
+
+
+___SEMPRE __ ESTAMOS _ EXECUTANDO __
+
+
+NOSSAS QUERIES ___ TENDO EM VISTA __ 
+
+
+UM _____ROLE ______ ESPECÍFICO...
+
+
+
+
+
+
+
+
+--> E O ROLE __ É OUTRA COISA QUE 
+PODEMOS MUDAR, NA GUI E NO CÓDIGO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS USAR O ACCOUNTADMIN..
+
+
+
+
+
+
+--> MAS TEMOS TAMBÉM O 
+
+
+SECURITYADMIN
+
+
+
+E O SYSADMIN....
+
+
+
+
+
+
+
+
+
+
+
+--> O ACCOUNTADMIN,
+
+
+SYSADMIN E SECURITY ADMIN,
+
+
+SE QUEREMOS CRIAR 
+
+
+
+WAREHOUSES ADICIONAIS...
+
+
+
+(
+    OS ROLES DE 
+
+    ""USERADMIN""
+
+    E ""PUBLIC""
+
+    NAO PODEM CRIAR WAREHOUSES...
+)
+
+
+
+
+
+
+
+
+
+
+OK... MAS COMO PODEMOS DELETAR/DROPPAR 
+
+UMA
+
+WAREHOUSE...?
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PODE SER FEITO POR MEIO 
+
+DA INTERFACE,
+
+É CLARO,
+
+
+
+
+
+
+
+MAS _ SE QUISERMOS FAZER ISSO 
+
+POR MEIO 
+
+DE COMANDOS SQL,
+
+
+
+
+
+
+BASTA EXECUTAR O COMANDO 
+
+
+
+
+
+
+
+
+"""""
+
+
+DROP WAREHOUSE 
+
+
+""""
+
+
+
+
+
+
+NO CASO,
+
+É 
+
+
+
+DROP + TYPE_OF_OBJECT...
+
+
+
+
+
+
+
+COMO QUEREMOS DROPPAR 1 WAREHOUSE,
+
+
+ESCREVEMOS 
+
+
+
+
+
+DROP WAREHOUSE WAREHOUSE_NAME;
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok.... isso vai droppar a warehouse...
+
+
+
+
+
+
+
+
+SE SEGUIMOS ATÉ AS WAREHOUSES NA SECTION DE ADMIN,
+
+
+NAO TEREMOS MAIS NENHUMA WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> na aba de ""warehouses"",
+
+
+podemos mexer com mais detalhes 
+
+
+nas propriedades de nossas warehouses (
+
+    nao como na gui dos worksheets,
+    em que 
+
+    nao podemos visualizar esses detalhes...
+)
+

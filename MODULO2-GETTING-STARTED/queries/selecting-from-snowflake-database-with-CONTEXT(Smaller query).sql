@@ -1,0 +1,60 @@
+
+
+
+-- MAS TAMBÉM É POSSÍVEL 
+
+
+-- USAR O ____cONTEXT____ DO SNOWFLAKE,
+
+-- PARA SELECIONAR 
+
+-- AS TABLES....
+
+
+
+
+
+
+
+
+-- para isso,
+
+-- comece usando a GUI....
+
+
+
+
+
+
+-- CLIQUE NO DROPDOWN,
+
+-- E AÍ TROQUE 
+
+-- PARA 
+
+-- """SNOWFLAKE_SAMPLE_DATA.TPCH_SF1"""....
+
+
+
+-- EX:
+
+
+SELECT * FROM customers;
+
+
+
+-- --> O BENEFÍCIO DISSO 
+-- É QUE 
+
+
+-- NAO PRECISAMOS 
+
+-- ESPECIFICAR 
+
+
+
+-- O NOME INTEIRO DA DATABASE>SCHEMA>TABLE (como SNOWFLAKE_SAMPLE_DATABASE.TSPH_SF1.CUSTOMER),
+
+-- PODENDO ESPECIFICAR __ APENAS O TABLE NAME...
+
+
