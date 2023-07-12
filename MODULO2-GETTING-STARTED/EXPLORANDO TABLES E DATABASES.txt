@@ -1,0 +1,419 @@
+
+
+
+
+
+
+
+
+
+É CLARO QUE SE QUISERMOS MANAGEAR 
+
+A ACCOUNT,
+
+É MT IMPORTANTE E CRUCIAL 
+
+
+SABERMOS 
+
+
+O LOCAL 
+
+
+
+EM QUE ESTAO NOSSAS 
+
+
+
+DATABASES...
+
+
+
+
+
+
+
+
+TAMBÉM COMO PODEMOS AS MANAGEAR,
+
+
+
+
+E TAMBÉM AS RELATED DATABASE OBJECTS,
+
+
+
+COMO TABLES, VIEWS, FUNCTIONS E ETC....
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, 
+
+TEMOS 2 OPCOES:
+
+
+
+
+
+1) USAR AS WORKSHEETS 
+
+E ESCREVER MANUALMENTE TUDO,
+
+COM NOSSOS SQL COMMANDS....
+
+
+
+
+
+
+
+
+2) PODEMOS USAR A AJUDA DA INTERFACE...
+
+
+
+
+
+
+
+
+
+
+
+--> SE QUISERMOS USAR A INTERFACE,
+
+
+CLICAMOS EM 
+
+"DATA",
+
+E ENTAO SELECIONAMOS "DATABASES"...
+
+
+
+
+
+
+
+
+
+
+-> TEMOS A LIST DE NOSSAS DATABASES...
+
+
+
+
+
+
+
+
+--> TEMOS TODAS AS DATABASES... --> PODEMOS 
+
+VISUALIZAR 
+
+TODOS OS SCHEMAS,
+
+
+OS SELECIONAR,
+
+
+E ENTAO INVESTIGAR QUAIS OS RELATED 
+OBJECTS 
+
+NOS SCHEMAS....
+
+
+
+
+
+
+
+
+--> 
+EXEMPLO:
+
+
+
+
+
+SNOWFLAKE_SAMPLE_DATA > INFORMATION_SCHEMA >
+VIEWS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+mas se seguirmos até o level mais alto,
+
+databases,
+
+
+
+PODEMOS TAMBÉM 
+
+OS VISUALIZAR...
+
+
+
+
+
+
+
+
+
+--> E PODEMOS MODIFICAR 
+
+
+ESSAS DATABASES.. TROCAR SEUS NAMES E OS 
+
+DROPPAR, SE QIUSERMOS...
+
+
+
+
+
+
+--> SE QUISERMOS DAR UMA OLHADA MAIS 
+
+APROFUNDADA 
+
+NESSA DAATBASE,
+
+PODEMOS CLICAR NELA...
+
+
+
+
+
+
+
+
+
+TEMOS OS SCHEMAS DA DATABASE,
+
+
+
+E QUAIS OS PRIVILEGES NESSA DATABASE..
+
+
+
+
+
+
+
+
+
+SE QUISERMOS ADICIONAR 1 NOVO PRIVILEGE 
+
+A UMA DATABASE,
+
+PODEMOS CLICAR 
+
+NO BUTTON DE 
+
+
+"+ PRIVILEGE"
+
+
+
+
+
+
+
+
+-> É CLARO QUE MAIS TARDE FALAREMOS SOBRE 
+
+ACCESS CONTROL E PRIVILEGES...
+
+
+
+
+
+
+
+MAS O QUE INTERESSA É QUE PODEMOS 
+
+
+
+ASSIGNAR 
+
+PRIVILEGES A ALGUM ROLE,
+
+COMO ""PUBLIC""...
+
+
+
+
+
+
+
+
+
+COMO ESSA É UMA IMPORTED DATABASE,
+
+
+TEMOS APENAS A OPTION 
+
+DE 
+""iMPORTED PRIVILEGES""...
+
+
+
+
+
+
+
+
+
+essas sample databases sao boas,
+
+mas sao limitadas...
+
+
+
+
+
+
+
+
+é por isso que devemos criar uma NOVA DATABASE,
+
+
+COM "+ database"
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... INPUTTAMOS O NOME DA DATABASE...
+
+
+
+
+
+
+
+
+
+
+
+--> COLOCO "TEST-DATABASE"....
+
+
+
+
+
+
+
+
+--> todos os database objects 
+
+devem ter UNDERSCORES...
+
+
+
+
+
+
+
+
+CRIAMOS ESSA DATABASE, E ELA 
+
+VAI ESTAR DISPONÍVEL...
+
+
+
+
+
+--> SE CLICAMOS 
+EM EDIT NA DATABASE,
+
+PODEMOS APENAS 
+
+EDITAR O NOME....
+
+
+
+
+
+
+
+
+-> SE QUISERMOS ___CRIAR NOVOS 
+
+SCHEMAS NESSA DATABASE, SOMOS 
+FORCADOS A ENTRAR NELA...
+
+
+
+
+
+
+
+
+
+
+CLICAMOS NELA, E ENTAO EM 
+
+"SCHEMAS".......
+
+
+
+
+
+
+
+
+--> PODEMOS ADICIONAR MAIS PRIVILEGES,
+
+POR EXEMPLO..
+
+
+
+
+
+
+
+--> PODEMOS ADICIONAR ALGUNS PRIVILEGES...
+
+
+
+
+
+
+
+
+POR EXEMPLO, ADICIONAR O PRIVILEGE 
+
+DE 
+
+
+""MODIFY""
+
+
+
+
+
+
