@@ -1,0 +1,342 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEVEMOS ENTENDER 
+
+
+
+
+
+
+
+
+A WEB INTERFACE DO SNOWFLAKE,
+
+
+
+QUE TAMBÉM É CHAMADA 
+
+DE 
+
+
+""""SNOWSIGHT"""""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE ESTUDARMOS ESSA INTERFACE,
+
+
+DEVEMOS DISCUTIR AS MANEIRAS POSSÍVEIS 
+
+
+
+
+DE FAZER LOGIN NA NOSSA CONTA...
+
+
+
+
+
+
+
+
+2 MANEIRAS DE FAZER LOGIN:
+
+
+
+
+
+
+
+
+
+
+
+1) LINK DIRETO A NOSSA CONTA....
+
+
+
+
+
+
+
+
+2) app.snowflake.com/account_name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... O SEGUNDO É FÁCIL..
+
+
+
+
+
+app.snowflake.com/nothingnothings
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PRIMEIRO É ACESSAR NOSSA ACCOUNT 
+
+
+
+DIRETAMENTE 
+
+
+PELA URL...
+
+
+
+
+
+
+esse link direto pode ser encontrado 
+
+
+NAQUELE EMAIL, EM QUE RECEBEMOS 1 LINK...
+
+
+
+
+
+
+
+
+
+--> é uma URL ESPECÍFICA --> SE COPIAMOS ESSE URL 
+
+
+EM 1 NOVA TAB,
+
+VEREMOS 
+
+
+
+1 TELA DE LOGIN, EM QUE PROVIDENCIAREMOS NOSSO USERNAME 
+
+E PASSWORD...
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE ACESSAMOS 
+
+app.snowflake.com/account_name,
+
+
+
+vamos entrar no nosso cluster também..
+
+
+
+
+
+
+
+
+
+MAS É MENTIRA, O USERNAME NAO É 
+
+
+""nothingnothings"",
+
+
+
+
+
+e sim é a parte INICIAL DA URL QUE RECEBEMOS NO NOSSO EMAIL....
+
+
+
+
+
+é uma string bem estranha..
+
+
+
+
+
+
+
+
+
+
+--> depois de inserirmos essa string,
+
+AÍ COLOCAMOS NOSSO USERNAME E PASSWORD DE VERDADE...
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, CONSEGUIMOS FAZER LOGIN...
+
+
+
+
+
+
+
+O PROFESSOR RECOMENDA QUE SALVEMOS 
+
+
+
+ESSE LOGIN COM NOSSO ACCOUNT NAME COMO BOOKMARK, PARA QUE 
+
+
+SEMPRE CONSIGAMOS O ACESSAR RAPIDAMENTE E FAZER LOGIN NA NOSSA CONTA....
+
+
+
+
+
+
+
+
+
+
+--> ALTERNATIVAMENTE, TEMOS O LINK NO NOSSO EMAIL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... FIZ ISSO...
+
+
+
+
+
+
+
+
+
+
+
+--> SE VOLTAMOS AO APP,
+
+
+
+O PROFESSOR 
+
+
+
+
+DIZ QUE PODEMOS ENCONTRAR ESSE ""ACCOUNT NAME""
+
+na nossa 
+
+conta snowflake,
+
+basta 
+
+
+
+
+apertar no botao na parte inferior esquerda do snowflake...
+
+
+
+
+basta clicar em ""copy account identifier""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> com esse identifier/url,
+
+
+podemos 
+
+
+colocar na url para fazer signin...
+
+
+
+
+
+
+
+
+
+
+--> CERTO... AGORA VAMOS VER 
+
+
+COMO NAVEGAR ESSA INTERFACE, CHAMADA DE SNOWSIGHT...
