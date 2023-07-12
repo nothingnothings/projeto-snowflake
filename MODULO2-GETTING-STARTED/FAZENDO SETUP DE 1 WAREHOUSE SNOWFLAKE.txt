@@ -511,5 +511,71 @@ DYNAMIC WORKLOADS (
 
     EX: ""DURANTE A TARDE, TEMOS MT MAIS USERS... 
     NESSAS HORAS, QUEREMOS ESCALONAR NOSSOS WAREHOUSES,
-    ADICIONAR MAIS COMPUTE POWER, DE UMA FORMA BEM DINAMICA""...
+    ADICIONAR CLUSTER  ADICIONAIS, PARA TER 
+    MAIS COMPUTE POWER, DE UMA MANEIRA BEM DINAMICA...""...
 )
+
+
+
+
+
+
+
+
+
+
+--> NO NOSSO CASO,
+
+
+GOSTARÍAMOS DE TER PELO MENOS 3 WAREHOUSES 
+
+CAPAZES DE SEREM STARTADAS (
+
+
+    por isso 
+
+    deixamos 
+
+
+    min clusters - 1 
+
+    max clusters - 3
+)
+
+
+
+
+
+
+
+
+
+
+--> E A SCALING POLICY --> ISSO É ALGO QUE VEREMOS 
+
+NA PRÓXIMA AULA...
+
+
+
+
+
+
+
+
+
+
+
+MAS O QUE INTERESSA É QUE TEMOS A OPCAO ENTRE ESCOLHER 
+
+ENTRE
+
+"""""STANDARD""""
+
+
+E 
+
+""ECONOMY"",
+
+
+nas scaling policies...
+
