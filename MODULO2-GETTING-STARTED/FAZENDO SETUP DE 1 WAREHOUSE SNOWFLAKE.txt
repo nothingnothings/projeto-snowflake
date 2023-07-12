@@ -579,3 +579,571 @@ E
 
 nas scaling policies...
 
+
+
+
+
+
+
+
+
+--> ECONOMY --> É UM POUCO MAIS AWARE/ PRECISA 
+
+
+DE UM POUCO MAIS DE WORKLOAD 
+
+PARA REALMENTE QUERER STARTAR 1 NOVO CLUSTER...
+
+
+
+
+
+
+
+
+MAS FALAREMOS SOBRE MAIS SOBRE ISSO 
+
+NA PROXIMA LICAO....
+
+
+
+
+
+
+
+--> POR FIM, TEMOS TAMBÉM 
+
+
+OS ADVANCED WAREHOUSE OPTIONS....
+
+
+
+
+
+
+--> GERALMENTE NAO 
+
+PRECISAMOS FAZER CHANGES 
+
+
+NESSA PARTE,
+
+MAS PODEMOS, SE QUISERMOS...
+
+
+
+
+
+
+
+--> AUTO SUSPEND --> SUSPENDE 
+
+AUTOMATICAMENTE 1 WAREHOUSE... --> O DEFAULT 
+
+É ENABLED... -->  ISSO FAZ COM QUE 
+
+
+
+UM WAREHOUSE _ SEJA _ SUSPENDED _ APÓS 
+
+
+
+DE CERTA QUANTIA DE TEMPO,
+
+SE ESTIVER SEM USO.... EX: 10 MINUTOS...
+
+
+
+
+
+
+
+
+--> SE DEIXAMOS ESSE AUTO-SUSPEND 
+LIGADO,
+
+
+
+A BEST-PRACTICE POSSÍVEL É DEIXAR O 
+
+
+"AUTO-RESUME" TAMBÉM LIGADO...
+
+
+
+--> PQ AÍ, SE DEIXAMOS 
+
+
+1 QUERY RODANDO E DESLIGAMOS 
+
+A WAREHOUSE,
+
+A WAREHOUSE VAI AUTOMATICAMENTE 
+
+RESUMIR, QUANDO PRECISARMOS EXECUTAR 1 QUERY...
+
+
+(sE NAO PRECISAMOS RESUMIR MANUALMENTE,
+ PRESUMO...)
+
+
+
+
+
+SE ELA FOR SHUT DOWN,
+
+E PRECISARMOS DE ELA DE NOVO,
+
+TALVEZ PARA EXECUTAR UMA QUERY,
+
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM TEMOS 
+
+
+__WAREHOUSE TYPE..
+
+
+
+
+
+PODEMOS DEIXAR O WAREHOUSE TYPE 
+
+
+COMO ""STANDARD""...
+
+
+
+
+O OUTRO TIPO 
+
+
+É 
+
+
+"SNOWPACK OPTIMIZED WAREHOUSE",
+
+
+
+
+mas é apenas 1 preview,
+
+nao 
+
+é recomendado para productive environment..
+
+
+
+
+
+
+
+
+
+é 1 type adicional de warehouse,
+
+que é optimizado para snowpack... --> É USADO E optimizado
+
+PARA __ MACHINE LEARNING,
+
+ALGO RELACIONADO 
+
+
+COM EXTREMELY COMPLEX E INTENSIVE COMPUTE 
+
+QUERIES...
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE ESSE SNOWPACK OPTIMIZED 
+
+
+
+PODE DAR MT MAIS COMPUTE POWER,
+
+TE DÁ 16X MAIS 
+
+
+COMPUTE POWER, 
+
+
+POR NODE....
+
+
+
+
+
+
+
+
+--> NO NOSSO CASO, PODEMOS DEIXAR COMO ESTÁ, 
+
+STANDARD...
+
+
+
+
+
+
+
+
+
+
+
+
+CRIADO ESSE WAREHOUSE,
+
+PODEMOS 
+
+
+__ FINALMENTE_ VER __ 
+SE PODEMOS 
+
+USAR 
+
+ESSE WAREHOUSE 
+
+PARA EXECUTAR NOSSA QUERY...
+
+
+
+
+
+
+->  ESSA OPTION MUDOU...
+
+
+
+
+
+
+
+
+AGORA SNOWPACK OPTIMIZED PODE SER 
+
+HABILITADO APENAS 
+
+
+
+NAS WAREHOUSES MEDIUM OR GREATER....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok...CRIEI 1 WAREHOUSE...
+
+
+
+
+
+
+
+AGORA PODEMOS USAR ESSA WAREHOUSE...
+
+
+
+
+
+
+
+
+QUEREMOS VER SE PODEMOS USAR ESSA WAREHOUSE,
+]PARA EXECUTAR NOSSA QUERY....
+
+
+
+
+
+
+
+-->  VAMOS ATÉ A NOSSA WORKSHEET,
+E
+ AÍ 
+
+ TEMOS O ESPACO PARA ESCREVER A QUERY...
+
+
+
+
+
+
+
+
+
+ SE EXECUTAMOS ESSA QUERY, VEREMOS QUE 
+
+ OS RESULTS TERAO SIDO FETCHEADOS...
+
+
+
+
+
+
+
+ A QUERY É AQUELA....
+
+
+
+
+
+
+
+ SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF_1.CUSTOMER
+
+
+
+
+
+
+ --> SE CLICAMOS NO BOTAO DO LADO 
+
+ DO TIPO DE CONTA QUE ESTAMOS 
+
+ USANDO,
+
+
+ PODEMOS 
+
+
+ VISUALIZAR A WAREHOUSE 
+
+ QUE ESTA SENDO USADA...
+
+
+
+
+
+
+
+ --> PERCEBEMOS QUE 
+
+A WAREHOUSE DE 
+
+""COMPUTE_WH" FOI STARTADA...
+
+
+
+
+
+
+
+SE QUISERMOS VER MAIS DETALHES SOBRE 
+
+ESSA WAREHOUSE,
+
+
+BASTA 
+
+
+CLICAR NO ÍCONE  
+
+SUPERIOR-DIREITO...
+
+
+
+
+
+
+--> 
+
+
+ISSO NOS MOSTRA OS DETALHES DA WAREHOUSE....
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, POR MEIO DESSAS CONFIGS AÍ,
+
+
+PODEMOS 
+
+
+
+TROCAR __ COISAS -_ COMO 
+
+O STATUS 
+
+
+DA WAREHOUSE (
+    de suspended para resume, 
+
+    por exemplo...
+)
+
+
+
+
+
+
+
+
+
+-> minha warehouse agora está 
+SUSPENDED,
+
+
+POR ISSO O ÍCONE ESTÁ CINZA....
+
+
+
+
+
+--> TAMBÉM PODEMOS MUDAR O TAMANHO DA NOSSA WAREHOUSE 
+
+QUE ESTÁ SENDO USADA,
+
+BASTA CLICAR EM 
+
+
+"SIZE"
+
+e trocar para outro tamanho..
+
+
+
+
+
+
+
+as outras settings (
+    min cluster count, max cluster,
+
+    scaling policy,
+    auto suspend e auto resume 
+)
+
+
+NAO PODEM SER ALTERADAS...
+
+
+
+
+TAMBÉM 
+
+PODEMOS DAR SUSPEND MANUAL NESSA WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> REPARE OUTRO DETALHE:
+
+
+
+NOSSA WAREHOUSE 
+
+
+ESTÁ COM 
+
+
+"AUTO-RESUME" ___ ENABLED,
+
+O QUE 
+
+
+QUER DIZER QUE 
+
+
+___ SE PRECISARMOS DESSA WAREHOUSE,
+
+
+SE RODARMOS 
+
+ALGUMA QUERY 
+
+
+COM NOSSAS WORKSHEETS,
+
+
+__ ELE VAI RESUMIR 
+
+AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+--> por exemplo, se SUSPENDERMOS 
+
+
+NOSSA WAREHOUSE MANUALMENTE,
+
+
+
+ELA FICARÁ "NOT AVAILABLE".. (Estará suspensa,
+
+icone cinza)..
+
+
+
+
+
+
+--> MAS SE EXECUTARMOS QUALQUER OUTRA 
+
+QUERY,
+
+
+
+TIPO 1 QUERY de region,
+
+
+assim:
+
+
+
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF_1.REGION;
+
+
+
+
+
+
+
