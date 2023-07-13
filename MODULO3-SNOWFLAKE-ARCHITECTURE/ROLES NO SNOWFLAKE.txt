@@ -1,0 +1,848 @@
+
+
+
+
+
+
+NA ÚLTIMA LICAO, APRENDEMOS QUE TEMOS 
+
+
+
+DIFERENTES ROLES DISPONÍVEIS 
+
+
+NO SNOWFLAKE....
+
+
+
+
+
+E É ASSIM QUE CONTROLAMOS E MANAGEAMOS 
+O ACESSO 
+
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE TEMOS ROLES,
+
+
+
+
+E PODEMOS __ ASSIGNAR__ USERS__ A ESSES DIFERENTES ROLES (coisa básica, tipo aws)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+NESSA LICAO,
+TEREMOS 
+
+
+1 BREVE OVERVIEW 
+
+DESSE ROLE E ACCESS MANAGEMENT...
+
+
+
+
+
+
+
+
+
+---> JÁ APRENDEMOS QUE SE CLICAMOS NA NOSSA ACCOUNT NAME,
+
+
+
+HÁ DIFERENTES ROLES DISPONÍVEIS...
+
+
+
+
+
+
+OS ROLES SAO:
+
+
+
+
+1) ACCOUNTADMIN 
+
+
+
+2) SYSADMIN 
+
+
+3) PUBLIC 
+
+
+4) SECURITYADMIN 
+
+
+5) USERADMIN....
+
+
+
+
+
+
+
+--> É CLARO QUE TEMOS DIFERENTES PRIVILEGES 
+
+PARA CADA 1 DESSES ROLES...
+
+
+
+
+
+
+
+
+--> É ASSIM QUE O ACCESS MANAGEMENT FUNCIONA NO SNOWFLAKE:
+
+
+
+
+TEMOS PRIVILEGES PARA:
+
+
+
+
+1) DO 
+
+2) MODIFY 
+
+3) VIEW 
+
+4) DO CERTAIN THINGS....
+
+
+
+
+
+
+
+
+
+--> ESSES PRIVILEGES SAO TODOS ASSIGNADOS AOS ROLES...
+
+
+
+
+
+
+
+
+E AÍ TEMOS USERS ASSIGNADOS A ESSES ROLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE FAZEMOS LOGIN NA NOSSA CONTA, 
+
+COM CONTAS "USER",
+
+
+
+
+
+SEMPRE FICAREMOS COM 
+
+
+A CONTA DE "SYSADMIN"....
+
+
+
+
+
+
+
+
+SYSADMIN --> ESSE É O ___DEFAULT...
+
+
+
+
+
+
+
+
+
+--> SE APENAS FAZEMOS SIGN IN NA NOSSA CONTA,
+
+
+
+É ESSE 
+ROLE QUE UTILIZAMOS..
+
+
+
+
+
+
+
+
+
+MAS SE NAVEGAMOS ATÉ ""ACCOUNT ADMIN"",
+
+
+
+
+ALGUMAS OPTIONS ADICIONAIS FICAM DISPONÍVEIS 
+
+
+NO NOSSO DASHBOARD, NA SIDEBAR...
+
+
+
+
+
+mas aparentemente a interface mudou um pouco...
+
+
+
+
+
+
+agora o default é o ACCOUNTADMIN, SE VC 
+
+TEM PERMISSAO PARA ISSO...
+
+
+
+
+E QUASE TODAS AS RIBBONS SAO VISÍVEIS,
+
+APESAR DE 
+
+
+ALGUMAS COISAS NAO APARECEREM (
+
+    as warehouses criadas pelo ACCOUNTADMIN
+    nao podem ser visualizadas 
+
+    pelo sysadmin, por exemplo...
+)
+
+
+
+
+--> NOTIFICATIONS TAMBÉM SAO OUTRA COISA...
+
+
+
+
+
+SUPOSTAMENTE, O ACCOUNTADMIN TERIA 
+
+NOTIFICATIONS, E O SYSADMIN NAO...
+
+
+
+
+
+-> NO CASO DO PROFESSOR, ELE FICOU SEM AS RIBBONS DE "ACCOUNTS" 
+
+
+E "NOTIFICATIONS"....
+
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA DEVEMOS COMPREENDER ESSES ROLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS BASICAMENTE 5 PREDEFINED/SYSTEM DEFINED ROLES 
+
+
+
+
+
+NAS NOSSAS CONTAS, NO MOMENTO DE SUA CRIACAO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SAO AQUELES 5:
+
+
+
+
+
+
+
+
+
+
+                        ACCOUNTADMIN 
+                       ^           ^
+                SECURITYADMIN      SYSADMIN
+                       ^
+                    USERADMIN 
+                       ^
+                       I
+                       ----PUBLIC
+
+
+
+
+
+
+
+
+PARA ENTENDER ESSES ROLES,
+
+É BOM VER ESSE GRÁFICO....
+
+
+
+
+ISSO PQ 
+
+OS ___DIREITOS__ DE CADA ROLE 
+
+
+SAO -__ HERDADOS __ PELOS OUTROS ROLES...
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE EXISTE UMA HIERARQUIA DE ROLES...
+
+
+
+
+
+
+
+
+
+
+
+ROLE MAIS TOP DE TODOS --> ACCOUNTADMIN....
+
+
+
+
+
+
+
+
+ 
+ACCOUNTADMIN -->  ESSE ROLE COMBINA OS ROLES DE SECURITYADMIN (useradmin + public) E SYSADMIN (standalone)
+
+
+
+
+
+
+
+
+
+--> E, ABAIXO DO SECURITYADMIN,
+
+
+
+
+HÁ O USERADMIN...
+
+
+
+
+
+
+
+QUER DIZER QUE __ O SECURITY __ ADMIN __ CONSEGUE 
+
+
+
+
+FAZER __ TUDO __ QUE O __ USERADMIN 
+
+FAZ,
+
+
+ISSO E MAIS ALGUMAS OUTRAS COISAS...
+
+
+
+
+
+
+
+
+
+
+
+--> O ROLE MAIS BAIXO DE TODOS É 
+O 
+
+""PUBLIC""...
+
+
+
+
+
+
+
+
+
+--> OK... ESSES SAO OS 5 PREDEFINED/SYSTEM DEFINED ROLES,
+
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+--> ENTRETANTO, É CLARO QUE ESSES ROLES 
+
+
+___ PODEM SER MODIFICADOS,
+
+
+ALÉM DE TAMBÉM SER POSSÍVEL 
+
+
+CRIAR CUSTOM ROLES,
+
+
+
+COM BASE NESSES ROLES EXISTENTES...
+
+
+
+
+
+
+
+
+
+
+--> QUANTO AO TÓPICO DOS """CUSTOM ROLES""",
+
+ROLES ADICIONAIS QUE VC PODE CRIAR,
+
+
+
+
+__ É CONSIDERADA UMA BEST-PRACTICE (rECOMENDADO)
+
+
+
+__ ASSIGNÁ-LOS 
+
+
+AO SYSADMIN (e a nenhum outro dos predefined roles)...
+
+
+
+
+
+
+
+
+
+--> ESSA É A BEST-PRACTICE...
+
+
+
+
+
+
+
+
+--> ISSO PQ, DENTRO 
+
+DO SYSADMIN,
+
+
+
+PODEMOS _ CRIAR _ TAMBÉM UMA 
+
+
+OUTRA HIERARQUIA 
+
+DE ROLES...
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+                        ACCOUNTADMIN 
+                       ^           ^
+                SECURITYADMIN      SYSADMIN <-----------------
+                       ^               ^                     I
+                    USERADMIN           CUSTOM ROLE 1        I
+                       ^                                     I 
+                       I                                     I
+                       ----PUBLIC                           CUSTOM ROLE 2
+                                                             ^
+                                                             I
+                                                            CUSTOM ROLE 3          
+
+
+
+
+--> OK... QUER DIZER QUE TAMBÉM PODEMOS CRIAR 
+
+
+
+
+UMA HIERARQUIA DE ROLES, 
+
+DENTRO DO CONTEXTO DESSE SYSADMIN...
+
+
+
+
+
+
+
+
+NESSE EXEMPLO,
+
+O 
+
+
+CUSTOM ROLE 1 É STANDALONE, POSSUI ALGUMAS PERMISSOES....
+
+
+
+
+
+JÁ O CUSTOM ROLE 2 __ VAI TER TODAS AS 
+PERMISSIONS DO CUSTO ROLE 3 (inheritance),
+
+
+E MAIS ALGUMAS QUE ELE TERÁ TAMBÉM...
+
+
+
+
+
+
+
+POR FIM, O SYSADMIN TERÁ 
+
+
+TODAS AS PERMISSIONS DOS CUSTOM ROLES 1 E 2 (2 + 3),
+
+E MAIS ALGUMAS PERMISSIONS PRÓPRIAS DELE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> OK... MAIS TARDE NO CURSO,
+
+
+TEREMOS MAIS DETALHE SOBRE 
+
+O ACCESS CONTROL MANAGEMENT E O ROLE MANAGEMENT...
+
+
+
+
+
+
+
+
+
+
+POR ENQUANTO, 
+
+VEREMOS O QUE 
+CADA 1 DESSES ROLES CONSEGUE FAZER,
+
+
+
+
+E O QUE CADA 1 DESSES ROLES SIGNIFICA,
+
+EM 1 HIGH LEVEL...
+
+
+
+
+
+
+
+TEMOS:
+
+
+
+1) ACCOUNTADMIN...
+
+--> É O __TOP LEVEL __ ROLE 
+
+EM 1 SISTEMA SNOWFLAKE...
+
+
+
+
+--> ESTE ROLE 
+
+COMBINA TODOS OS PRIVILEGES DOS ROLES ""SYSADMIN""
+
+E ""SECURITYADMIN"", ALÉM DE TER ALGUNS PRIVILEGES PRÓPRIOS...
+
+
+
+--> ESTE ROLE DEVE SER ASSIGNADO APENAS A UMA QUANTIDADE 
+LIMITADA 
+DE USERS...
+
+
+
+
+
+
+
+
+2) SECURITYADMIN....
+
+
+-->  O SECURITYADMIN 
+
+TEM TODOS OS PRIVILEGES 
+DO ROLE 
+""SECURITYADMIN""...
+
+
+
+--> ESTE ROLE PODE ___ MANAGEAR__
+
+USERS E ROLES...
+
+
+
+--> ESTE ROLE TAMBÉM PODE ___ 
+
+MANAGEAR 
+
+"""OBJECT GRANTS"""" GLOBALMENTE... (ou seja,
+
+confere acesso a database objects, como SCHEMAS, UDFS, TABLES E VIEWS)...
+
+
+
+
+
+
+
+
+
+
+
+3) SYSADMIN 
+
+
+--> tem os privileges 
+
+DE __CRIACAO __ DE WAREHOUSES 
+
+E DATABASES (e mais alguns objects, como schemas, dentro dessas databases)...
+
+
+
+--> OS CUSTOM ROLES GERALMENTE 
+
+SAO ASSIGNADOS A ELE,
+
+ E A NENHUM OUTRO ROLE...
+
+
+
+
+
+
+
+4) USERADMIN 
+
+
+
+--> É __ O ROLE __ DEDICADO 
+
+
+UNICAMENTE 
+
+AO __ MANAGEMENT 
+
+DE __ USERS _ E ROLES...
+
+
+
+-> NAO DEVE SER USADO PARA MAIS NADA ALÉM DISSO....
+
+
+
+
+--> OBVIAMENTE, PODE CRIAR USERS E ROLES...
+
+
+
+
+
+
+
+
+
+5) PUBLIC ROLE...
+
+
+
+---> É UM ROLE GRANTED AUTOMATICAMENTE, PARA 
+CADA USER...
+
+
+--> QUANDO CRIAMOS 1 USER, ELE TEM ESSE ROLE ASSIGNADO 
+
+AUTOMATICAMENTE...
+
+--> PODE CRIAR PRÓPRIOS OBJECTS (schemas,
+databases, tables, etc),
+
+COMO TODOS OS OUTROS ROLES (todos roles podem 
+fazer isso)
+
+
+
+
+
+--> OBJECTS --> ESSES OBJECTS SAO ENTAO DISPONÍVEIS 
+
+
+A ___ TODOS OUTROS __ USERS,
+
+
+A TODOS OUTROS ROLES 
+
+
+(COMO O NOME SUGERE,
+
+
+
+TUDO CRIADO PELO ROLE ""PUBLIC""
+
+FICA __ PUBLICAMENTE VISÍVEL...
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSE É O HIGH LEVEL 
+
+OVERVIEW 
+
+DOS DIFERENTES ROLES SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
