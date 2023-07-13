@@ -1,0 +1,1269 @@
+
+
+
+
+
+É IMPORTANTE, SE ESTAMOS TRABALHANDO 
+
+COM O SNOWFLAKE,
+
+ENTENDER O PRICING....
+
+
+
+
+
+
+
+
+
+
+
+-> VEREMOS O PRICING DAS DIFERENTES EDITIONS..
+
+
+
+
+
+
+
+
+
+
+
+NO CASO DO SNOWFLAKE,
+
+APRENDEMOS 
+
+QUE 
+ELE 
+
+
+
+
+FEZ __ O DECOUPLING 
+
+
+__ DO COMPUTE__ EM RELACAO À STORAGE....
+
+
+
+
+
+
+
+
+
+
+
+
+FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+
+COMPUTE []         STORAGE []
+
+
+
+
+
+
+
+
+
+
+ E ISSO, ESSA DIVISAO ENTRE COMPUTE E STORAGE,
+
+
+
+ TAMBÉM ACONTECE NO PRICING...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CARACTERÍSTICAS DO PRICING:
+
+
+
+1) PAY APENAS O QUE VC USA/PRECISA 
+
+
+
+2) QUANTIDADES DE ARMAZENAMENTO
+ESCALÁVEIS, A UM PRECO CLOUD ACESSÍVEL...
+
+
+
+
+3) PRECO DEPENDENDO DA REGIAO 
+
+
+
+4) COMPUTE E STORAGE COSTS 
+
+SAO DECOUPLED, SEPARADOS...
+
+
+
+
+
+
+
+
+
+
+
+OK.... EM GERAL, PAGAMOS APENAS O QUE 
+
+PRECISAMOS... ISSO NOS DÁ UM 
+SCALABLE 
+
+AMOUNT OF STORAGE,
+
+
+
+A UM PRECO RAZOÁVEL...
+
+
+
+
+
+
+
+
+O PRICING DEPENDE DA REGIAO E DA PLATFORM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA DEVEMOS VER MAIS DE PERTO 
+ESSES 2 COMPONENTS...
+
+
+
+
+
+
+
+
+COMPONENTS:
+
+
+
+
+
+1) STORAGE 
+
+
+
+
+2) COMPUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) STORAGE 
+
+
+--> A STORAGE 
+
+DO SNOWFLAKE É BASEADA 
+EM CLOUD PROVIDERS... UTILIZA-SE DE 
+
+CLOUD PROVIDERS...
+
+
+
+
+a) FICAMOS COM __MONTHLY STORAGE FEES,
+BASICAMENTE AS FEES DO S3 E SERVICES 
+CLOUD DOS OUTROS PROVIDERS (gcp e azure)
+
+
+
+
+b) O PRICING DA STORAGE É BASEADO 
+
+NA AVERAGE STORAGE USADA POR MES, NESSES 
+SERVICES...
+
+
+
+
+c) O __ CUSTO___ DA STORAGE É 
+
+CALCULADO __ DEPOIS __ DA COMPRESSAO 
+
+DOS DADOS...
+
+
+
+
+
+d) utiliza cloud providers...
+
+
+
+
+
+
+
+--> É COBRADA 1 MONTHLY STORAGE FEE,
+
+QUE É 
+
+BASEADA NA AVERAGE STORAGE USADA POR MES...
+
+
+
+
+
+
+--> 
+
+O 
+CUSTO DA STORAGE É CALCULADO 
+
+
+__dEPOIS__ DA HYBRID COLUMNAR COMPRESSION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, TEMOS O SEGUNDO COMPONENTE,
+
+COMPUTE...
+
+
+
+
+
+
+
+
+
+
+
+
+2) COMPUTE ...
+
+
+a) SOMOS COBRADOS __ APENAS _ 
+
+PELAS ACTIVE WAREHOUSES, POR HORA...
+
+
+
+b) SOMOS COBRADOS A DEPENDER 
+
+DO __ TAMANHO DA DATA WAREHOUSE...
+
+
+
+c) SOMOS ""BILLED BY SECOND""",
+
+sendo o valor mínimo 1 minuto (se 
+a warehouse ficar ligada por apenas 3 segundos,
+será cobrado 1 minuto, no mínimo)
+
+
+
+
+d) SOMOS COBRADOS _ POR MEIO 
+
+
+DE SNOWFLAKE CREDITS...
+
+
+
+
+
+
+
+
+
+
+
+
+-----> OK... ALÉM DISSO,
+
+
+
+É IMPORTANTE DESTACAR QUE 
+
+
+
+O COMPONENTE 'COMPUTE"
+
+TAMBÉM 
+
+
+VARIA O PRECO A DEPENDER DO 
+
+TAMANHO DA WAREHOUSE....
+
+
+
+
+
+
+
+
+
+--> MAS, EM GERAL,
+
+É IMPORTANTE COMPREENDER QUE 
+
+NAO 
+
+SOMOS COBRADOS EM DOLARES/EUROS 
+DIRETAMENTE,
+
+
+
+E SIM 
+
+SOMOS 
+
+
+COBRADOS 
+
+
+EM 
+
+SNOWFLAKE CREDITS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS CONVERTER 
+
+NOSSO DINHEIRO EM SNOWFLAKE CREDITS,
+
+QUE SAO CONSUMIDOS A DEPENDER DO QUE 
+
+ESTAMOS USANDO...
+
+
+
+-------------------------------------------
+
+
+
+
+
+E É NESSE ASPECTO, NA COMPRA DE 
+
+SNOWFLAKE CREDITS,
+
+QUE 
+
+
+AS __ DIFERENTES EDITIONS 
+
+
+
+DIFEREM MUITO...
+
+
+
+
+
+
+
+
+OS PRECOS SAO ESTES:
+
+
+
+
+
+
+1) STANDARD EDITION --> 2 DOLARES POR CREDITO 
+
+
+
+2) ENTERPRISE EDITION --> 3 DOLARES POR CREDITO 
+
+
+
+
+3) BUSINESS CRITICAL --> 4 DOLARES POR CREDITO...
+
+
+
+
+4) VIRTUAL PRIVATE --> TEMOS DE CONTATAR 
+                            O SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA CADA 
+
+EDITION, TEMOS DIFERENTES PRECOS 
+
+PARA OS CREDITS...
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+E ESSES COSTS PODEM 
+
+
+__VARIAR__ 
+
+
+
+
+
+DE ACORDO COM A REGION 
+
+QUE ESCOLHEMOS, E TAMBÉM 
+
+A PLATAFORMA (AWS, GCP, AZURE)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- POR EXEMPLO,
+
+
+
+EU (FRANKFURT),
+
+
+PLATFORM AWS... ->  PRECOS 
+
+
+
+SAO 
+
+
+2.70/4/5.40
+
+
+
+
+
+
+
+
+
+------> E É EXATAMENTE AÍ 
+
+
+QUE __ OS TAMANHOS 
+
+DAS WAREHOUSES 
+
+ENTRAM 
+
+EM JOGO....
+
+
+
+
+
+
+
+
+
+
+-> E É AÍ QUE O __ TAMANHO 
+
+DAS WAREHOUSES 
+
+ENTRA EM JOGO....
+
+
+
+
+
+
+
+APRENDEMOS QUE 
+
+
+TEMOS DIFERENTES SIZES...
+
+
+
+
+
+
+
+
+XS []
+
+
+S [] [] 
+
+
+M [] [] [] [] 
+
+
+L [] [] [] [] [] [] [] []
+
+
+XL [] [] [] [] [] [] [] [] [] []
+         [] [] [] [] [] []
+
+
+
+
+
+
+
+
+
+
+
+
+--> pagamos 1 CREDIT POR 
+
+CADA WAREHOUSE... (cada cubo)...
+
+
+
+
+
+1 CREDIT POR HORA...
+
+
+
+
+
+
+
+
+
+--> MAS SE TEMOS WAREHOUSES MAIS LARGAS,
+
+
+A CONSUMPTION DE CREDIT POR TEMPO 
+
+TAMBÉM AUMENTA...
+
+
+
+
+
+
+
+
+
+
+
+
+MAS TAMBÉM DEVEMOS TER EM MENTE QUE 
+
+
+O PROCESSAMENTO 
+
+DE NOSSAS QUERIES 
+FICA 
+
+MUITO MAIS RÁPIDO...
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE SE DUPLICAMOS O 
+
+TAMANHO 
+
+DE NOSSA 
+
+WAREHOUSE,
+
+
+
+
+__ O PROCESSING TIME __ TAMBÉM 
+
+É CORTADO PELA METADE...
+
+
+
+
+
+
+
+
+
+
+MAS É CLARO QUE AINDA TEMOS QUE 
+
+
+TER CERTEZA DO TIPO DE 
+
+WAREHOUSE QUE VAMOS ESCOLHER...
+
+
+
+
+
+
+
+
+
+
+ESCOLHER O TAMANHO APROPRIADO DE NOSSA 
+
+WAREHOUSE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EXEMPLO: 
+
+
+
+
+SE TEMOS 1 COMPLEXIDADE EXTREMAMENTE 
+
+BÁSICA NAS NOSSAS QUERIES 
+
+
+E AO MESMO TEMPO TEMOS 
+
+
+1 WAREHOUSE EXTREMAMENTE LARGA,
+
+
+
+
+
+ISSO VAI FAZER COM QUE OS COSTS 
+
+SEJAM
+
+MT ALTOS POR NADA,
+
+
+
+
+
+PQ _ APESAR _ DO PROCESSAMENTO DE QUERIES 
+
+
+
+
+
+SER MT RAPIDO,
+
+
+TODAS AS WAREHOUSES VAO FICAR ATIVAS 
+
+AO MESMO TEMPO,
+
+
+GASTANDO UM MONTE DE CREDITS POR HORA...
+
+
+(mesmo nao estando sempre executando 
+
+queries)
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE AINDA TEMOS AQUELA FEATURE DE 
+
+AUTO-SUSPEND,
+QUE SUSPENDE 
+
+A WAREHOUSE 
+
+DEPOIS DE 10 MINUTOS...
+
+
+
+
+-> MAS TEMOS QUE ESCOLHER 
+
+
+O TAMANHO DE NOSSO WAREHOUSE 
+
+
+CONSIDERANDO A COMPLEXIDADE 
+
+
+DE NOSSAS QUERIES E O WORKLOAD (QUANTIDADE 
+DE QUERIES)....
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+OK... ISSO TUDO ERA SOBRE 
+
+O ASPECTO ""COMPUTE"" 
+
+
+DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+TEMOS TAMBÉM O ASPECTO 2,
+
+DA __ STORAGE...
+
+
+
+
+
+
+
+
+
+
+2) STORAGE 
+
+
+NA STORAGE, PODEMOS ESCOLHER ENTRE 
+2 DIFERENTES OPTIONS...
+
+
+
+
+
+option a) ESCOLHEMOS 
+
+""ON DEMAND STORAGE"" ---> COM ISSO,
+
+PAGAMOS 
+
+__APENAS_ O QUE UTILIZAMOS....
+
+
+
+
+
+
+
+
+
+
+b) ESCOLHEMOS ""CAPACITY STORAGE"" --> 
+
+ESTIPULAMOS QUANTO QUEREMOS USAR... PAGAMOS 
+UP-FRONT,
+PARA 
+
+1 CAPACIDADE PRÉ-DEFINIDA....
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE OS 2 NEGÓCIOS POSSUEM PRICINGS 
+
+DISTINTOS...
+
+
+
+
+
+
+
+
+
+ON DEMAND STORAGE:
+
+
+PRICING --> 40 DOLARES POR TERABYTE 
+
+
+
+
+
+
+
+
+
+CAPACITY STORAGE:
+
+
+
+PRICING --> 23 DOLARES POR TERABYTE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E É CLARO QUE OS PRECOS TAMBÉM VARIAM 
+
+A DEPENDER 
+
+
+DA REGION E PLATFORM... (
+
+
+    no aws,
+
+    frankfurt,
+    pagamos 
+
+
+    esses precos....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+E, PARA_ ENTENDER ESSE STORAGE PRICE 
+
+
+E
+ 
+
+
+
+
+A DIFERENCA 
+
+
+
+ENTRE O ON DEMAND 
+
+E O CAPACITY STORAGE,
+
+IMAGINE ESTE EXEMPLO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IMAGINE QUE ESTIMEMOS QUE 
+
+
+
+PRECISAMOS DE 1TB DE STORAGE...
+
+
+
+
+
+
+
+
+
+-->  OK.. AÍ QUEREMOS 
+
+SABER QUAL A MANEIRA DE 
+
+ESCOLHER ENTRE ESSAS 2 OPTIONS...
+
+
+
+
+
+
+É CLARO QUE 
+
+TUDO 
+
+DEPENDE 
+
+
+DA 
+
+ACTUAL 
+
+
+USAGE DA NOSSA COMPANHIA..
+
+
+
+
+
+
+
+
+
+
+
+SCENARIO 1) 
+
+
+USAMOS BEM MENOS DO QUE 
+
+__ A STORAGE QUE ESTIPULAMOS/DISSEMOS QUE 
+
+USARÍAMOS...
+
+
+
+
+
+
+EX: GASTEI SÓ 100GB, DE 1 TERABYTE....
+
+
+
+PRECO DO MODELO ON DEMAND --> 0.1TB x 40DOL = 4 DOLARES...
+
+
+
+PRECO DO MODELO CAPACITY --> 1TB (TUDO) x 23 = 23 DOLARES...
+
+
+
+
+
+
+
+
+
+
+OU SEJA, 
+
+
+
+SE NAO UTILIZARMOS TODA A CAPACIDADE 
+
+
+QUE ""COMPRAMOS"", NO CAPACITY STORAGE,
+
+
+
+FICAMOS COM 1 PRECO BEM MAIS CARO (
+    PQ PAGAMOS PELO QUE N USAMOS...
+)
+
+
+
+
+
+
+
+
+OK... MAS AGORA DIGAMOS QUE USAMOS 
+EXATAMENTE 1TB...
+
+
+
+
+
+
+
+PRECO DO ON-DEMAND:
+
+        1TB x 40 = 40 DOLARES....
+
+    
+        1TB x 23 = 23 DOLARES...
+
+
+
+
+
+
+
+
+
+OK... QUER DIZER QUE PRECISAMOS 
+
+PENSAR MT,
+
+
+
+PONDERAR 
+
+SE PODEMOS ESTIMAR O QUANTO VAMOS USAR DE STORAGE...
+
+
+
+
+E SE VAMOS REALMENTE USAR TUDO...
+
+
+
+
+
+
+
+SCENARIO 3:
+
+
+
+    0.8TB USADOS...
+
+
+
+
+
+    0.8TB X 40 = 32 DOLARES 
+
+
+
+    1 X 23 = 23 DOLARES
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+
+
+a pergunta é QUAL USAR..
+
+
+
+
+
+
+
+
+
+
+NA OPINIAO DO PROFESSOR,
+
+
+
+SE VC N TIVER CERTEZA SOBRE A SUA USAGE,
+
+
+SOBRE O QUANTO VAI USAR,
+
+
+
+VC 
+
+DEVE 
+
+COMECAR 
+
+
+COM O MODELO __ON DEMAND STORAGE__.....
+
+
+
+
+
+
+
+
+
+
+ASSIM QUE VC TIVER CERTEZA DE SUA USAGE,
+
+DEPOIS DE 1 OU 2 MESES,
+
+VC PODE USAR 
+
+
+O CAPACITY STORAGE....
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, SABEMOS MAIS O PRICING MODEL 
+
+DO SNOWFLAKE....
+
+
+
+
+
+
+
+
+
+
+AGORA QUE APRENDEMOS MAIS SOBRE ISSO,
+
+DEVEMOS 
+
+
+VER COMO PODEMOS, NA NOSSA CONTA SNOWFLAKE,
+
+
+CHECAR O NOSSO CONSUMO DE CREDITOS...
