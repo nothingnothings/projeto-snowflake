@@ -1,0 +1,1512 @@
+
+
+
+
+
+
+
+
+
+AGORA VEREMOS COMO PODEMOS 
+
+FAZER LOAD 
+
+DE DATA,
+
+
+DE NOSSO EXTERNAL STAGE,
+
+
+
+
+
+A NOSSA DATABASE SNOWFLAKE....
+
+
+
+
+
+
+--> O PROFESSOR PROVIDENCIOU 
+
+
+
+1 ARQUIVO CSV,
+
+
+
+
+
+TIRADO DAQUELE BUCKET DA S3...
+
+
+
+
+
+
+
+
+
+
+-> QUEREMOS CARREGAR A DATA 
+
+DE LÁ...
+
+
+
+
+
+
+--> CSV FILE --> 
+
+
+
+
+"""COMMA-SEPARATED FILE,
+WHICH CONTAINS SOME DATA"""..
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA ETAPA,
+
+É CLARO,
+
+É SETTAR 
+
+
+
+
+A _ TABLE __  
+
+
+E A 
+
+
+TABLE STRUCTURE,
+
+
+LÁ NA CONTA SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICA TIPO ASSIM:
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.ORDERS;
+
+
+
+
+
+
+
+
+
+ISSO VAI CRIAR 
+
+A NOSSA TABLE,
+
+E AÍ PODEREMOS VER QUANTOS 
+
+ROWS TEMOS LÁ 
+
+DENTRO (0)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO,
+
+TEMOS A PARTE DE 
+
+
+
+""COPY INTO""...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO HAVIA FICADO ASSIM:
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.ORDERS;
+
+
+--* FIRST COPY COMMAND - SNOWFLAKE
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @aws_stage
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ENTRETANTO AO EXECUTARMOS 
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @aws_stage
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+RECEBEMOS UM ___ERROR_:
+
+
+
+
+
+
+Number of columns in file
+ (11) does not match that of 
+ the corresponding table (6),
+  use file format option 
+  error_on_column_count_mismatch=false
+   to ignore this error...
+
+
+
+
+
+
+
+
+
+MAS PQ ISSO ACONTECEU?
+
+
+
+
+
+
+
+ACONTECEU PQ 
+
+
+__TEMOS __3 DIFERENTES 
+
+
+ARQUIVOS, DENTRO DO NOSSO BUCKET...
+
+
+
+
+
+
+
+E APENAS ALGUNS DELES POSSUEM O FORMATO 
+
+ADEQUADO PARA COPIAR 
+
+PARA 
+
+DENTRO 
+
+DESSA TABLE DE "ORDERS"...
+
+
+
+"loan_payments_data"
+
+NAO É UM DESSES ARQUIVOS...
+
+
+
+
+
+-- os arquivos sao:
+
+
+
+
+
+loan_payments_data
+
+OrderDetails
+
+
+sampledata 
+
+
+
+
+
+
+
+
+
+ok....
+
+
+
+E EU MELHOREI 1 POUCO O CÓDIGO,
+
+CRIEI O STAGE DENTRO 
+
+DA DATABASE E SCHEMA ADEQUADOS,
+E FICOU ASSIM:
+
+
+
+
+
+
+
+USE DATABASE OUR_FIRST_DB;
+
+CREATE OR REPLACE STAGE OUR_FIRST_DB.PUBLIC.aws_stage
+  url='s3://bucketsnowflakes3';
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.ORDERS;
+
+LIST @aws_stage;
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @aws_stage
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... MAS AINDA RECEBEMOS UM ERROR...
+
+
+
+
+
+
+
+
+
+
+AGORA NA FILE  sampledata..
+
+
+
+
+
+
+
+
+
+
+
+
+-> PARA SELECIONAR APENAS
+
+1 FILE 
+
+DAQUELAS 3,
+
+podemos escrever assim:
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ISSO __FUNCIONOU___....
+
+
+
+
+
+
+
+
+com isso, CONSEGUIMOS
+
+
+CARREGAR
+
+
+__ APENAS __AQUELE ARQUIVO,
+
+EM VEZ DOS 3 ARQUIVOS...
+
+
+
+
+
+
+
+
+
+
+
+provavelmente é 
+possível 
+
+
+__TRANSFORMAR AQUELA DATA TODA,
+
+
+FAZER COM QUE 
+
+
+ENTRE EM 1 PADRAO QUE 
+CONSIGA 
+
+SER ENCAIXADO 
+
+
+
+DENTRO DESSA TABLE DE "ORDERS"
+
+geral...
+
+
+
+
+
+mas como fazer isso, isso eu ainda nao sei...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR MENCIONA ISSO, 
+
+
+
+QUE O NÚMERO DE COLUNAS 
+
+
+NO CSV DEVE __ MATCHEAR _ O NÚMERO 
+
+DE COLUNAS NA TABLE... TAMBÉM 
+
+DEVEM TER __ MATCHING _ DATA TYPES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CASO CONTRÁRIO, O LOAD NAO FUNCIONARÁ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+
+
+MAS COMO PODEMOS CARREGAR ESSA DATA....
+
+
+
+
+
+
+
+
+
+PRECISAMOS DO ___COMANDO "COPY INTO"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO NOME_DA_DB.NOME_DO_SCHEMA.NOME_DA_TABLE
+    FROM @nome_do_stage
+    file_format=(
+        type=csv,
+        field_delimiter=',',
+        skip_header=1
+    )
+
+
+
+
+
+
+
+É SEMPRE MELHOR USARMOS a
+
+""FULLY QUALIFIED TABLE NAME"",
+
+para evitar imprevistos....
+
+
+
+
+
+
+
+
+--> A MESMA COISA SE APLICA PARA NOSSO 
+
+
+__STAGE OBJECT___...
+
+
+
+
+
+
+-> DEVEMOS PREFERIR 
+
+PELA ESCRITA COMPLETA 
+
+
+DO STAGE...
+
+
+
+
+
+
+
+
+COMO ESCREVEMOS 
+
+A VERSAO COMPLETA 
+
+
+DO STAGE?
+
+
+
+
+
+
+É ASSIM:
+
+
+
+
+
+
+FROM OUR_FIRST_DB.PUBLIC.ORDERS.aws_stage
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+-- COM CONTEXTO (basta escrever o @nome_do_stage): 
+    -- FROM @aws_stage/OrderDetails.csv
+-- SEM CONTEXTO (preferível, caminho completo, com db>schema>object):
+    FROM OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+
+
+USE DATABASE OUR_FIRST_DB;
+
+CREATE OR REPLACE STAGE OUR_FIRST_DB.PUBLIC.aws_stage
+  url='s3://bucketsnowflakes3';
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.ORDERS;
+
+LIST @aws_stage;
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+-- COM CONTEXTO (basta escrever o @nome_do_stage): 
+    -- FROM @aws_stage/OrderDetails.csv
+-- SEM CONTEXTO (preferível, caminho completo, com db>schema>object):
+    FROM OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+MAS AQUI TEMOS UM ___ERRO__....
+
+
+
+
+
+
+
+
+SE VAMOS __ MENCIONAR _O NOME DE UM __sTAGE,
+
+
+
+SEMPRE DEVEMOS ADICIONAR "@"
+
+AO INÍCIO,
+
+
+
+MESMO NA FORMA EXPANDIDA/FULLY QUALIFIED...
+
+
+
+
+
+
+QUER DIZER QUE FICA ASSIM:
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+-- COM CONTEXTO (basta escrever o @nome_do_stage): 
+    -- FROM @aws_stage/OrderDetails.csv
+-- SEM CONTEXTO (preferível, caminho completo, com @db>schema>stage_object):
+    FROM @OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+A OPCAO 
+
+
+"""file_format"" É ADICIONADA SE TEMOS ALGUNS VALUES 
+
+QUE SAO DIFERENTES DOS DEFAULT VALUES (
+
+)
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+PODEMOS COLOCAR 
+
+
+
+FILE FORMATS DIFERENTES 
+
+DE CSV....
+
+
+
+
+
+
+MAS FALAREMOS MAIS SOBRE 
+
+ISSO MAIS TARDE...
+
+
+
+
+
+
+
+
+MAS O PROFESSOR QUER DEMONSTRAR 
+
+
+O FUNCIONAMENTO COM CSVS,
+
+AGORA...
+
+
+
+
+
+
+
+
+
+-> SKIPPAMOS O HEADER, TAMBÉM --> 
+
+
+COM ISSO,
+
+SKIPPAMOS O PRIMEIRO ROW COMO DATA...
+
+
+
+
+
+
+-- PQ O PRIMEIRO ROW É AS COLUNAS, 
+
+ESSENCIALMENTE....
+
+
+
+
+
+
+-> RODAMOS ISSO AÍ..
+
+
+
+
+
+
+
+
+
+--> GANHAMOS UM ERROR...
+
+
+"""NO WAREHOUSE SELECTED""...
+
+
+
+
+
+TEMOS QUE SELECIONAR 1 WAREHOUSE 
+
+PARA RODAR ESSE COMMAND....
+
+
+
+
+
+
+
+
+--> MAS SE RODARMOS ISSO AÍ,
+
+GANHAREMOS 
+
+OUTRO 
+
+ERRO...
+
+
+
+"FILE LOAN_PAYMENT CANNOT BE LOADED""
+
+
+(mesmo erro que eu tive,
+
+ANTERIORMENTE)...
+
+
+
+
+
+
+O CÓDIGO DO PROFESSOR ESTÁ COMO O MEU,
+
+
+MAS SEM ''/OrderDetails.csv''....
+
+
+
+
+
+
+
+
+
+
+
+ISSO ACONTECEU PQ 
+
+O NÚMERO DE COLUMNS NA FILE 
+
+
+
+
+
+NAO CORRESPONDE AO NÚMERO 
+
+DE COLUMNS NA NOSSA TABLE...
+
+
+
+
+
+
+
+
+PQ NAQUELE BUCKET HÁ MÚLTIPLAS FILES...
+
+
+
+
+
+
+
+
+--> LOAN_PAYMENTS_DATA --> 
+
+
+SE EXECUTAMOS O COPY_INTO
+
+
+
+SEM ESPECIFICAR 1 ARQUIVO EM ESPECIAL,
+
+
+O SNOWFLAKE TENTA CARREGAR 
+
+TODAS AS FILES PARA DENTRO 
+
+DA TABLE...
+
+
+
+O QUE FAZ SENTIDO,
+
+
+MAS QUE NO NOSSO CASO NAO 
+
+FAZ SENTIDO,
+
+PQ 
+QUEREMOS 
+
+SELECIONAR 
+
+
+
+APENAS 
+
+
+A FILE 
+
+
+DE 
+
+
+OrderDetails...
+
+
+
+
+
+
+
+
+
+
+
+-> PARA SELECIONAR APENAS 
+ESSA FILE,
+
+
+PODEMOS 
+ESCREVER 
+
+OU 
+
+
+"/OrderDetails.csv",
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+    FROM @OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+OU, ENTAO, ALTERNATIVAMENTE,
+
+
+
+PODEMOS 
+
+
+USAR 1 OPTION DE 
+
+"files=",
+
+PARA ENTAO 
+
+
+
+DEFINIR 
+
+1 LISTA DE FILES 
+
+QUE QUEREMOS QUE 
+
+
+SEJAM 
+
+
+
+EXTRAÍDAS...
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+-- COM CONTEXTO (basta escrever o @nome_do_stage): 
+    -- FROM @aws_stage/OrderDetails.csv
+-- SEM CONTEXTO (preferível, caminho completo, com @db>schema>stage_object):
+    -- FROM @OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    -- file_format = (
+    --     type=csv
+    --     field_delimiter=','
+    --     skip_header=1
+    -- );
+
+    -- *  SINTAXE ALTERNATIVA (definindo 1 lista de files a serem fetcheadas, em vez de 1 só):
+
+    FROM @OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+COM ISSO, PODEMOS ESPECIFICAR A EXATA FILE QUE 
+
+QUEREMOS LOAD....
+
+
+
+
+
+--> QUEREMOS CARREGAR APENAS 
+ESSA ÚNICA FILE,
+
+PARA DENTRO DA TABLE 
+
+
+DE ORDERS...
+
+
+
+
+
+-> ok... executamos esse comando....
+
+
+
+
+
+
+
+
+-> e tudo funciona...
+
+
+
+
+
+1500 rows foram parseados,
+
+e todos eles foram LOADED...
+
+
+
+
+
+
+
+NÓS NAO FICAMOS COM QUAISQUER 
+
+ERRORS,
+
+E TUDO É LOADED...
+
+
+
+
+
+
+
+
+
+
+
+OK... FUNCIONOU.
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR TAMBÉM MENCIONA QUE 
+
+
+
+
+NÓS __ PODEMOS ATÉ MESMO USAR PATTERNS....
+
+
+
+
+-> PARA USAR PATTERNS,
+
+
+BASTA 
+
+
+
+escrever 
+
+"pattern= xxxxx" 
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @OUR_FIRST_DB.PUBLIC.aws_stage/OrderDetails.csv
+    file_format = (
+        type=csv
+        field_delimiter=','
+        skip_header=1
+    )
+    pattern='*.csv' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    COM ISSO, VAMOS SELECIONAR TODOS OS ARQUIVOS 
+
+    CSV DE NOSSO BUCKET,
+
+
+    MAS MAIS NADA DELE....
+
+
+
+
+
+
+
+
+PODEMOS USAR ESSES WILDCARDS PARA ESPECIFICAR
+
+
+PATTERNS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O SNOWFLAKE TAMBÉM TRABALHA COM METADATA,
+
+POR TRÁS DAS CENAS...
+
+
+
+
+
+QUER DIZER QUE ELE ___ JÁ SABE QUE A DATA DE 
+
+"OrderDetails"
+
+JÁ FOI CARREGADA PARA DENTRO DA TABLE DE 
+
+"ORDERS",
+
+
+E POR ISSO 
+
+
+ELE 
+
+DEIXA 
+
+DE REPETIR COMANDOS 
+
+DE "COPY INTO"
+
+
+
+USANDO ESSE MESMO ARQUIVO (pq a data acabaria 
+
+DUPLICADA)....
+
+
+
+
+
+
+MAIS TARDE NO CURSO, VEREMOS COMO PODEMOS MODIFICAR 
+
+ESSE COMPORTAMENTO, PARA FORCAR O COPY,
+
+
+SE QUISERMOS...
+
+
+
+
+
+
+
+
+
+
+MAS, EM GERAL, POR DEFAULT,
+
+ISSO É SUPER ESPERTO,
+
+E FAZ MT SENTIDO...
+
+
+
+
+
+
+
+
+TESTAMOS ISSO POR MEIO DO CREATE DA TABLE MAIS UMA VEZ,
+
+E AGORA 
+
+SOMOS CAPAZES 
+
+DE FAZER LOAD DAQUELA DATA MAIS UMA VEZ (
+    PQ AGORA A TABLE É COMPLETAMENTE 
+
+    FRESH...
+)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUANDO CARREGAMOS DATA,
+
+FREQUENTEMENTE VAMOS QUERER 
+
+"""TRANSFORM THE DATA""""...
+
+
+
+--> É PARTE DE NOSSA ESTRATÉGIA;
+
+
+É COMUM QUERERMOS LIMPAR A DATA,
+AJUSTAR 
+A DATA,
+
+
+E ENTAO APLICAR ALGUMAS DATA TRANSFORMATIONS...
+
+
+
+
+
+
+E ESSAS TRANSFORMACOES 
+
+
+SAO _ ALGO QUE  PODEMOS _ fAZER 
+
+
+JUNTO __ DO COMANDO _ DE COPY...
+
+
+
+
+
+
+
+--> E É ISSO QUE FAREMOS,
+ 
+
+ NA PRÓXIMA AULA....
+ 
+
+
+
+
+
