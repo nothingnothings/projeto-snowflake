@@ -1,0 +1,1298 @@
+
+
+
+
+
+
+AGORA VAMOS CRIAR NOSSO PRIMEIRO STAGE OBJECT (que 
+
+deve ser criado dentro de nossos SCHEMAS)...
+
+
+
+
+
+
+
+
+
+--> para isso, vamos CRIAR 1 NOVA WORKSHEET,
+
+
+QUE NOMEAREMOS DE 
+
+"EXAMPLE OF STAGE CREATION"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... NOS RESOURCES DESSA LECTURE,
+
+TEMOS O CÓDIGO USADO PARA CRIAR ESSE STAGE...
+
+
+
+
+
+
+--> podemos baixar, copiar e colar nessa worksheet...
+
+
+
+
+
+
+
+--> ANTES DE CRIARMOS O STAGE, O PROFESSOR QUER CRIAR 
+1 DATABASE,
+
+DE NOME 
+
+"MANAGE_DB"...
+
+
+
+
+
+POR ISSO ELE VAI ESCREVENDO ASSIM:
+
+
+
+
+
+
+
+CREATE OR REPLACE DATABASE MANAGE_DB;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+ELE CRIA 1 SCHEMA DENTRO DESSA DATABASE (ele nao PRECISA 
+
+trocar de contexto para essa database, pq 
+isso já é feito automaticamente, pelo snowflake)
+
+
+
+
+
+
+
+
+
+
+
+--> POR ISSO A SEGUNDA LINHA É ASSIM:
+
+
+
+
+
+
+
+-- DATABASE TO MANAGE STAGE OBJECTS, FILEFORMATS, ETC...
+
+CREATE OR REPLACE DATABASE MANAGE_DB;
+
+CREATE OR REPLACE SCHEMA external_stages;
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... ESSA SERÁ UMA DATABASE QUE VAI SEGURAR 
+
+ALGUNS DOS OBJECTS QUE CRIAREMOS...
+
+
+
+
+--> VAMOS A UTILIZAR PARA MANTER AS COISAS 1 POUCO 
+
+ORGANIZADAS...
+
+
+
+
+
+
+
+--> TUDO PARA QUE TODOS OS OBJECTS NAO FIQUEM 
+
+
+
+
+""SPREAD OUT"" AO LONGO 
+
+
+DE VÁRIAS DATABASES...
+
+
+
+TEREMOS ESSA CENTRAL 
+
+DATABASE,
+
+
+
+QUE VAI SEGURAR TODOS NOSSOS ADMINISTRATIVE OBJECTS 
+
+IMPORTANTES...
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+CERTO... ESSA É A PRIMEIRA ETAPA,
+
+
+A CRIACAO DESSA DATABASE...
+
+
+
+
+
+ISSO FEITO,
+
+O PROFESSOR 
+SETTA 1 SCHEMA...
+
+
+
+
+
+O SCHEMA FAZ "BREAK DOWN" DE NOSSA DATABASE,
+PARA A ORGANIZAR AINDA MAIS...
+
+
+
+
+
+
+
+
+
+ISSO FEITO, O PROFESSOR DIZ QUE 
+
+AGORA VAMOS CRIAR 
+
+NOSSO EXTERNAL STAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, O PROESSOR USA O COMANDO 
+
+
+
+
+
+
+
+
+CREATE OR REPLACE STAGE 
+
+
+
+
+
+
+
+
+
+
+
+-_> O IMPORTANTE É ""STAGE"" (OR REPLACE é opcional)...
+
+
+
+
+
+
+
+DEPOIS DISSO, O PROFESSOR USA 
+
+O 
+
+FULLY QUALIFIED NAME,
+
+
+INCLUINDO:
+
+
+1) DATABASE NAME 
+
+2) SCHEMA NAME
+
+3) NAME DO STAGE QUE QUEREMOS CRIAR...
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage;
+
+
+
+
+
+
+
+
+
+
+--> O NOME DO STAGE SERÁ "aws_stage",
+ 
+ no caso...
+
+
+
+
+
+
+
+
+ -> CERTO....
+
+
+
+
+
+
+
+
+
+ ISSO FEITO,
+  
+  PRECISAMOS ESPECIFICAR ALGUNS DETALHES SOBRE ESSE STAGE...
+
+
+
+
+
+
+
+  DENTRO DO STAGE OBJECT,
+
+  A PRIMEIRA COISA QUE PRECISAMOS FAZER É PROVIDENCIAR A URL...
+
+
+
+
+
+
+  -> URL --> É O LOCAL EM QUE O STAGE OBJECT 
+
+  RESIDE...
+
+
+
+
+
+
+
+
+  por isso escrevemos:
+
+
+
+  'url=s3://bucketsnowflakes3'
+
+
+
+
+É UM BUCKET PUBLICAMENTE DISPONÍVEL...
+
+
+
+
+
+
+
+
+
+--> DEPOIS DE PROVIDENCIAR A URL,
+
+PRECISAMOS PROVIDENCIAR AS CREDENTIALS...
+
+
+
+
+
+
+
+É POR ISSO QUE O PROFESSOR ESCREVE:
+
+
+
+credentials=(aws_key_id='ABCD_DUMMY_ID' aws_secret_key='1234abcd_key');
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO VAI FICANDO ASSIM:
+
+
+
+
+
+
+
+--DATABASE TO MANAGE STAGE OBJECTS, FILEFORMATS, ETC...
+
+CREATE OR REPLACE DATABASE MANAGE_DB;
+
+CREATE OR REPLACE SCHEMA external_stages;
+
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage
+  url='s3://bucketsnowflakes3'
+  credentials=(aws_key_id='ABCD_DUMMY_ID' aws_secret_key='1234abcd_key');
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+ok... aqui as credentials poderiam 
+
+ser 1 
+
+aws_key_id,
+
+
+junto com 1 aws_secret_key..
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE ESSA NAO É UMA BEST-PRACTICE....
+
+
+
+
+
+NAO É BOM COLOCAR 
+
+
+CREDENTIALS DENTRO DE NOSSAS SQL QUERIES....
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+--> NAO É UMA BEST PRACTICE,
+
+
+
+PROVIDENCIAR CREDENTIALS 
+
+
+DENTRO __ DO STAGE OBJECT,
+
+NO MOMENTO DE SUA CRIACAO...
+
+
+
+
+
+
+
+
+1 MANEIRA MELHOR DE PROVIDENCIAR ESSA INFO,
+
+DAS CREDENTIALS,
+
+SEM AS COLOCAR NO CÓDIGO SQL,
+
+
+
+
+
+
+
+
+É __ USAR UM RECURSO CHAMADO 
+
+DE 
+
+
+""""STORAGE INTEGRATION"""
+
+
+
+
+
+
+""""STORAGE INTEGRATION"""" -->  é um OBJECT 
+
+
+QUE PODEMOS CRIAR,
+
+NO CONTEXTO DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+--> ESSE OBJECT DEIXA 
+
+
+O PROCESSO DE CRIACAO DESSE STAGE MAIS __ sEGURO,
+
+
+
+E TAMBÉM DEIXA 
+
+
+A ADMINISTRACAO 
+
+DESSAS CREDENTIALS MAIS FÁCIL (fica tudo num lugar só),
+
+
+
+
+EM VEZ DE JOGAR ESSAS CREDENTIALS DENTRO 
+
+DESSE OBJECT DE 
+
+"STAGE"....
+
+
+
+
+
+
+
+
+
+como essa é uma dummy data, no entanto,
+
+
+
+PODEMOS DEIXAR AS CREDENTIALS ASSIM....
+
+
+
+
+
+
+--> OK... VAMOS RODAR ESSAS QUERIES...
+
+
+
+
+
+
+FUNCIONARAM....
+
+
+
+
+AGORA, SE QUISERMOS VISUALIZAR 
+
+ESSE "STAGE",
+
+
+TEMOS 2 OPTIONS:
+
+
+
+
+
+
+1) PODEMOS VISUALIZA NA USER INTERFACE,
+BASTA 
+
+
+
+CLICARMOS NO MANAGE_DB,
+
+DEPOIS no schema 
+
+
+de 
+
+
+"EXTERNAL_STAGES",
+
+
+
+e depois 
+
+
+em 
+
+
+"Stages", 
+
+
+para aí encontrarmos 
+
+o 
+
+
+"AWS_STAGE"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+temos coisas como "stage files"
+
+e 
+
+"stage details"...
+
+
+
+
+
+
+
+
+
+--> temos também a REGION (us-east-1),
+
+
+
+
+-> TEMOS TAMBÉM A LOCATION (Aws)..
+
+
+
+--> A URL DO BUCKET, também...
+
+
+
+--> has access credentials: yes 
+
+
+E ALGUMAS OUTRAS COISAS...
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+MAS É CLARO QUE PODEMOS VISUALIZAR 
+
+ESSE STAGE OBJECT 
+
+
+
+POR 
+
+
+
+MEIO DO COMANDO
+
+
+
+"DESC" (DESCRIBE)
+
+
+
+ So desc or describe command shows 
+ the structure of the table which include 
+ the name of the column, the data type of the column and the ...
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+DESC STAGE MANAGE_DB.external_stages.aws_stage;
+
+
+
+
+
+
+
+
+
+
+--> ok.... 
+
+
+
+rodamos isso...
+
+
+
+
+
+
+COM ISSO, PODEMOS VISUALIZAR 
+
+
+
+TODAS AS DIFERENTES PROPRIEDADES 
+
+
+DESSE OBJECT DE TIPO STAGE...
+
+
+
+
+
+
+É POSSÍVEL VISUALIZAR 
+
+
+AS CREDENTIALS,
+
+
+
+
+E TAMBÉM O TYPE DE STAGE (csv)...
+
+
+
+
+
+
+
+QUER DIZER QUE  CSV FILES SERAO 
+
+CARREGADOS...
+
+
+
+
+
+
+-> CSV -> É UM DEFAULT VALUE,
+
+
+
+
+
+
+E MAIS TARDE VEREMOS COMO ISSO 
+
+
+PLAYS A ROLE 
+
+
+
+NESSA DATA LOAD...
+
+
+
+
+--> TAMBÉM TEMOS 
+
+
+""STAGE LOCATION"" --> É A URL...
+
+
+
+
+E OS STAGE_CREDENTIALS...
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+SE ALGUMA HORA QUISERMOS __ ALTERAR 
+
+
+ESSE STAGE,
+
+
+
+DEVEMOS USAR O COMANDO 
+
+
+
+
+
+ALTER STAGE aws_stage 
+    SET credentials=(aws_key_id='XYZ_DUMMY_ID' aws_secret_key='sasdxas');
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO VAI FICANDO ASSIM::
+
+
+
+
+
+
+
+
+
+
+
+--DATABASE TO MANAGE STAGE OBJECTS, FILEFORMATS, ETC...
+
+CREATE OR REPLACE DATABASE MANAGE_DB;
+
+CREATE OR REPLACE SCHEMA external_stages;
+
+
+
+-- EXEMPLO DE CRIACAO DE STAGE
+
+-- precisamos do fully qualified name... ao final, colocamos
+-- o nome do nosso stage (aws_stage), que queremos criar.
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage
+  url='s3://bucketsnowflakes3'
+  credentials=(aws_key_id='ABCD_DUMMY_ID' aws_secret_key='1234abcd_key');
+
+
+
+DESC STAGE MANAGE_DB.external_stages.aws_stage;
+
+
+
+
+ALTER STAGE aws_stage 
+    SET credentials=(aws_key_id='XYZ_DUMMY_ID' aws_secret_key='sasdxas');
+
+
+
+DESC STAGE MANAGE_DB.external_stages.aws_stage;
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+ok.... mas agora queremos 
+
+
+
+UTILIZAR ESSE STAGE,
+
+UTILIZÁ-LO PARA REALIZAR 
+
+O BULK LOAD DE DATA...
+
+
+
+
+
+
+
+
+
+--> OK... ESSE É UM PUBLICLY AVAILABLE STAGE...
+
+
+
+
+
+
+--POR SER 1 PUBLICLY AVAILABLE STAGE,
+
+
+"""QUALQUER PESSOA (public)
+
+CONSEGUE ACESSAR ESSE STAGE, E A DATA 
+
+QUE POSSUIMOS NESSE BUCKET""""...
+
+
+
+
+
+
+
+
+É POR ISSO QUE, NOVAMENTE,
+
+
+O PROFESSOR QUER ___ REMOVER 
+
+
+AS CREDENTIALS... 
+
+
+
+
+
+
+
+--> PQ PRECISAMOS APENAS DA URL (justammente 
+
+pq essa url será PÚBLICA)...
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+--DATABASE TO MANAGE STAGE OBJECTS, FILEFORMATS, ETC...
+
+CREATE OR REPLACE DATABASE MANAGE_DB;
+
+CREATE OR REPLACE SCHEMA external_stages;
+
+
+
+-- EXEMPLO DE CRIACAO DE STAGE
+
+-- precisamos do fully qualified name... ao final, colocamos
+-- o nome do nosso stage (aws_stage), que queremos criar.
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage
+  -- url='s3://bucketsnowflakes3'
+  -- credentials=(aws_key_id='ABCD_DUMMY_ID' aws_secret_key='1234abcd_key');
+
+
+
+DESC STAGE MANAGE_DB.external_stages.aws_stage;
+
+
+
+
+ALTER STAGE aws_stage 
+    SET credentials=(aws_key_id='XYZ_DUMMY_ID' aws_secret_key='sasdxas')
+
+
+
+DESC STAGE MANAGE_DB.external_stages.aws_stage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... EXECUTAMOS ISSO...
+
+
+
+
+
+
+
+
+COM ISSO, CONSEGUIMOS ACESSO A ESSE 
+
+BUCKET, DENTRO 
+
+DO NOSSO SCHEMA (
+
+    e, dentro desse schema,
+
+
+    nas nossas tables...
+)
+
+
+
+
+
+
+
+
+
+
+
+-> NÓS PODEMOS, POR EXEMPLO,
+LISTAR TODAS AS FILES 
+
+
+NESSE BUCKET,
+
+DENTRO DO SQL MESMO...
+
+
+
+
+
+
+
+
+
+--> BASTA RODAR O COMANDO 
+
+"LIST <nome_do_stage>",
+
+
+TIPO ASSIM:
+
+
+
+
+LIST aws_stage;
+
+
+
+
+
+
+
+
+
+
+
+
+--> LIST É UM COMANDO 
+
+SQL,
+
+
+
+
+mas nunca havia o utilizado....
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... 
+
+
+
+
+
+
+
+MAS FALTOU O SÍMBOLO "@",
+
+que deve 
+
+
+ser colocado 
+no nome do stage,
+
+sempre que 
+
+__USARMOS_ 1 STAGE EM 
+
+
+ALGUM LUGAR DE NOSSAS SQL QUERIES...
+
+
+
+
+
+
+
+É POR ISSO QUE ESCREVEMOS ASSIM:
+
+
+
+
+
+LIST @aws_stage;
+
+
+
+
+
+
+
+
+
+
+
+OK... RODEI ESSE 
+
+STATEMEMNT,
+
+MAS GANHEI 1 ERROR 
+
+(
+
+""THE AWS ACCESS KEY ID YOU PROVIDED 
+
+IS NOT VALID""
+
+)
+
+
+
+
+
+
+
+
+
+
+OK... AGORA CONSEGUI....
+
+
+
+
+
+
+3 DIFERENTES FILES,
+
+
+3 DIFERENTES CSV...
+
+
+
+
+
+
+
+LOAN_PAYMENTS_DATA 
+
+
+ORDERDETAILS 
+
+
+SAMPLEDATA.
+
+
+
+
+
+
+
+
+
+
+ISSO LISTOU A DATA, SIM,
+
+
+
+MAS NAO PUDE BAIXAR CADA ARQUIVO....
+
+
+
+
+
+
+
+
+
+
+nem sei se isso é possível,
+
+com o sql do snowflake...
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+--> TAMBÉM TEMOS ADDITIONAL INFO,
+
+COMO 
+
+"QUAL É O TAMANHO DAS FILES"",
+
+E A DATA EM QUE ESSAS FILES FORAM 
+
+ADICIONADAS..
+
+
+
+
+TAMBÉM É POSSÍVEL VER O MD5 HASH 
+
+DE CADA 1 DAS FILES...
+
+
+
+
+
+
+
+
+
+ok... agora PODEMOS 
+
+CARREGAR 
+ESSAS FILES 
+
+NA NOSSA SNOWFLAKE DATABASE...
+
+
+
+
+
+
+VEREMOS COMO ISSO FUNCIONA, ESSA PADRONIZACAO,
+
+
+NA PROXIMA AULA...
