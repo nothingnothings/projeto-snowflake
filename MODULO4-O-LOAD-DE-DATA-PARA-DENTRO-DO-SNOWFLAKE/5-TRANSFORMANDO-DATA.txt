@@ -1,0 +1,999 @@
+
+
+
+
+
+
+
+BEM, SE QUISERMOS FAZER O COPY DE DATA 
+
+NAS NOSSAS TABLES,
+
+
+
+
+É BEM ÚTIL/HANDY  
+
+
+SER __ CAPAZ_ _ DE ___ TRANSFORMAR ___ ESSA 
+
+DATA ENQUANTO 
+
+ESTAMOS 
+
+FAZENDO O COPY DA MESMA....
+
+
+
+
+
+
+
+
+E, NO SNOWFLAKE, USANDO O COMANDO DE COPY,
+
+
+
+
+__ NÓS PODEMOS ACTUALLY FAZER ISSO...
+
+
+
+
+
+
+
+
+PORTANTO, NESSA LECTURE,
+
+
+VEREMOS ___ COMO PODEMOS __ TRANSFORM __ A NOSSA DATA...
+
+
+
+
+
+
+
+
+--> VEREMOS COMO PODEMOS _TRANSFORMAR NOSSA DATA 
+
+
+
+
+USANDO O ___COPY_ STATEMENT...
+
+
+
+COPY INTO TABLE_NAME _ FROM __STAGE_NAME__...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ____tRANSFORMAR __ A DATA, ENQUANTO FAZEMOS 
+
+COPY DELA,
+
+__ DEVEMOS UTILIZAR ___ SELECT STATEMENTS...
+
+
+
+
+
+
+
+UM EXEMPLO DE QUERY QUE __fAZ O TRANSFORM DE DATA ENQUANTO A COPIA 
+
+DE 
+1 
+
+STAGE É ESTA:
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+FROM (select s.$1, s.$2 FROM @MANAGE_DB.external_stages.aws_stage s)
+file_format=(
+    type=csv,
+    field_delimiter=';',
+    skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE, EM VEZ 
+
+DE SE REFERIR AO STAGE EM SI,
+
+
+
+PODEMOS USAR 1 SELECT STATEMENT (com o FROM)...
+
+
+
+
+
+--> DEVEMOS DAR 1 OLHADA NESSA SINTAXE,
+
+E EM COMO PODEMOS USAR ESSE SELECT 
+
+STATEMENT AÍ...
+
+
+
+
+
+
+
+
+
+-> UMA COISA IMPORATNTE É QUE O PROFESSOR USOU 
+
+1 ALIAS,
+
+LÁ NO FINAL (
+
+    aquele "s"... --> coloquei "s_alias",
+
+    para ficar mais óbvio...
+)
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+-- podemos fazer o TRANSFORM de data, enquanto a copiamos para 1 table snowflake, POR MEIO DE SELECT STATEMENTS, por exemplo...
+FROM (select s.$1, s.$2 FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+file_format=(
+    type=csv,
+    field_delimiter=';',
+    skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+----------------------------
+
+
+
+
+
+--> ISSO QUER DIZER QUE 
+
+
+ESSE STAGE NAME GANHA 1 ALIAS,
+
+
+
+E O UTILIZAMOS 
+
+com o ".$1 e ".$2',
+
+tipo assim:
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+-- podemos fazer o TRANSFORM de data, enquanto a copiamos para 1 table snowflake, POR MEIO DE SELECT STATEMENTS, por exemplo...
+FROM (select s_alias.$1, s_alias.$2 FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+file_format=(
+    type=csv,
+    field_delimiter=';',
+    skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+    OK... QUER DIZER QUE AQUI FIZEMOS SELECT 
+
+
+APENAS DE 2 FIELDS 
+
+
+
+
+DESSE STAGE 
+
+DE "aws_stage" (Que ficou representado como "s_alias", esse alias)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+-- podemos fazer o TRANSFORM de data, enquanto a copiamos para 1 table snowflake, POR MEIO DE SELECT STATEMENTS, por exemplo...
+--- assim, o stage inteiro fica representado por 1 alias, o alias de "s_alias"... e entao conseguimos selecionar apenas alguns de seus fields, com s_alias.$1 e s_alias.$2....
+FROM (select s_alias.$1, s_alias.$2 FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+file_format=(
+    type=csv,
+    field_delimiter=';',
+    skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ESSA É UMA _ BEST-PRACTICE...
+
+
+
+
+NAO É OBRIGATÓRIO,
+
+MAS É BOM FAZER...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM "$1' 
+
+
+E "$2",
+
+
+
+nos referimos aos COLUMN __ NUMBERS... 1 e 2...
+
+
+
+
+
+
+
+
+
+
+
+SE EXAMINAMOS NOSSA FILE,
+
+
+CONSTATAMOS QUE ISSO É A COLUMN NUMBER ONE,
+
+E A OUTRA A NUMBER 2...
+
+
+
+
+a column number one é A ORDERID,
+
+
+
+E A COLUMN NUMBER TWO 
+
+É O __ AMOUNT....
+
+
+
+
+
+--> ISSO PQ USAMOS ___ 
+
+
+ESSA FILE DE "ORDER_DETAILS"...
+
+
+
+
+
+
+
+
+--> E É ISSO QUE 
+
+CRIAMOS NAS NOSSAS TABLES TAMBÉM,
+
+
+COM ESTA QUERY:
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT
+)
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+-- podemos fazer o TRANSFORM de data, enquanto a copiamos para 1 table snowflake, POR MEIO DE SELECT STATEMENTS, por exemplo...
+--- assim, o stage inteiro fica representado por 1 alias, o alias de "s_alias"... e entao conseguimos selecionar apenas alguns de seus fields, com s_alias.$1 e s_alias.$2....
+FROM (select s_alias.$1, s_alias.$2 FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+
+--$1 é O ORDER_ID... $2 É O AMOUNT...
+file_format=(
+    type=csv,
+    field_delimiter=';',
+    skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT
+);
+
+
+
+
+--------------------------
+
+
+
+
+
+
+
+CRIADA ESSA TABLE,
+
+
+
+
+
+DEVEMOS DAR 1 OLHADA NESSE COPY STATEMENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> RODAMOS ISSO AÍ,
+
+
+
+E ELE FUNCIONARIA,
+
+
+MAS FICAMOS COM 1 ERROR EM 1 DOS IDS....
+
+
+
+
+
+"
+
+STRING B-12123312231,312321 IS TOO LONG 
+
+AND WOULD BE 
+TRUNCATED...
+
+
+
+"
+
+
+
+
+--> ACHO QUE É PQ COLOQUEI O FIELD_DELIMITER 
+
+ERRADO (deve ser ',', e nao ';')
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... CONSEGUI...
+
+
+1500 ROWS FORAM PARSEADOS E INSERIDOS 
+
+
+NA TABLE...
+
+
+
+
+
+
+DEVEMOS DAR 1 OLHADA NO RESULTADO...
+
+
+
+
+
+
+
+
+
+FICAMOS COM 2 COLUMNS...
+
+
+
+"ORDER_ID"
+
+
+
+e
+
+"AMOUNT'....
+
+
+
+
+
+
+
+
+
+
+
+
+--> A ESTRUTURA É TIPO:
+
+
+
+
+
+
+
+
+
+ORDER_iD 
+
+
+B-25601          1,275 
+B-25601          66
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+COM ISSO, REALIZAMOS 1 SELECT STATEMENT 
+
+BEM BÁSICO,
+
+EM CIMA 
+
+DE 1 DE NOSSOS STAGES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... MAS COMO PODEMOS TRANSFORMAR 
+
+ESSA DATA?
+
+
+
+
+
+PQ, SIM, PODEMOS 
+
+
+_SELECIONAR 1 SUBSET DE COLUMNS,
+
+
+MAS AGORA 
+
+QUEREMOS 
+
+
+SABER 
+
+
+
+_cOMO __ PODEMOS __ TRANSFORMAR __ ESSA 
+
+
+DATA,
+
+
+
+OBTER ALGO TOTALMENTE NOVO...
+
+
+
+
+
+
+
+
+
+
+-> PARA ISSO, 
+
+PARA DEMONSTRAR,
+
+
+
+VAMOS CRIAR 1 NOVA TABLE..
+
+
+
+
+
+
+
+--> NESSA NOVA TABLE,
+TEREMOS 4 COLUMNS...
+
+
+
+
+
+
+
+
+
+
+VAMOS CRIAR 1 NOVA TABLE...
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    PROFITABLE_FLAG VARCHAR(30)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS "ORDER_ID' 
+
+
+e "amount' como antes,
+
+MAS AGORA 
+TEREMOS TAMBÉM 
+
+
+"PROFIT" 
+E "pROFITABLE_FLAG"....
+
+
+
+
+
+ESSAS 3 COLUMNS INICIAIS SERAO IGUAIS,
+
+
+
+MAS __ A QUARTA SERA 
+CRIADA 
+
+__ A PARTIR __ DE SQL FUNCTIONS 
+(RECURSO SQL)...
+
+
+
+
+
+
+
+
+
+OK, MAS COMO...
+
+
+
+
+
+ESSA PROFITABLE_FLAG,
+
+SERÁ CRIADA USANDO SQL FUNCTIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+isso pq, no SNOWFLAKE,
+
+podemos usar 
+
+UM __ SUBSET-_ DE SQL FUNCTIONS 
+
+
+
+___ PARA __ REALIZAR __O  TRANSFORM 
+
+
+DE NOSSA DATA...
+
+
+
+
+
+
+
+
+O PROFESSOR DISSE """SUBSET"""
+
+
+DE FUNCTIONS SQL... --> ISSO PQ 
+
+
+__ NEM TODAS AS SQL FUNCTIONS 
+
+
+FUNCIONAM COM O SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS NA PÁGINA DO SNOWFLAKE,
+
+
+NOS DOCS,
+
+
+PODEMOS VER UMA LISTA DE TODAS AS FUNCTIONS 
+
+SUPORTADAS...
+
+
+
+
+
+
+TEMOS MTAS FUNCTIONS...
+
+
+
+
+
+
+
+
+
+
+--> TEMOS O LINK 
+
+PARA AS FUNCTIONS 
+
+NESSA LECTURE...
+
+
+
+
+
+
+
+
+A PRIMEIRA FUNCTION QUE USAREMOS 
+
+
+SERÁ A 
+
+
+""CASE WHEN""....
+
+
+
+
+
+
+USAREMOS ESSA FUNCTION EM COMBINACAO 
+
+COM A FUNCTION DE 
+
+"""CAST"""...
+
+
+
+
+
+
+
+
+
+
+PRIMEIRAMENTE,
+DEVEMOS COMPREENDER A FUNCTION DE 
+
+"CAST"...
+
+
+
+
+
+
+
+
+
+explicacao -- como estamos copiando data 
+de ARQUIVOS 
+
+CSV,
+
+
+
+ELES SAO GERALMENTE TODOS TEXT...
+
+
+
+
+
+
+
+
+--> OK... COMO TUDO É TEXT,
+
+TEMOS QUE _ TRANSFORMAR __ O DATA type...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O STATEMENT INTEIRO É ESTE:
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+
+-- CASE e CAST sao SQL FUNCTIONS... -- os fields sao $1 -> order_id, $2 -> amount, $3 -> profit, $4 -> profitable_flag
+    FROM (select 
+            s.$1,
+            s.$2, 
+            s.$3,
+            CASE WHEN CAST(s.$3 as int) < 0 THEN 'not profitable' ELSE 'profitable' END 
+          from @MANAGE_DB.external_stages.aws_stage s)
+    file_format= (type = csv field_delimiter=',' skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+--> TEMOS QUE ESTUDAR MAIS ESSAS SQL FUNCTIONS...
+
+
+
+
+
+
+
+O LINK DO PROFESSOR:
+
+
+
+
+a function de "CAST":
+
+
+
+
+
+--> A DATA ESTÁ EM TEXT...
+
+
+
+
+
+
+
+---> implicitamente, a data 
+
+do csv já é transformada
+
+
+
+pelo data type em INTEGERS,
+
+por conta 
+
+de "PROFIT INT"....
