@@ -1,0 +1,1064 @@
+
+
+
+
+
+
+AGORA DEVEMOS 
+
+
+OLHAR COMO PODEMOS 
+MONITORAR 
+
+O CREDIT CONSUMPTION 
+
+
+E A QUANTIDADE 
+
+
+
+
+DE DATA 
+
+ARMAZENADA 
+
+
+NA NOSSA CONTA
+
+
+SNOWFLAKE..
+
+
+
+
+
+
+
+--> MAS ANTES DE FAZERMOS ISSO,
+
+
+DEVEMOS NAVEGAR RAPIDAMENTE 
+
+À 
+
+
+
+SNOWFLAKE.COM/PRICING,
+
+
+
+
+
+
+
+PQ LÁ DENTRO PODEMOS 
+
+DESCOBRIR MAIS SOBRE O PRICING 
+
+
+
+
+PARA OS CREDITS 
+PARA 
+
+CADA 1 DAS PLATFORMS QUE USAMOS,
+
+A DEPENDER DA REGION EM QUE ESTAMOS...
+
+
+
+
+
+
+
+
+
+
+
+--> PQ O PRICING DEPENDE 
+DA REGION 
+
+E PLATFORM QUE VAMOS USAR (GCP, AZURE, AWS)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+AWS,
+
+
+US-EAST (north virginia)...
+
+
+
+
+
+
+
+
+
+--> PODEMOS CONSTATAR QUE OS PRECOS DOS USA 
+
+SAO 
+
+MAIS BARATOS...
+
+
+
+
+
+ISSO NOS DÁ UM BOM ENTENDIMENTO DO QUANTO 
+
+PRECISAMOS PAGAR POR CREDIT,
+
+
+PARA 
+
+
+TER ESSES 
+
+
+
+PRECOS DE COMPUTE...
+
+
+
+
+
+
+
+
+
+
+
+QUANTO À STORAGE,
+
+
+TEMOS 2 OPTIONS, AS MESMAS DE ANTES:
+
+
+
+ON-DEMAND STORAGE E 
+
+
+CAPACITY STORAGE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+CAPACITY STORAGE --> É MAIS BARATA,
+
+MAS TEMOS QUE PAGAR 
+
+UPFRONT...
+
+
+
+
+
+
+
+
+--> MAS SE NAO TIVERMOS MT CERTEZA DE QUANTA 
+
+DATA VAMOS QUERER USAR,
+
+PODEMOS 
+
+
+USAR O ON-DEMAND STORAGE...
+
+
+
+
+
+
+
+40 DOLARES POR TERABYTE, 
+
+POR MES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA ENTRAMOS NO SNOWFLAKE 
+
+
+
+E 
+
+
+
+
+VAMOS VISUALIZAR NOSSA 
+
+USAGE...
+
+
+
+
+
+
+
+
+--> PARA __ CONSEGUIRMOS VISUALIZAR 
+
+A USAGE 
+
+DE CREDITS DE NOSSA CONTA,
+
+
+PRECISAMOS 
+
+ESTAR 
+
+
+NO ROLE 
+
+
+DE ___ ACCOUNTADMIN....
+
+
+
+
+
+
+
+
+
+ACCOUNTADMIN...
+
+
+
+
+
+--> SE NAO SELECIONARMOS ACCOUNTADMIN,
+
+
+
+
+
+NAO CONSEGUIMOS ACESSO 
+
+a ESSA SECTION DE USAGE...
+
+
+
+
+
+
+
+
+--> BASTA CLICAR EM "ADMIN",
+
+
+E DEPOIS EM 
+
+"usage"...mdLweFbygr#query
+
+
+
+
+
+
+
+
+
+
+
+
+-> ok... já é possível visualizar 
+
+a usage 
+
+
+de nossa conta...
+
+
+
+3.61 DOLARES...
+
+
+
+
+
+
+GASTEI 3.61 DOLARES, EM APENAS 1 DIA... (ontem)...
+
+
+
+
+
+
+O FREE TRIAL 
+
+
+DO SNOWFLAKE 
+
+NOS DÁ 400 DOLARES...
+
+
+
+ISSO SIGNIFICA QUE 400 DOLARES COBRAM 
+
+ESSAS TARIFAS...
+
+
+
+
+(cobrariam de 100 dias, na verdade)...
+
+
+
+
+
+
+
+
+
+
+-> também é possível visualizar 
+
+
+a region da aws em que 
+
+o custo ocorreu...
+
+
+
+AWS_US_EAST_1...
+
+
+
+
+
+
+
+SERVICE LEVEL, BUSINESS CRITICAL...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR CONSTATA QUE, NO INÍCIO,
+
+
+
+
+NAO SERÁ POSSÍVEL VER NADA NESSA TELA...
+
+
+
+
+
+
+APENAS CONSEGUIREMOS VISUALIZAR 
+
+ALGUMA 
+
+COISA 
+
+
+__ SE TIVERMOS 1 WAREHOUSE 
+
+
+CRIADA... 
+
+
+
+
+
+
+
+
+
+--> na verdade, gastei 5 dolares...
+
+
+
+
+
+--->  É BOM USAR UMA EXTRA SMALL WAREHOUSE,
+
+
+
+PQ AS QUERIES 
+
+NECESSÁRIA NAO SAO TAO COMPLEXAS.....
+
+
+
+
+E É CLARO QUE __ QUEREMOS 
+
+DEIXAR A CREDIT CONSUMPTION BAIXA...
+
+
+
+
+
+
+
+
+
+
+
+-> SELECIONE 1 WAREHOUSE EXTRA SMALL...
+
+
+
+
+
+
+
+
+
+
+MAS COMO PODEMOS NAVEGAR 
+
+
+NESSE DASHBOARD...
+
+
+
+
+
+
+
+
+
+BEM, TEMOS A QUANTIDADE DE dolares,
+
+
+
+
+E A QUANTIDADE USADA EM CADA DIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS 2 TIPOS DE CUSTOS,
+
+
+
+
+
+1) WAREHOUSE COSTS (COMPUTE RESOURCES)
+
+
+
+
+
+2) STORAGE COSTS (AMAZON, GCP, AZURE)....
+
+
+
+
+PODEMOS ESCOLHER 
+
+TAMBÉM 
+
+VER O CONSUMO 
+
+INTEIRO... (dos 2, juntos)
+
+
+
+
+
+
+
+todas as queries 
+
+
+usam 
+
+
+compute resources, que sao 
+
+
+
+realmente cobrados 
+
+por meio de snowflake credits...
+
+
+
+
+
+
+
+
+--> SE NOVAMENTE VISUALIZARMOS NOSSOS 
+
+RESOURCES,
+
+FICAMOS COM 1 LISTA 
+
+DE NOSSAS WAREHOUSES....
+
+
+
+
+
+
+
+TAMBÉM TEMOS 1 OUTRA COISA QUE PODEMOS 
+
+SELECIONAR,
+
+""CLOUD_SERVICES_ONLY"",
+
+
+
+EM QUE 
+
+
+NAO VISUALIZAMOS NENHUMA 
+QUERY...
+
+
+
+
+
+
+
+ESSA NAO É UMA WAREHOUSE CRIADA 
+POR NÓS,
+
+E SIM 
+
+É 
+
+APENAS ALGO QUE DEVEMOS PAGAR __ 
+
+RELACIONADO 
+
+
+A __ CLOUD SERVICES...
+
+
+
+
+
+
+
+
+
+"""cloud services"" --> COMPUTE POWER 
+
+
+NECESSÁRIO PARA _ COISAS _ COMO 
+
+
+AUTHENTICATION EM NOSSAS 
+
+CONTAS,
+
+
+
+PARA ALGUMA METADATA HANDLING,
+
+COISAS ASSIM....
+
+
+
+
+
+QUER DIZER QUE ESSA CATEGORIA 
+
+É DESTINADA 
+
+
+
+PARA COBRAR COISAS QUE GASTAM QUANTIDADES 
+
+MINÚSCULAS 
+
+DE COMPUTE POWER,
+
+
+ALGUMAS BEHIND THE SCENES THINGS,
+PARA 
+FAZER 
+
+
+AS COISAS FUNCIONAREM....
+
+
+
+
+
+
+
+
+---> ALÉM DE COMPUTE,
+
+
+
+
+SOMOS COBRADOS TAMBÉM PELA __ DATA STORAGE...
+
+
+
+
+
+
+
+ESSA COBRANCA DA DATA STORAGE 
+
+
+
+É BASEADA EM:
+
+
+
+A) UM MONTHLY AVERAGE 
+
+
+B) E QUANTO DE DATA TEMOS ARMAZENADA...
+
+
+
+
+
+
+
+
+
+--> ALI EMBAIXO,
+
+
+
+PODEMOS VER ESSES CUSTOS BROKEN DOWN 
+
+EM DIFERENTES OBJECTS...
+
+
+
+
+
+
+
+
+
+
+MAIS TARDE, VEREMOS O QUE 
+SIGNIFICA
+
+
+""FAILSAFE"" 
+
+
+
+E 
+
+""STAGE""....
+
+
+
+
+
+
+
+
+
+
+
+""FAILSAFE"" -> É UMA FEATURE 
+
+
+
+DO SNOWFLAKE QUE PROTEGE
+
+
+
+NOSSO SISTEMA CONTRA FALHAS,
+
+
+COMO SYSTEM FAILURE...
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE TAMBÉM SOMOS COBRADOS POR 
+
+ESSA FEATURE...
+
+
+
+
+
+
+
+-_> MAS APRENDEREMOS SOBRE TUDO ISSO 
+
+
+NO FUTURO...
+
+
+
+
+
+
+
+--> POR ENQUANTO, BASTA SABER QUE 
+
+
+A __STORAGE É 
+
+
+BROKEN 
+DOWN 
+EM 
+
+""DATABASE""
+
+""FAILSAFE""
+
+
+E 
+
+""STAGE""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, 
+
+TEMOS A CATEGORIA DE 
+
+""DATA TRANSFER""...
+
+
+
+
+
+
+
+
+
+
+QUANDO DIZEMOS ""DATA TRANSFER"",
+
+
+
+QUEREMOS DIZER TODAS AS TRANSFERENCIAS 
+
+DE 
+
+DADOS 
+
+
+""FROM SNOWFLAKE, AND INTO SNOWFLAKE""....
+
+
+
+
+
+
+
+
+
+
+
+--> E, ACTUALLY,
+
+
+NAO ESTAMOS 
+
+SENDO COBRADOS 
+
+
+__ POR __ INCOMING DATA....
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE __ SE NOSSA 
+
+DATA __ 
+
+ESTÁ VINDO DA NUVEM (como fizemos 
+
+com a data do S3, aws),
+
+
+
+
+NAO SEREMOS COBRADOS....
+
+
+
+
+
+
+
+
+
+
+
+
+NÓS APENAS SEREMOS COBRADOS __ SE 
+
+TENTARMOS 
+
+
+___ TIRAR __ DATA 
+
+
+DE NOSSA CONTA SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+-> TAMBÉM TEMOS QUE MENCIONAR 
+
+QUE 
+
+
+
+NÓS NAO SOMOS COBRADOS 
+
+
+
+POR ALGO 
+
+COMO 
+
+
+
+
+
+""SHARE DATA"" 
+
+
+A 1 OUTRA CONTA SNOWFLAKE... 
+
+
+
+
+
+MAS __ SÓ NAO PAGAMOS NADA POR ESSE 
+
+DATA SHARING 
+
+
+
+_______SE_______ AS CONTAS 
+
+SNOW FLAKE 
+
+ESTIVEREM USANDO 
+
+O MESMO CLOUD PROVIDER,
+
+
+
+E NA MESMA REGION...
+
+
+
+
+
+
+
+
+
+--> ou seja,
+
+
+
+
+
+SÓ SEREMOS COBRADOS __ POR _ __
+
+
+DATA SHARING COM OUTRAS 
+
+
+CONTAS __ SE _ ESSAS OUTRAS 
+
+CONTAS 
+
+
+ESTIVEREM 
+
+POSICIONADAS 
+
+
+
+EM OUTRAS REGIONS DO AWS,
+
+OU 
+
+SE 
+
+ESTIVEREM 
+
+USANDO OUTRO CLOUD PROVIDER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok....
+
+
+
+
+
+
+MAIS TARDE DAREMOS UMA OUTRA OLHADA 
+
+EM DATA TRANSFER,
+
+
+DATA SHARING,
+
+E VEREMOS 
+
+
+COMO TUDO ISSO FUNCIONA...
+
+
+
+
+
+
+
+
+
+
+POR ENQUANTO, BASTA SABER QUE PODEMOS ACESSAR 
+
+
+NOSSA USAGE, NESSA PARTE AÍ,
+
+PARA VISUALIZAR 
+
+
+OS GASTOS 
+
+
+COM 
+
+
+COMPUTE,
+
+STORAGE 
+
+E DATA TRANSFER..
+
+
+
+
+
+
+
+
+
+
+--> JÁ PERCEBEMOS, TAMBÉM,
+
+QUE TEMOS 
+DIFERENTES ROLES DISPONÍVEIS PARA 
+
+NOSSO USER...
+
+
+
+
+
+
+
+
+NA PRÓXIMA LICAO, TEREMOS 1 BREVE OVERVIEW
+
+SOBRE ESSES DIFERENTES ROLES...
+
+
+
+
+
+
