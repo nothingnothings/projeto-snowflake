@@ -1,0 +1,538 @@
+
+
+
+
+
+
+
+
+
+
+OK... AGORA FALAREMOS SOBRE 1 DOS CONCEITOS 
+
+KEY 
+
+
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE CONCEITO É O __ LOAD_ DE DATA 
+
+PARA DENTRO 
+
+
+__ DE NOSSAS TABLES E DATABASES....
+
+
+
+
+
+
+ESSA É UMA DAS MAIN TASKS QUE FAZEMOS NO SNOWFLAKE,
+
+
+
+E É POR ISSO QUE FALAREMOS 
+
+SOBRE ISSO EM GRANDE DETALHE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... SE ESTAMOS FALANDO 
+
+
+SOBRE 
+
+O 
+
+"""LOAD DE DATA"""",
+
+
+
+
+TEMOS 2 __ MAIN __ METHODS PARA _ FAZER
+
+O __ LOAD DESSA DATA....
+
+
+
+
+
+
+
+
+
+
+OS METHODS SAO:
+
+
+
+
+
+
+1) BULK LOADING 
+
+
+
+
+
+
+
+2) CONTINUOUS LOADING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRIMEIRO É ___ BULK LOADING,
+
+
+
+TAMBÉM CHAMADO 
+
+
+DE
+
+
+
+""""BATCH LOADING""""...
+
+
+
+
+
+
+
+
+
+
+
+1) BULK LOADING....
+
+
+
+
+--> É O _METHOD DE LOADING MAIS USADO/FREQUENTE
+
+
+--> USA WAREHOUSES PARA FAZER O LOADING 
+
+
+
+---> FAZ O LOAD A PARTIR DE "STAGES" 
+
+(LOADING FROM STAGES)...
+
+
+
+--> O COMANDO USADO É ""COPY"" (COPY INTO XX FROM YY)...
+
+
+
+
+--> TRANSFORMATIONS SAO 
+
+POSSÍVEIS, DURANTE 
+
+ESSE LOAD (é o que vimos, com 
+
+""file_format""")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O BULK LOADING É O METHOD MAIS IMPORTANTE...
+
+
+
+VAMOS APRENDER MTAS COISAS SOBRE ELE...
+
+
+
+
+
+
+
+
+
+--> SE USAMOS O BULK LOADING,
+
+
+
+NÓS USAMOS O COMPUTE POWER 
+
+
+DE NOSSAS WAREHOUSES... E FAZEMOS ISSO 
+
+
+USANDO 
+
+
+""""STAGES"""...
+
+
+
+
+
+
+
+
+
+
+STAGES --> VEREMOS O QUE SAO,
+
+
+E COMO SAO CRIADOS,
+
+ENTENDEREMOS ISSO NA PRÓXIMA AULA...
+
+
+
+
+
+
+
+
+
+
+COPY COMMAND --> É O SQL COMMAND 
+
+QUE USAMOS 
+
+__ PARA __ CARREGAR _ DATA 
+
+
+
+NAS NOSSAS TABLES,
+
+ATRAVÉS DESSES STAGES (vamos passando 
+
+PELOS STAGES)...
+
+
+
+
+
+
+
+
+COPY FROM XXX 
+
+stage 1 
+
+stage 2 
+
+stage 3 
+
+INTO YYYY 
+
+
+
+
+
+
+
+
+
+
+
+
+COM ESSE COMANDO DE "COPY",
+
+
+COM O BULK LOADING,
+
+
+PODEMOS _ FAZER 1 MONTE DE TRANSFORMACOES 
+
+
+COM NOSSA DATA,
+
+
+
+O QUE 
+
+
+FAZ O CREATE DE NOSSAS DATA WAREHOUSES 
+
+BEM MAIS FÁCIL....
+
+
+----------------------
+
+
+
+
+
+
+
+
+AÍ, DEPOIS DISSO,
+
+
+
+TEMOS _ O CONTINUOUS LOADING...
+
+
+
+
+
+
+
+
+
+2) CONTINUOUS LOADING
+
+
+
+
+--> É UM TIPO DE LOADING 
+
+__ QUE NAO FOI PROJETADO PARA 
+
+QUANTIDADES MT GRANDES DE DATA...
+
+
+
+
+
+
+
+--> É USADO APENAS PARA QUANTIDADES 
+
+___PEQUENAS __ DE DATA...
+
+
+
+
+
+--> QUANTIDADES PEQUENAS DE DATA,
+
+
+QUE PRECISAM 
+
+ESTAR 
+
+
+""UP-TO-DATE"" IMEDIATAMENTE...
+
+
+
+
+
+
+
+
+--> COM ELE, NÓS __ AUTOMATICAMENTE 
+
+
+CARREGAMOS A DATA _ QUE É ADICIONADA
+
+
+AOS STAGES, PARA DENTRO 
+DE NOSSAS TABLES....
+
+
+
+
+--> COM ISSO, COM ESSE LOAD AUTOMÁTICO,
+
+NÓS __ SEMPRE 
+
+TEMOS/TEREMOS 
+
+
+
+OS LATEST RESULTS DISPONÍVEIS 
+
+
+PRATICAMENTE __ IMEDIATAMENTE, PARA FINS 
+
+DE ANÁLISE...
+
+
+
+
+--> quer dizer que, com esse tipo de data,
+
+ocorre um load de data nas nossas databases 
+
+QUASE EM TEMPO-REAL,
+
+A MEDIDA QUE A DATA É ATUALIZADA (data externa)...
+
+
+
+
+
+
+
+
+
+--> MAS ESSE PROCESSO É REALIZADO 
+
+
+NAO PELAS WAREHOUSES QUE 
+
+CRIAMOS,
+
+E __ SIM _ POR MEIO 
+
+
+
+DO 
+
+"""SNOWPIPE""" (feature SERVERLESS 
+do SNOWFLAKE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SNOWPIPE --> É ALGO QUE APRENDEREMOS 
+MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO O BULK LOADING É O MAIN METHOD,
+
+
+VAMOS COMECAR 
+
+COM SEU ESTUDO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE ESCREVERMOS QUERIES 
+
+COM BULK LOADING,
+
+
+DEVEMOS __ CRIAR STAGES...
+
+
+
+
+
+
+
+
+
+-> A CRIACAO DE STAGES É NECESSÁRIA,
+
+
+PARA CONSEGUIRMOS 
+
+
+USAR 
+O BULK LOADING 
+
+EFETIVAMENTE...
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE SAO ""STAGES"",
+
+
+
+E O QUE SIGNIFICA ESSE TERMO?
+
+
+
+
+
+
+
+
+COMO PODEMOS TRABALHAR COM STAGES?
+
+
+
+
+
+
+
+
+--> VEREMOS ISSO NA PRÓXIMA AULA....
+
+---------------------------------
