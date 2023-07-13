@@ -417,3 +417,409 @@ DE
 
 
 
+
+AO ROLE DE PUBLIC...
+
+
+
+
+
+
+
+
+
+-> OK.... AGORA QUEREMOS COMO PODEMOS 
+
+CRIAR 1 SCHEMA NESSA DATABASE...
+
+
+
+
+CLICAMOS NO BOTAO DE +,
+
+
+
+E ISSO AÍ VAI CRIAR 1 SCHEMA....
+
+
+
+
+
+--> DENTRO DE QUALQUER 1 DESSES SCHEMAS,
+
+
+
+PODEMOS CRIAR OS 
+
+""DATABASE OBJECTS"",
+
+
+QUE 
+
+
+SAO:
+
+
+
+1) TABLE 
+
+
+2) VIEW 
+
+
+3) STAGE 
+
+4) SEQUENCE 
+
+5) PIPE 
+
+
+6) STREAM 
+
+
+7) TASK 
+
+
+
+8) FUNCTION 
+
+9) PROCEDURE...
+
+
+
+
+
+
+
+
+
+VEREMOS MAIS SOBRE ESSES OBJECTS 
+
+
+NAS PRÓXIMAS AULAS....
+
+
+
+
+
+
+
+
+
+
+SE PODEMOS 
+
+
+
+CRIAR 1 TABLE, PODEMOS 
+
+
+CRIAR COM A AJUDA 
+
+DESSA GUI...
+
+
+
+
+
+
+
+
+
+
+
+
+quando criamos 1 table dentro de 1
+
+database,
+
+
+temos as options:
+
+
+
+1) STANDARD
+ 
+
+
+ 2) AS SELECT 
+
+
+3) EXTERNAL
+
+
+
+
+
+
+
+
+---> se escolhemos 
+
+
+"as select"",
+
+
+essa table 
+
+vai ser apenas o resultado de 1 query...
+
+
+
+
+
+
+
+--> OU, ENTAO, PODEMOS ESCOLHER 
+
+"STANDARD", para criar 
+
+1 table simples, sem nenhuma data...
+
+
+
+
+
+
+
+
+
+--> ISSO VAI BASICAMENTE NOS NAVEGAR 
+
+ATÉ UMA WORKSHEET,
+
+
+
+
+EM QUE A SINTAXE DE CRIACAO DE TABLE 
+
+
+JÁ ESTARÁ NO LUGAR...
+
+
+
+
+
+
+ex:
+
+
+
+
+
+create table <table_name> (
+    <col1_name> <col1_type>
+    -- , <col2_name> <col2_type>
+    -- supported types: https://docs.snowflake.com/en/sql-reference/intro-summary-data-types.html
+    )
+    -- comment = '<comment>';
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... podemos colocar o nome da table,
+
+
+e aí 
+
+
+
+colocamos sempre o column name 
+
+e o type da data....
+
+
+
+
+
+
+
+
+--> podemos colocar 
+
+first_name string 
+
+age int 
+
+
+
+
+
+
+-> PODEMOS TAMBÉM ADICIONAR COMMENTS...
+
+
+
+
+
+COMMENTS SAO ADICIONADOS COM 
+
+
+
+comment = 'sua string aqui';
+
+
+
+
+
+
+
+
+
+
+ok... executei essa query, e, com isso,
+
+criei 1 table..
+
+
+
+
+
+
+
+--> certo...
+
+
+
+agora podemos visualizar essa table,
+e sua definition...
+
+
+
+
+
+
+-> podemos perceber que 
+
+
+essa table estará 
+
+incluida no nosso schema...
+
+
+
+
+
+
+
+
+
+
+-> e é claro que agora podemos __ 
+
+USAR ESSA TABLE 
+
+NAS NOSSAS WORKSHEETS,
+
+TIPO ASSIM:
+
+
+
+
+SELECT * FROM test_users;
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+query produced no results -->  nao temos nenhuma 
+
+entry, mas 
+
+as columns aparecem....
+
+
+
+
+
+
+
+é claro que se quisermos 
+
+droppar essa table,
+
+
+escrevemos 
+
+
+
+DROP TABLE test_table;
+
+
+
+
+
+
+
+
+ok.... quer dizer que 
+
+podemos 
+
+
+managear 
+
+
+nossas databases e tables tanto com a AJUDA
+
+
+das worksheets como 
+
+da gui...
+
+
+
+
+
+
+-> o professor falará sobre os data objects 
+
+nas próximas licoes....
+
+
+
+
+
+
+
+
+
+
+--> NA PROXIMA AULA, FALAREMOS SOBRE ALGO SUPER 
+IMPORTANTE, QUE É O LOAD DE DATA 
+
+NO SNOWFLAKE...
+
+
+
+
