@@ -1,0 +1,679 @@
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS APRENDER SOBRE OS STAGES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- OS STAGES SAO A PRIMEIRA ETAPA IMPORTANTE,
+
+
+SE QUEREMOS 
+
+
+FAZER LOAD DE DATA PARA 
+
+DENTRO DE NOSSAS TABLES E DATABASES....
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK, MAS O QUE SAO ESSES STAGES, EXATAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+STAGES --> QUANDO DIZEMOS 
+
+""STAGES DE LOADING DATA"",
+
+
+
+
+
+
+NAO DEVEMOS CONFUNDIR ESSES STAGES 
+
+
+
+
+COM 
+
+AS 
+
+
+""DATA WAREHOUSE STAGES"" (ETL)
+
+
+
+OU 
+
+
+COM 
+
+
+AS STAGING AREAS (mencionada nas licoes anteriores)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE SAO STAGES, NO CONTEXTO 
+
+DO BULK LOADING (copy from xx into yy)?
+
+
+
+
+
+
+
+
+
+
+--> BEM, STAGES 
+
+
+
+SAO SIMPLESMENTE 
+
+
+""""DATABASE OBJECTS"""
+
+
+QUE SEGURAM  ____ A LOCATION ___ 
+
+
+DE ONDE __ PODEMOS - 
+
+"LOAD DATA FROM"""...
+
+
+
+
+
+
+
+
+
+
+>> NOT TO BE CONFUSED WITH DATA WAREHOUSE STAGES...
+
+
+
+
+
+
+>> LOCATION OF DATA FILES 
+WHERE __ DATA __ CAN BE LOADED FROM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+SAO DATABASE OBJECTS..
+
+
+
+
+
+
+
+
+--> E ESSE DATABASE OBJECT, O STAGE,
+
+
+PODE __ TER CERTAS __ PROPRIEDADES,
+
+
+COMO 
+
+A 
+
+""LOCATION"",
+
+
+""CREDENTIALS"",
+
+
+
+E __OUTRAS PROPRIEDADES.... (que logo estudaremos)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS SE FALAMOS SOBRE ESSES __ STAGES,
+
+
+
+
+DEVEMOS _ OS DISTINGUIR 
+
+EM 2 DIFERENTES TIPOS:
+
+
+
+
+
+
+
+
+
+
+TIPOS DE STAGES:
+
+
+
+
+
+
+1) EXTERNAL STAGE 
+
+
+
+
+
+
+
+
+2) INTERNAL STAGE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) EXTERNAL STAGE...
+
+
+
+--> É PROVAVELMENTE O TIPO 
+
+DE STAGE ___ MAIS COMUM____...
+
+
+
+--> É UM ""EXTERNAL CLOUD PROVIDER""
+
+
+
+--> POR CLOUD PROVIDER, QUEREMOS DIZER
+
+
+-> S3 
+
+-> GCP 
+
+-> AZURE
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA, ESTAMOS NOS REFERINDO 
+
+AO S3 BUCKET 
+
+
+__ OU QUALQUER OUTRA FORMA 
+
+__ DE 
+
+"""BLOB STORAGE""" (object storage)
+
+
+EM QUE 
+
+
+
+
+__PODEMOS ARMAZENAR FILES... TIPICAMENTE 
+
+
+DE 
+
+1 
+CLOUD PROVIDER COMO 
+
+___AWS__, 
+GPC E AZURE (blob storage)...
+
+
+
+
+
+
+
+
+
+
+
+--> E É __ IMPORTANTE SABER/RECONHECER QUE 
+
+
+___ESSES """EXTERNAL STAGES""" 
+
+SAO __ APENAS/SIMPLESMENTE 
+
+1  __DATABASE __ OBJECT...
+
+
+
+
+
+
+
+
+
+--> SAO CRIADOS COMO 1 OBJECT SQL/SNOWFLAKE...
+
+
+
+--> SAO OBJECTS QUE SAO CRIADOS EM 1 DATABASE...
+
+
+
+
+
+
+--> PARA SERMOS MAIS PRECISOS,
+
+
+_ ELES SAO __ CRIADOS__ DENTRO 
+
+DE 1 SCHEMA,
+
+QUE FICA DENTRO DE 1 DATABASE..
+
+
+
+
+
+
+
+
+
+
+
+DATABASE > SCHEMA (contém STAGES) > TABLES....
+
+
+
+
+
+
+
+
+
+-->> ""DATABASE OBJECT, CREATED 
+IN SCHEMAS"""...
+
+
+
+
+-> OK... 
+
+
+
+
+
+
+
+E PODEMOS CRIAR ESSES STAGES,
+
+POR MEIO DO COMANDO 
+
+
+
+
+
+---> CREATE STAGE(URL, access settings);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CREATE STAGE...
+
+
+
+
+
+
+
+
+--> OK.. É ISSO QUE FAZEMOS...
+
+
+
+
+
+
+--> E ESSES DATABASE OBJECTS,
+
+
+OS STAGES,
+
+POSSUEM CERTAS PROPRIEDADES,
+
+
+
+COMO:
+
+
+1) A URL 
+
+
+2) ALGUMAS ACCESS SETTINGS 
+
+
+3) ALGUMAS OUTRAS SETTINGS, 
+QUE SAO 
+
+IMPORTANTES, A RESPEITO 
+
+DA CONNECTION A ESSA LOCATION....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.. MAS HÁ MAIS 1 DETALHE IMPORTANTE:
+
+
+
+PODEM EXISTIR CUSTOS ADICIONAIS 
+
+
+__ SE _ ESSE _ EXTERNAL STAGE_ 
+
+ESTIVER COLOCADO/EXISTIR:
+
+
+A) EM UMA REGION DIFERENTE 
+DA NOSSA SNOWFLAKE ACCOUNT/DATABASE 
+
+
+B) EM UMA __PLATAFORMA DIFERENTE DE NOSSA 
+SNOWFLAKE ACCOUNT/DATABASE...
+
+
+
+
+
+
+OK... O PROFESSOR HAVIA MENCIONADO ISSO...
+
+
+
+""note: ADDITIONAL COSTS MAY APPLY IF 
+REGION/PLATFORM DIFFERS"".
+
+
+
+
+
+DIGAMOS QUE, NA NOSSA SNOWFLAKE ACCOUNT,
+
+
+SELECIONAMOS 
+
+
+
+
+a regiao 
+
+
+"US EAST", 
+
+e a plataforma AWS...
+
+
+
+
+
+BEM, SE TENTARMOS CARREGAR DATA 
+
+
+
+
+DA PLATAFORMA GCP,
+
+
+
+TEREMOS DE PAGAR CUSTOS ADICIONAIS....
+
+
+
+
+
+
+PODEM EXISTIR CUSTOS ADICIONAIS... FALAREMOS 
+
+MAIS 
+
+SOBRE ISSO NAS OUTRAS SECTIONS...
+
+
+
+
+
+
+
+
+
+
+OK... MAS STAGES NAO PRECISAM 
+
+SER OBRIGATORIAMENTE EXTERNOS...
+
+
+
+
+
+
+PODEM __ sER __ INTERNOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE NAO TEMOS ACESSO 
+
+
+A UM EXTERNAL CLOUD PROVIDER,
+
+PODEMOS 
+
+TAMBÉM 
+
+USAR 
+
+
+__INTERNAL STAGES___...
+
+
+
+
+
+
+2) INTERNAL STAGES 
+
+
+--> PODE SER UMA ___LOCAL FILE _ DESTINATION,
+
+como 
+
+POR EXEMPLO 1 LOCAL STORAGE,
+
+MANTIDO PELO SNOWFLAKE...
+
+
+
+--> tipo um ""ON-PREMISE SERVER"",
+
+mantido pelo snowflake...
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS É CLARO QUE O EXTERNAL STAGE É O MAIS 
+FREQUENTE E POPULAR,
+
+
+POR ISSO 
+
+VAMOS COMECAR COM ELE...
+
+
+
+
+
+
+
+
+
+
+
+
+VAMOS COMECAR COM O CREATE DE STAGES NO 
+
+SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
