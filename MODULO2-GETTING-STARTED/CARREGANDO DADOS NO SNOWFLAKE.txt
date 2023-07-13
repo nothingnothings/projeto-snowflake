@@ -1,0 +1,547 @@
+
+
+O PROFESSOR QUER NOS MOSTRAR COMO PODEMOS 
+
+CARREGAR DATA DE 1 SOURCE EXTERNO,
+
+
+COMO S3 BUCKETS,
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É ALGO BEM COMUM....
+
+
+
+
+TEREMOS 1 QUICK DEMO,
+
+
+SEM  MTOS DETALHES...
+
+
+
+
+
+
+
+
+O PROFESSOR JÁ PREPAROU O CÓDIGO DE INSERT....
+
+
+
+
+
+
+ELE NAO VAI EXPLICAR TUDO, 
+
+MAS VAI FALAR 1 POUCO SOBRE O PROCESSO...
+
+
+
+
+
+
+
+
+
+
+
+//Rename data base & creating the table + meta data
+
+ALTER DATABASE FIRST_DB RENAME TO OUR_FIRST_DB; 
+
+CREATE TABLE "OUR_FIRST_DB"."PUBLIC"."LOAN_PAYMENT" (
+  "Loan_ID" STRING,
+  "loan_status" STRING,
+  "Principal" STRING,
+  "terms" STRING,
+  "effective_date" STRING,
+  "due_date" STRING,
+  "paid_off_time" STRING,
+  "past_due_days" STRING,
+  "age" STRING,
+  "education" STRING,
+  "Gender" STRING);
+  
+  
+ //Check that table is empy
+ USE DATABASE OUR_FIRST_DB;
+
+ SELECT * FROM LOAN_PAYMENT;
+
+ 
+ //Loading the data from S3 bucket
+  
+ COPY INTO LOAN_PAYMENT
+    FROM s3://bucketsnowflakes3/Loan_payments_data.csv
+    file_format = (type = csv 
+                   field_delimiter = ',' 
+                   skip_header=1);
+    
+
+//Validate
+ SELECT * FROM LOAN_PAYMENT;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ a parte importante é esta:
+
+
+
+  //Loading the data from S3 bucket
+  
+ COPY INTO LOAN_PAYMENT
+    FROM s3://bucketsnowflakes3/Loan_payments_data.csv
+    file_format = (type = csv 
+                   field_delimiter = ',' 
+                   skip_header=1);
+    
+
+
+
+
+
+
+-> isso vai copiar 
+
+DATA DE 1 CSV... --> Loan_payments_data,
+
+
+e por isso 
+
+
+o professor coloca aquele 
+
+file_format (que é um object, acho),
+
+
+que terá um type de csv, field_delimiter de ",",
+e skip_header como true, acho...
+
+
+
+
+
+
+
+
+--> O PROFESSOR RENOMEOU A DATABASE --> O PROFESSOR FAZ ISSO 
+
+
+POR CONVENIENCE,
+
+PQ NAS AULAS FUTURAS USAMOS O NOME "OUR_FIRST_DB"...
+
+
+
+
+
+--> A PROXIMA STEP É CRIAR 1 TABLE...
+
+
+
+
+
+
+
+
+-- PROFESSOR USA CREATE TABLE, AÍ O FULLY QUALIFIED 
+
+TABLE NAME....
+
+
+
+
+
+
+--> "OUR_FIRST_DB"."PUBLIC"."LOAN_PAYMENT" 
+
+
+
+
+
+--> DEPOIS DISSO, TEMOS OS FIELDS 
+
+COM OS DATA TYPES...
+
+
+
+
+
+
+--> RODAMOS ESSE COMMAND...
+
+
+
+
+
+ELE CRIA ESSA TABLE...
+
+
+
+
+
+
+
+
+CRIADA A TABLE, PODEMOS QUERIAR ESSA TABLE...
+
+
+
+
+
+
+--> PERCEBA QUE, DEPOIS DE CRIARMOS 1 TABLE,
+
+O _ CONTEXT_ AUTOMATICAMENTE 
+
+
+PARA O CONTEXT DA TABLE QUE FOI 
+
+
+RECÉM CRIADA... (table de LOAN_PAYMENT)...
+
+
+
+
+
+
+
+
+
+-> é claro que PODEMOS MUDAR 
+
+
+O __ CONTEXTO __ DE NOSSA DATABASE MANUALMENTE,
+
+COM SQL QUERIES...
+
+
+
+
+
+
+--> BASTA RODAR 
+
+"USE DATABASE NOME_DA_DATABASE",
+
+
+
+QUE
+
+ISSO VAI MUDAR o contexto 
+
+
+na nossa worksheet...
+
+
+
+
+
+
+
+
+
+
+outro detalhe --> PODEMOS 
+EXECUTAR
+ 
+ __PARTE_ DE NOSSAS QUERIES,
+
+ EM CADA WORKSHEET...
+
+
+
+
+BASTA SELECIONAR _ APENAS __ 
+
+
+A PARTE DA QUERY QUE VC 
+
+QUER EXECUTAR...
+
+
+
+(
+    por exemplo, podemos selecionar 
+
+    apenas 
+
+    "USE DATABASE SNOWFLAKE",
+
+    e aí rodar apenas isso...
+)
+
+
+
+
+é o que faço
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+TUDO ISSO FUNCIONA....
+
+
+
+
+
+
+
+
+
+--> PARA SELECIONAR NOSSAS 
+DATABASES 
+
+
+NO CONTEXTO SQL,
+
+SEMPRE 
+
+UTILIZE 
+"USE DATABASE"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... MAS AGORA QUEREMOS COPIAR DATA 
+
+
+DO S3 BUCKET PARA 
+
+DENTRO 
+
+
+DA TABLE DE PAYMENTS,
+QUE RECÉM CRIAMOS...
+
+
+
+
+
+
+
+
+
+-> pegamos da url bucketsnowflakes3....
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO, DENTRO DO 
+
+COPY COMMAND,
+
+
+ESPECIFICAMOS O __FILE__fORMAT__...
+
+
+
+
+
+-> O TYPE SERÁ DE CSV,
+
+
+E O DELIMITER SERÁ UMA VÍRGULA...
+
+
+
+
+
+
+-> TAMBÉM QUEREMOS _ SKIPPAR__ OS 
+
+HEADERS,
+
+POR ISSO DEFINIMOS 1 (true)...
+
+
+
+
+
+
+
+
+
+--> EXECUTAMOS...
+
+
+
+
+
+
+ISSO FUNCIONOU...
+
+
+
+O RESULT FOI 500 ROWS PARSEADOS...
+
+
+
+
+
+
+
+
+
+
+--> ok.... o status é loaded,
+
+500 rows foram parsed,
+
+
+e essa table foi criada...
+
+
+
+
+
+
+
+
+
+--> OK... EXECUTAMOS O COMMAND...
+
+
+
+-> TEMOS 500 ROWS NESSA TABLE...
+
+
+
+
+
+
+
+
+
+
+DEPOIS VEREMOS ESSE COMANDO DE COPY 
+
+MAIS APROFUNDADAMENTE...
+
+
+
+
+
+
+MAS AGORA DEVEMOS ESTUDAR MAIS A ARQUITETURA 
+
+DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+FIZ O PRIMEIRO EXERCISE... FICOU ASSIM:
+
+
+
+
+
+CREATE DATABASE EXERCISE_DB;
+
+
+USE DATABASE EXERCISE_DB;
+
+CREATE TABLE CUSTOMERS (
+    ID int,
+    first_name varchar,
+    last_name varchar,
+    email varchar,
+    age int,
+    city varchar
+);
+
+
+SELECT * FROM CUSTOMERS;
+
+
+COPY INTO CUSTOMERS
+FROM s3://snowflake-assignments-mc/gettingstarted/customers.csv
+file_format = (
+type=csv,
+field_delimiter=',',
+skip_header=1
+);
+
+
+SELECT * FROM CUSTOMERS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... funcionou.
