@@ -1,0 +1,308 @@
+
+
+
+
+
+
+
+
+JÁ ENTENDEMOS BASTANTE SOBRE 
+
+
+O COMANDO DE COPY...
+
+
+
+
+
+
+
+
+
+AGORA QUEREMOS MERGULHAR UM POUCO MAIS 
+
+NOS DETAILED E ADVANCED OPTIONS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ APRENDEMOS UM POUCO SOBRE 
+
+"""COPY OPTIONS""""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXEMPLOS DE COPY OPTIONS APARECEM NESSE STATEMENT:
+
+
+
+
+
+
+
+
+
+
+COPY INTO <table_name>
+FROM @externalStage
+FILES=('fileName1', 'fileName2', 'fileName3')
+FILE_FORMAT= (
+    FORMAT_NAME=<file_format_name>
+)
+copyOptions  ///vao aparecer aqui....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+AQUELAS 4 COISAS,
+
+
+"INTO",
+"FROM",
+"FILES" 
+
+E "FILE_FORMAT",
+
+
+
+
+
+
+
+
+TODAS __ ELAS SAO CORE, SAO INDISPENSÁVEIS...
+
+
+
+
+
+
+
+
+
+QUANDO FALAMOS EM COPY OPTIONS, FALAMOS DE OPTIONS QUE APARECEM 
+
+DEPOIS 
+
+DESSAS 4 CORE COISAS....
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+COPY INTO <table_name>
+FROM @externalStage
+FILES=('fileName1', 'fileName2', 'fileName3')
+FILE_FORMAT= (
+    FORMAT_NAME=<file_format_name>
+)
+ON_ERROR='SKIP_FILE';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->  PQ PRECISAMOS 
+
+
+DE COPY OPTIONS?
+
+
+
+
+
+
+
+
+
+É PQ __ PRECISAMOS TER 1 POUCO MAIS DE 
+
+
+__CONTROLE_ SOBRE ESSA CÓPIA...
+
+
+
+
+
+
+
+
+
+--> É PARA ISSO QUE SERVEM AS COPY OPTIONS..
+
+
+
+
+
+
+
+A SINTAXE É BEM SIMPLES --> DEVEMOS ADICIONAR 
+
+
+OS PROPERTY VALUES 
+
+
+PARA AS COPY OPTIONS,
+
+LOGO 
+
+
+
+DEPOIS DE TODAS AS CORE OPTIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> 1 EXEMPLO QUE JÁ COMPREENDEMOS,
+
+
+QUE É 1 DOS MAIS IMPORTANTES,
+
+
+
+
+É 
+
+
+A OPTION 
+
+
+
+DE 
+
+
+
+"ON_ERROR"...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+"ON_ERROR=CONTINUE"...
+
+
+
+
+
+
+
+
+
+A OPTION DE "ON_ERROR" É A MAIS IMPORTANTE,
+
+
+E É UMA BEST PRACTICE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, COM O "CONTINUE",
+
+
+DIZEMOS QUE DEVEMOS CONTINUAR 
+
+COPIANDO A DATA, MESMO COM ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... NESSA SECTION VEREMOS OUTRAS COPY OPTIONS IMPORTANTES...
+
+
+
+
+
+
+
