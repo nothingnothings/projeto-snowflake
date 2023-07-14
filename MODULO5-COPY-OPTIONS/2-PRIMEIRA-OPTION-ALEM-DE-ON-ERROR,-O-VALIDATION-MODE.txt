@@ -1,0 +1,358 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... FALAREMOS SOBRE A PRIMEIRA OPTION QUE PODEMOS ADICIONAR 
+
+ALÉM DA "ON_ERROR" OPTION...
+
+
+
+
+
+
+
+
+-> é a OPTION DE 
+
+
+
+"""VALIDATION_MODE""""...
+
+
+
+
+
+
+
+
+
+
+
+
+COM ESSE COMANDO,
+
+
+
+
+__ NAO FAZEMOS O COPY DE DATA,
+
+
+E SIM __ APENAS ___ VALIDAMOS __ O 
+
+COPY COMMAND EM SI...
+
+
+
+
+
+
+
+
+
+COM "VALIDATION_MODE",
+
+NÓS ___VERIFICAMOS___ E VALIDAMOS___ 
+
+A MANEIRA PELA QUAL ESSE COMANDO DE COPY 
+
+RODARIA,
+
+
+
+
+E SE __ ENCONTRARÍAMOS QUAISQUER ERRORS DURANTE 
+
+ESSE COPY....
+
+
+
+
+
+
+
+SUA SINTAXE É ASSIM:
+
+
+
+
+
+
+
+
+    COPY INTO <table_name>
+    FROM @externalStage
+    FILES=('Exemplo1.csv', 'Exemplo2.csv')
+    FILE_FORMAT=(FORMAT_NAME=MANAGE_DB.file_formats.my_file_format)
+    VALIDATION_MODE = RETURN_n_ROWS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ADICIONAMOS 
+
+"VALIDATION_MODE"....
+
+
+
+
+
+
+
+
+
+podemos comecar com "RETURN_ERRORS"...
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+  COPY INTO <table_name>
+    FROM @externalStage
+    FILES=('Exemplo1.csv', 'Exemplo2.csv')
+    FILE_FORMAT=(FORMAT_NAME=MANAGE_DB.file_formats.my_file_format)
+    VALIDATION_MODE = RETURN_ERRORS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    COM ISSO, SE ACONTECEREM QUAISQUER ERRORS 
+
+    DURANTE ESSE COPY PROCESS,
+
+
+
+
+    O SNOWFLAKE VAI NOS AVISAR DISSO,
+
+    E VAI RETORNAR 1 LISTA DOS ERRORS OCORRIDOS...
+
+
+
+
+
+
+
+--> 
+ A OUTRA OPTION,
+
+
+
+
+"return_n_rows",
+
+
+
+
+COM ISSO, PODEMOS ESPECIFICAR 
+
+O NÚMERO 
+
+
+DE ___ROWS __ QUE DEVEM SER RETORNADOS,
+
+
+CASO NENHUM ERRO OCORRA...
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+
+
+
+   COPY INTO <table_name>
+    FROM @externalStage
+    FILES=('Exemplo1.csv', 'Exemplo2.csv')
+    FILE_FORMAT=(FORMAT_NAME=MANAGE_DB.file_formats.my_file_format)
+    VALIDATION_MODE = RETURN_10_ROWS;
+
+
+
+--  A OUTRA OPTION,
+
+
+
+
+-- "return_n_rows",
+
+
+
+
+-- COM ISSO, PODEMOS ESPECIFICAR 
+
+-- O NÚMERO 
+
+
+-- DE ___ROWS __ QUE DEVEM SER RETORNADOS,
+
+
+-- CASO NENHUM ERRO OCORRA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, DIZEMOS QUE QUEREMOS RETORNAR 10 ROWS,
+
+CASO 1 ERRO ACONTECA..
+
+
+
+
+
+
+
+
+---> MAS É CLARO QUE 
+
+
+ESSES 10 ROWS NAO SERAO CARREGADOS NA TABLE,
+
+E SIM 
+
+
+APENAS SERAO __rETORNADOS A NÓS..
+
+
+
+
+
+
+
+
+
+
+
+--> SE QUISERMOS TER A FORMA COMPLETA DESSA VALIDATION,
+
+PODEMOS ESCREVER ASSIM:
+
+
+
+
+
+
+ COPY INTO <table_name>
+    FROM @externalStage
+    FILES=('Exemplo1.csv', 'Exemplo2.csv')
+    FILE_FORMAT=(FORMAT_NAME=MANAGE_DB.file_formats.my_file_format)
+    VALIDATION_MODE = RETURN_10_ROWS | RETURN ERRORS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, VAMOS RETORNAR 10 ROWS SE TIVERMOS SUCESSO NO COPY,
+
+
+E _ VAMOS RETORNAR ERRORS, SE TIVERMOS QUALQUER ERROR 
+
+DURANTE O COPY...
+
+
+
+
+esse validation mode é bem simples,
+
+
+por isso devemos o ver na prática...
+
+
+
+
+PARA ISSO, PRIMEIRAMENTE CRIAMOS 1 NOVA WORKSHEET,
+
+QUE CHAMAREMOS DE VALIDATION MODE...
