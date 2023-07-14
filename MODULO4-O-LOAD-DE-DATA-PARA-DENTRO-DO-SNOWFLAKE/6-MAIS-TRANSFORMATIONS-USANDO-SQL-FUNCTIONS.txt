@@ -1,0 +1,664 @@
+
+
+
+
+
+
+
+NA ÚLTIMA AULA, APRENDEMOS SOBRE 
+
+
+ALGUMAS DAS TRANSFORMATIONS COM SQL FUNCTIONS....
+
+
+
+
+
+
+
+
+
+
+--> MAS TEMOS MAIS FUNCTIONS DISPONÍVEIS,
+
+
+E É ISSO QUE VEREMOS AGORA....
+
+
+
+
+
+
+
+
+
+-> TEMOS OUTRO EXEMPLO...
+
+
+
+
+
+
+-> PRIMEIRO DEVEMOS CRIAR A TABLE, COM ESTE COMANDO:
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    PROFITABLE_FLAG VARCHAR(30)
+)
+
+
+
+
+
+
+--> RODAMOS ISSO MAIS UMA VEZ, PARA QUE A TABLE FIQUE EMPTY...
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+AGORA, NESSE PRÓXIMO EXEMPLO, NAO QUEREMOS USAR UMA SUBSTRING,
+
+
+E SIM QUEREMOS 
+
+USAR 
+
+
+__ UMA _ SUBSET_ DE COLUMNS..
+
+
+
+
+
+
+
+--> ou seja, queremos formar novos values em 1 column,
+
+com base 
+
+
+nos values de 2 columns...
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR EXPLICA QUE ISSO É INTERESSANTE,
+
+PQ QUER DIZER QUE 
+
+
+
+'''NAO PRECISAMOS ESCREVER ALGO 
+
+EM TODAS AS COLUMNS QUE TEMOS NA TABLE''' (as 4 columns)...
+
+
+
+
+
+
+
+
+PARA ISSO, COMECAMOS ASSIM:
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX (ORDER_ID, PROFIT)
+FROM (
+    SELECT s_alias.$1,
+           s_alias.$3
+           FROM $MANAGE_DB.external_stages.aws_stage s_alias)
+    file_format=(    
+        type=csv,
+        field_delimiter=',',
+        skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+COMO VOCE PODE PERCEBER, ESTAMOS 
+
+
+SELECIONANDO, PARA FINS DE COPIA,
+
+APENAS 
+
+2 COLUMNS DE NOSSO CSV...
+
+
+
+
+
+
+
+QUER DIZER QUE AS OUTRAS 2 COLUMNS VAO FICAR 
+
+VAZIAS... (E isso era para ser inaceitável, no sql)...
+
+
+
+
+
+
+
+
+
+--> MAS PODEMOS, SIM, DEIXAR AQUELAS 2 COLUMNS VAZIAS, 
+
+
+NO MUNDO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+-> PARA DEIXAR AQUELAS 2 COLUMNS VAZIAS,
+
+
+
+DEVEMOS USAR () AO REDOR DO NOME 
+
+DAS COLUMNS em  "COPY INTO",
+
+
+tipo assim:
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX (ORDER_ID, PROFIT)
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, VAMOS QUERER INSERIR EM APENAS 
+
+ESSAS 2 COLUMNS...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO COMPLETO:
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    PROFITABLE_FLAG VARCHAR(30)
+); //para recriar/esvaziar a table anterior...
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX (ORDER_ID, PROFIT) -- com isso, inserimos apenas nas columns de números 1 e 3, e o resto das columns, nessa table (amount e profitable_flag) FICAM/FICARAO VAZIAS (isso é possível out of the box, com o snowflake)....
+FROM (
+    SELECT s_alias.$1,
+           s_alias.$3
+           FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+    file_format=(    
+        type=csv,
+        field_delimiter=',',
+        skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    COM ISSO, FAREMOS WRITE OU COPY 
+
+
+    EM __ APENAS _ ESSAS 2 COLUMNS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+EM ORDER_ID E PROFIT....
+
+
+
+
+
+
+
+
+
+DEVEMOS VISUALIZAR COMO ISSO FICA,
+
+
+NO RESULT SET...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... FICOU ASSIM:
+
+
+
+
+
+ORDER_ID    AMOUNT    PROFIT    PROFITABLE_FLAG
+
+B-25601		  NULL    -1,148	NULL
+B-25601		  NULL      -12	    NULL
+
+
+
+
+
+
+
+
+
+
+CERTO... FAZ SENTIDO...
+
+
+
+
+
+
+quer dizer que o comportamento do 
+
+
+snowflake é 
+
+
+
+
+DEFAULT = NULL....
+
+
+
+
+
+
+
+
+
+
+NO POSTGRESQL, TERÍAMOS DE DEFINIR 
+
+
+O VALUE DE NULL 
+
+
+COM COISAS COMO 
+
+
+
+
+ALTER TABLE table_name 
+    ALTER COLUMN foo SET DEFAULT NULL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> ESSA É UMA IMPORTANTE E ÚTIL 
+
+TÉCNICA QUE 
+
+PODEMOS USAR...
+
+
+
+
+
+
+
+-> TECNICA -> PODEMOS 
+
+MENCIONAR AS COLUMNS 
+
+
+QUE QUEREMOS POVOAR COM DATA COPIADA
+
+
+DE NOSSOS STAGES...
+
+
+
+
+
+----> E PODEMOS MENCIONAR AS COLUMNS TAMBÉM
+
+
+PARA TER/FICAR COM UM ___aDDITIONAL ID...
+
+
+
+
+
+
+--> como fazer isso?
+
+
+
+
+
+
+
+
+
+
+bem, aqui temos 
+
+
+vários text ids,
+
+
+na column de "order_id"...
+
+
+
+
+
+
+--> E TER text ids 
+
+
+NEM SEMPRE É MT ÚTIL... EM MTOS CASOS 
+
+É MELHOR TER 1 NÚMERO 
+
+SIMPLES, UM INT,
+
+
+COMO ID...
+
+
+
+
+
+
+
+
+
+--> E ISSO, O MAKE DE 
+""ids adicionais"",
+
+
+artificiais,
+
+é algo que podemos 
+
+fazer com o SNOWFLAKE..
+
+
+
+
+
+
+
+
+
+
+---> É POR ISSO QUE DEVEMOS VER COMO PODEMOS 
+
+
+
+CRIAR 1 "COMPLETE AUTOINCREMENT ID COLUMN"
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+In Snowflake, you can create 
+an auto-increment ID column by
+ utilizing the SEQUENCE object
+  in combination with a column of type 
+  NUMBER or INTEGER. Here's an example of
+   how you can create an auto-increment ID
+    column in Snowflake:
+
+
+
+
+-- Create a sequence object
+CREATE SEQUENCE my_sequence;
+
+-- Create a table with an auto-increment ID column
+CREATE TABLE my_table (
+  id NUMBER DEFAULT my_sequence.NEXTVAL,
+  name VARCHAR(50),
+  age INTEGER
+);
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE PODEMOS CRIAR OBJECTS 
+
+DE TIPO "SEQUENCE",
+
+E ENTAO 
+
+OS UTILIZAR EM COLUMNS...
+
+
+
+
+
+--------------
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROFESSOR USA OUTRO CAMINHO,
+
+
+ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID NUMBER autoincrement start 1 increment 1,  -- criamos um id artificial, que será autoincrementing...
+    amount INT,
+    PROFIT INT,
+    PROFITABLE_FLAG VARCHAR(30)
+);
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX (PROFIT, AMOUNT) -- com isso, inserimos apenas nas columns de números 1 e 3, e o resto das columns, nessa table (amount e profitable_flag) FICAM/FICARAO VAZIAS (isso é possível out of the box, com o snowflake)....
+FROM (
+    SELECT s_alias.$2,
+           s_alias.$3
+           FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+    file_format=(    
+        type=csv,
+        field_delimiter=',',
+        skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... FUNCIONOU.
+
+
+
+o order_id vai ser automaticamente 
+
+preenchido, com esse auto-increment...
+
+
+
+
+
+
+ficou tipo assim:
+
+
+
+
+
+
+
+
+ORDER_iD      AMOUNT    PROFIT    PROFITABLE_FLAG
+    1	    -1,148	    1,275	       NULL
+    2	        -12	     66	           NULL
+    3	        -2	      8	           NULL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
