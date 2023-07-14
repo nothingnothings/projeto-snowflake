@@ -1,0 +1,2006 @@
+
+
+
+
+até agora,
+
+
+
+NÓS SEMPRE ESPECIFICAMOS 
+
+
+O 
+
+
+
+
+"file_format"
+
+
+DO LADO DE NOSSO COMANDO 
+
+"COPY INTO"...
+
+
+
+
+
+
+
+
+
+
+--> e isso é possível, sim...
+
+
+
+
+
+
+
+
+
+-> ISSO Quer dizer que, 
+
+PARA CADA COPY STATEMENT,
+
+
+ESPECIFICAMOS 
+
+O FILE_FORMAT....
+
+
+
+
+
+--> e isso pode ficar bem repetitivo....
+
+
+
+
+
+pq temos que escrever aquele formato 
+
+
+
+
+
+    file_format= (type = csv,
+     field_delimiter=',',
+      skip_header=1
+      )
+
+
+
+
+
+
+
+
+
+ISSO É TOTALLY FINE,
+
+SIM, 
+
+MAS HÁ OUTRA MANEIRA DE FAZER ISSO...
+
+
+
+
+
+
+
+
+--> É UMA MANEIRA MELHOR, UMA 
+
+BEST PRACTICE...
+
+
+
+
+
+
+
+
+
+
+--> PQ O FORMATO 
+
+
+"file_format" 
+
+
+
+PODE ACTUALLY SER DEFINIDO COMO 1 OBJECT...
+
+
+
+
+
+
+
+
+PQ STAGES PODEM SER OBJECTS,
+
+SIM,
+
+
+
+MAS ___ FILE_FORMATS 
+
+TAMBÉM PODEM O SER...
+
+
+
+
+
+--> 
+
+
+
+
+
+
+
+--> PARA ISSO, PRIMEIRAMENTE,
+
+
+
+CRIAMOS 1 TABLE, PARA QUE POSSAMOS 
+
+
+TRABALHAR COM EXEMPLOS...
+
+
+
+
+
+
+CRIAMOS AS TABLES ASSIM:
+
+
+
+
+
+
+
+//CREATING TABLE 
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+//CREATING SCHEMA TO KEEP THINGS ORGANIZED 
+CREATE OR REPLACE SCHEMA MANAGE_DB.file_formats;
+
+
+
+
+
+
+
+
+
+
+
+-> depois disso,
+
+CRIAREMOS 
+
+
+1 OBJECT "file_format",
+
+
+
+com este statement:
+
+
+
+//Creating FIle format object
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.my_file_format;
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+VAMOS CRIAR 1 SCHEMA DE NOME 
+
+"file_formats',
+
+
+em que manteremos 
+
+TODOS NOSSOS FILE_FORMATS...
+
+
+
+
+
+
+
+
+
+--> MANTER OBJECTS EM SCHEMAS 
+
+DEDICADOS
+
+
+
+___ NAO É OBRIGATÓRIO,
+
+
+MAS __ É UMA BEST PRACTICE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE QUISERMOS VISUALIZAR 
+
+
+ESSE OBJECT,
+
+PODEMOS FAZER ISSO COM 
+
+
+
+
+
+
+
+
+DESC FILE FORMAT my_file;
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, TEMOS:
+
+
+
+
+property	property_type	property_value	property_default
+TYPE	        String	           CSV	            CSV
+RECORD_DELIMITER	String	        \n	            \n
+FIELD_DELIMITER	      String	    ,	            ,
+FILE_EXTENSION	        String		
+SKIP_HEADER	            Integer	     0	            0
+PARSE_HEADER	        Boolean	    false	        false
+DATE_FORMAT	                String	  AUTO	        AUTO
+TIME_FORMAT	String	AUTO	AUTO
+TIMESTAMP_FORMAT	String	AUTO	AUTO
+BINARY_FORMAT	String	HEX	HEX
+ESCAPE	String	NONE	NONE
+ESCAPE_UNENCLOSED_FIELD	String	\\	\\
+TRIM_SPACE	Boolean	false	false
+FIELD_OPTIONALLY_ENCLOSED_BY	String	NONE	NONE
+NULL_IF	List	[\\N]	[\\N]
+COMPRESSION	String	AUTO	AUTO
+ERROR_ON_COLUMN_COUNT_MISMATCH	Boolean	true	true
+VALIDATE_UTF8	Boolean	true	true
+SKIP_BLANK_LINES	Boolean	false	false
+REPLACE_INVALID_CHARACTERS	Boolean	false	false
+EMPTY_FIELD_AS_NULL	    Boolean	    true	        true
+SKIP_BYTE_ORDER_MARK	Boolean	    true	        true
+ENCODING	         String	            UTF8	UTF8
+
+
+
+
+
+
+
+
+
+
+
+
+
+como voce pode ver, esses sao os aspectos 
+
+DEFAULT 
+
+
+de UM OBJECT FILE_FORMAT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O STANDARD NO SNOWFLAKE É 
+
+CAPS,
+
+PARA TODAS AS COISAS (NOMES DE TODAS AS COISAS)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA QUE CRIAMOS ESSE FILE_FORMAT,
+
+
+DEVEMOS
+
+VISUALIZAR 
+
+
+SUAS PROPRIEDADES....
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE 
+
+RODAMOS 
+
+
+
+
+
+
+
+
+
+DESC FILE FORMAT MANAGEDB.file_formats.my_file_format....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS MTAS PROPERTIES...
+
+
+
+
+
+
+
+
+
+--> O TYPE ESTÁ DEFINIDO COMO CSV,
+
+PQ ESSE É O DEFAULT...
+
+
+
+
+
+
+É O VALUE QUE TEMOS PARA ESSE FILE_FORMAT...
+
+
+
+
+
+
+
+
+
+
+
+
+--> O FIELD_DELIMITER
+
+
+
+DEFAULT É 
+","...
+
+
+
+
+
+
+
+
+--> É CLARO QUE 
+
+
+
+
+
+EXISTEM __ MTAS OUTRAS PROPRIEDADES,
+
+
+ALÉM DE 
+
+
+
+"""TYPE"",
+
+
+"FIELD_DELIMITER"",
+
+
+E 
+
+"SKIP_HEADER""..
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA QUE CRIAMOS ESSE OBJECT,
+
+
+PODEMOS TAMBÉM O UTILIZAR
+
+NO NOSSO COMANDO DE 
+
+
+COPY...
+
+
+
+
+
+
+MAS COMO PODEMOS UTILIZAR 
+
+1 "FILE FORMAT OBJECT",
+
+CRIANDO ANTERIORMENTE (esse my_file_format),
+
+
+COM UM 
+
+
+
+
+__COPY __ INTO STATEMENT?
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+--COPY INTO COMMAND QUE USA NOSSO OBJECT "FILE FORMAT", de nome my_file_format....
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+    FROM @MANAGE_DB.external_stages.aws_stage_errors_example
+    file_format=(
+        FORMAT_NAME=MANAGE_DB.file_formats.my_file_format
+    )
+    files=('OrderDetails_error.csv')
+    ON_ERROR='SKIP_FILE_3';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RODEI ISTO:
+
+
+
+
+
+
+
+
+--COPY INTO COMMAND QUE USA NOSSO OBJECT "FILE FORMAT", de nome my_file_format....
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+    FROM @MANAGE_DB.external_stages.aws_stage_errors_example
+    file_format=(
+        FORMAT_NAME=MANAGE_DB.file_formats.my_file_format
+    )
+    files=('OrderDetails_error.csv')
+    ON_ERROR='SKIP_FILE_3';
+
+
+
+
+
+
+
+
+
+
+E FUNCIONOU, OS ROWS FORAM 
+
+pARTIALLY_LOADED (3 nao foram carregados,
+pois continham erros)....
+
+
+
+
+
+
+
+
+--> PRECISAMOS DESSE PARAMETER 
+
+DE 
+
+
+"FORMAT_NAME= fully_qualified_name_of_the_file_format"
+
+
+
+
+
+
+
+
+
+
+--> OK... E O RESTO 
+
+DAS COISAS FICAM EXATAMENTE COMO ANTES...
+
+
+
+
+
+
+
+
+--> O PROFESSOR GANHOU 1 ERRO,
+
+PQ ELE NAO TINHA NENHUMA WAREHOUSE 
+
+
+SELECIONADA...
+
+
+
+
+--> PROFESSOR RECEBEU ALGUNS ERRORS.....
+
+
+
+
+--> ELE RECEBEU ERRORS POR CONTA 
+
+
+DE "SKIP_HEADER"
+
+SETTADO COMO 0...
+
+(nesse object de "file_format")...
+
+
+
+
+
+--> 
+
+
+
+
+
+
+
+PARA RESOLVERMOS ESSA SITUACAO,
+
+
+PODEMOS _ ALTERAR O OBJECT FILE_FORMAT,
+
+FAZER COM QUE 
+
+
+
+
+ESSA SUA PROPERTY FIQUE 
+
+
+COMO 
+
+
+
+"SKIP_HEADER=1"
+
+
+em vez de 
+
+"SKIP_HEADER=0"....
+
+
+
+
+
+
+
+
+
+MAS COMO PODEMOS ALTERAR 
+
+
+O FILE FORMAT?
+
+
+
+
+
+
+
+--> BASTA 
+
+
+ALTERAR COM 1 ALTER STATEMENT:
+
+
+
+
+//ALTERING FILE FORMAT OBJECT's defaults
+ALTER FILE FORMAT MANAGE_DB.file_formats.my_file_format 
+    SET SKIP_HEADER = 1;
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO ESTÁ FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+FROM (select s_alias.$1, s_alias.$2 FROM @MANAGE_DB.external_stages.aws_stage s_alias)
+file_format=( //MANEIRA DEFAULT DE ESTIPULAR 1 FILE_fORMAT (temos que 
+//repetir em cada COPY INTO statement... nada prático.
+)
+    type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    files=('OrderDetails.csv');
+
+
+
+
+
+-- É POR ISSO QUE PRECISAMOS CRIAR OBJECTS "file_format", para evitar 
+-- essa repeticao de código.
+
+
+
+//CREATING TABLE 
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+//CREATING SCHEMA TO KEEP THINGS ORGANIZED 
+CREATE OR REPLACE SCHEMA MANAGE_DB.file_formats;
+
+
+//Creating File Format object - com isso criamos 1 file format de nome 
+// 'my_file_format'
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.my_file_format;
+
+
+
+DESC FILE FORMAT my_file_format;
+
+
+//ALTERING FILE FORMAT OBJECT's defaults
+ALTER FILE FORMAT MANAGE_DB.file_formats.my_file_format 
+    SET SKIP_HEADER = 1;
+
+
+TRUNCATE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX;
+
+
+
+//--COPY INTO COMMAND QUE USA NOSSO OBJECT "FILE FORMAT", de nome my_file_format....
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX 
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+    file_format=(
+        FORMAT_NAME=MANAGE_DB.file_formats.my_file_format
+    )
+    files=('OrderDetails_error.csv')
+    ON_ERROR='SKIP_FILE_4';
+
+
+
+
+
+
+
+
+
+cereto...
+
+
+
+
+
+
+
+
+
+COM ISSO, CONSEGUI FAZER COPY INTO 
+
+NOVAMENTE...
+
+
+
+
+
+
+
+
+
+-> TAMBÉM PODERÍAMOS SETTAR 
+
+O FIELD_DELIMITER
+
+
+
+COMO 1 VALUE DIFERENTE,
+
+
+OU ENTAO 
+
+
+DEFINIR O SKIP_HEADER COMO 1,
+ 
+ O QUE É BEM MELHOR,
+
+ EM GERAL....
+
+
+
+
+
+
+
+
+
+
+
+ --> OK.. AGORA TEMOS,
+
+ DENTRO DESSE FILE_FORMAT,
+
+
+ O SKIP_HEADER SETTADO COMO TRUE...
+
+
+
+
+
+
+
+
+
+
+ COMO ANTES, TEMOS ESSES 2 ERRORS,
+
+
+ MAS ELES SAO IGNORADOS,
+
+
+ EXATAMENTE COMO ANTES,
+
+
+ POR CONTA DE 
+
+
+ SKIP_FILE_4....
+
+
+
+
+
+
+
+
+
+
+
+ OK.... É ASSIM QUE PODEMOS 
+
+
+
+
+ CRIAR-_ E ALTERAR __ AS options
+
+
+
+ DE 1 
+
+ OBJECT "file_format"...
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS TEMOS __ OUTRA OPTION..
+
+
+
+
+
+
+
+
+
+PQ TALVEZ, SE ESTIVERMOS 
+
+CRIANDO 
+
+
+1 OBJECT 
+
+
+"FILE_FORMAT",
+
+
+TALVEZ 
+
+
+
+NAO QUEIRAMOS 
+
+
+__ USAR _ TODAS AS DEFAULT 
+
+
+PROPERTIES....
+
+
+
+
+
+
+
+
+--> PODERÍAMOS:
+
+
+
+
+1) CRIAR ESSE OBJECT DE "FILE_FORMAT" 
+
+ANTES, E ENTAO APENAS 
+
+DEPOIS O ALTERARÍAMOS,
+COM ESSE COMANDO DE 
+
+"ALTER FILE FORMAT <NAME>
+    SET PROPERTY_NAME=XXX"
+
+
+
+
+
+
+
+OU, ENTAO:
+
+
+
+
+
+2) CRIAR ESSE FILE_FORMAT,
+
+
+COM SETTINGS/PROPERTY VALUES 
+
+ESPECÍFICOS,
+
+
+
+POR MEIO DE UM OUTRO COMANDO...
+
+
+
+
+
+
+
+ESSE COMANDO SERIA:
+
+
+
+
+
+
+
+
+
+//DEFINING PROPERTIES OF A FILE FORMAT, ON THE MOMENT 
+//THE CREATION OF THE FILE FORMAT OBJECT:
+
+
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.my_file_format
+    TYPE=JSON,
+    TIME_FORMAT=AUTO;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... COM ISSO,
+
+
+CONSEGUIMOS FICAR 
+
+
+
+COM 1 FILE_FORMAT 
+
+
+DE JSON, EM VEZ 
+
+DE 
+CSV...
+
+
+
+
+
+
+
+
+
+-> E SE FAZEMOS 
+
+ISSO, SE DEFINIMOS 
+
+ESSE OBJECT,
+
+
+PODEMOS __ DEFINIR 
+
+toda as propriedades como 
+
+
+desejamos...
+
+
+
+
+
+
+
+
+
+PODEMOS DEIXAR O TYPE COMO JSON,
+
+
+E O TIMEFORMAT COMO AUTO...
+
+
+
+
+
+
+
+
+
+
+
+---> COM ESSE FILE FORMAT CRIADO,
+
+
+
+DEVEMOS VISUALIZAR AS PROPERTIES....
+
+
+
+
+
+
+
+
+
+
+
+JSON ---> AGORA É O TYPE..
+
+
+
+
+
+
+
+SE AGORA TENTARMOS RODAR AQUELE 
+
+
+COMANDO DE COPY INTO DE ANTES,
+
+
+
+
+
+
+RECEBEREMOS 1 ERROR....
+
+
+
+
+
+
+
+
+RECEBEREMOS 1 ERROR 
+
+
+JUSTAMENTE 
+
+
+PQ DEFINIMOS ESSE FILE_FORMAT 
+
+COMO __ JSON,
+
+
+
+AO MESMO TEMPO QUE 
+
+O FORMATO DE NOSSOS ARQUIVOS,
+
+
+
+DAQUELE STAGE/BUCKET,
+
+É 
+
+
+
+CSV...
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE ANTES PRECISAMOS 
+
+
+
+
+
+MUDAR __ O _ TYPE __ 
+
+
+
+
+DESSE OBJECT 
+
+"file format"...
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS TROCAR 
+O TYPE 
+
+DESSE FILE_FORMAT, DE JSON PARA CSV,
+
+
+E FAZEMOS ISSO COM ESTE COMANDO:
+
+
+
+
+
+ALTER FILE FORMAT MANAGE_DB.file_formats.my_file_format
+SET TYPE=CSV;
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+MAS VEREMOS QUE __ ISSO 
+
+__ NAO FUNCIONARÁ,
+
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS PQ ISSO NAO FUNCIONA,
+
+NO SNOWFLAKE?
+
+
+
+
+
+
+
+
+
+-> ISSO N FUNCIONA PQ,
+
+DEPENDENDO DO TYPE (csv ou JSON),
+
+
+HÁ 
+
+__DIFERENTES_ FILE OPTIONS __ 
+
+
+ANEXADAS __ A ESSE OBJECT 
+
+"file_format"....
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE, 
+
+PARA O TYPE 
+
+"""CSV""", TEMOS DIFERENTES 
+
+
+
+OPTIONS, NESSE FILE FORMAT OBJECT,
+
+
+
+DO QUE 
+
+
+
+OS 
+FILE FORMAT OBJECTS DE TYPE "JSON"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+
+
+QUE É ______ IMPOSSÍVEL___ 
+
+
+ALTERAR APENAS O TYPE 
+
+
+DE 1 FILE_FORMAT OBJECT,
+
+
+DEPOIS 
+
+DE 
+ELE 
+JÁ TER SIDO CRIADO....
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+é por isso que ganhamos uma mensagem 
+
+
+
+de error,
+
+
+
+"FILE FORMAT TYPE CANNOT 
+BE CHANGED"...
+
+
+
+
+
+
+
+
+
+PARA REALMENTE MUDARMOS 
+
+O TYPE DESSE FILE_FORMAT,
+
+SOMOS OBRIGADOS A 
+
+__rECRIAR ESSE FILE_FORMAT OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- FAZEMOS ISSO POR MEIO 
+
+DO "CREATE OR REPLACE"...
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+NAS PROPERTIES,
+
+
+
+VISUALIZAMOS QUE 
+
+REALMENTE SERÁ DE TYPE CSV...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas é claro que 
+
+PODEMOS FAZER OVERRIDE 
+
+DE 
+
+CERTAS 
+
+PROPRIEDADES 
+
+
+
+
+DE 1 JÁ EXISTING FILE_FORMAT OBJECT,
+
+
+
+
+FAZER OVERRIDE 
+
+DE APENAS ALGUMAS PROPERTIES,
+
+
+DE TODAS AQUELAS QUE ELE 
+POSSUI... 
+
+
+
+
+
+PODEMOS FAZER ISSO __DENTRO 
+
+
+DE 1 SINGLE COPY COMMAND...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+    file_format=(
+        FORMAT_NAME=MANAGE_DB.file_formats.my_file_format
+        type=json -- assim, é possível fazer overwrite de APENAS ALGUMAS PROPRIEDADES DO FILE FORMAT OBJECT, e nao de todas as properties... (e apenas durante esse comando de "copy into")
+    )
+    files=('OrderDetails_error.csv')
+    ON_ERROR='SKIP_FILE_5';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE AS SETTINGS 
+
+DE CADA 
+
+
+
+COPY COMMAND FAZEM OVERWRITE 
+
+
+NAS SETTINGS 
+
+
+
+
+
+DOS OBJECTS FILE_FORMAT DEFINIDOS 
+
+ANTERIORMENTE...
+
+
+
+
+
+--> ok... podemos usar isso 
+
+
+
+se queremos que apenas 
+1 
+setting de 1 file_format seja 
+
+alterada..
+
+
+
+
+-----------------------
+
+
+
+
+MAS AQUI TEMOS OUTRA COISA BEM SURPREENDENTE...
+
+
+
+
+
+
+
+SE VISUALIZARMOS 
+
+
+
+
+O NOSSO STAGE,
+
+
+COM 
+
+"DESC STAGE __NOME__DO__STAGE___",
+
+
+
+
+
+
+SE VISUALIZARMOS 
+
+
+
+O STAGE OBJECT,
+
+
+VEREMOS QUE __ ELE _ TAMBÉM 
+
+
+
+TEM ESSAS PROPRIEDADES...
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+O STAGE OBJECT 
+
+TEM AS PROPRIEDADES:
+
+
+
+TYPE --> CSV 
+
+
+RECORD_DELIMITER --> \n 
+
+STAGE_FILE_FORMAT --> , 
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+
+aqui vemos que 
+
+
+as properties 
+
+
+
+do FILE FORMAT object 
+
+
+TAMBÉM 
+
+
+PODEM SER ENCONTRADAS 
+
+
+
+
+DENTRO DO OBJECT 
+
+""STAGE""...
+
+
+
+
+
+
+
+
+
+--> SE COMPARARMOS AS PROPERTIES 
+
+DISPONIVEIS 
+
+NOS 2 
+
+OBJECTS,
+
+
+VEREMOS QUE 
+
+
+
+
+
+_____________________ QUASE TODAS ___ AS 
+
+PROPRIEDADES __ 
+
+SAO AS MESMAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA, TEMOS:
+
+
+
+
+1) TYPE 
+
+
+2) RECORD_DELIMITER 
+
+
+3) FIELD_DELIMITER 
+
+4) FILE_EXTENSION 
+
+
+5) SKIP_HEADER 
+
+
+6) DATE_FORMAT 
+
+7) TIME_FORMAT 
+
+
+8) TIMESTAMP_FORMAT 
+
+
+9) BINARY_FORMAT 
+
+
+10) ESCAPE 
+
+
+11) ESCAPE_UNENCLOSED_FIELD
+
+
+12) TRIM_SPACE 
+
+
+13) FIELD,OPTIONALLY,ENCLOSED,BY 
+
+
+
+14) NULL,IF
+
+
+
+15) COMPRESSION 
+
+
+16) ERROR_ON_COLUMN_COUNT_MISMATCH 
+
+
+17) VALIDATE_UTF8
+
+18) SKIP_BLANK_LINES 
+
+
+19) REPLACE_INVALID_CHARACTERS
+
+
+20) EMPTY_FIELD_AS_NULL
+
+
+21) SKIP,BYTE,ORDER,MARK 
+
+
+22) ENCODING...
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSAS PROPERTIES EXISTEM 
+
+
+NOS 2 OBJECTS...
+
+
+
+
+
+
+
+--> QUER _ DIZER QUE 
+
+PODERÍAMOS FACILMENTE__ DEFINIR __ ESSAS PROPRIEDADES 
+
+
+
+TAMBÉM 
+
+
+NO __ 
+
+
+STAGE OBJECT...
+
+
+
+
+
+
+
+
+--> MAS É CONSIDERADO UMA BEST PRACTICE 
+
+USAR__ 1 FILE FORMAT OBJECT SEPARADO 
+
+
+DOS STAGES,
+
+PARA MANTER AS COISAS 
+
+
+MAIS SEPARADAS E INDEPENDENTES... 
+
+
+
+
+
+
+
+
+
+
+
+
+no caso,
+
+USAMOS AS PROPRIEDADES 
+
+
+DO 
+
+"FILE FORMAT OBJECT"
+
+
+
+
+
+
+PARA OVERWRITTAR 
+
+
+AS __ PROPERTIES __ 
+
+DO STAGE OBJECT...
+
+
+
+
+
+
+
+-> A ORDEM DE PREFERENCIA, PORTANTO É:
+
+
+
+
+
+
+
+
+file_format DENTRO DO COPY INTO 
+
+ >
+
+file_format object no lado de fora
+
+ >
+
+ stage object 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... É ISSO QUE DEVEMOS SABER SOBRE 
+
+
+O OBJECT "FILE_FORMAT",
+
+
+
+
+E SOBRE SEU USO COM O COMANDO DE "COPY INTO"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA QUE APRENDEMOS UM MONTE SOBRE 
+
+
+ESSE COMANDO DE COPY,
+
+
+SOBRE STAGE OBJECTS,
+
+
+SOBRE O TRANSFORM DE DATA 
+
+E 
+
+
+SOBRE FILE_FORMAT OBJECT,
+
+
+
+
+
+
+
+É HORA DE RESUMIRMOS O QUE APRENDEMOS...
+
+
+
+
+
+
+FAREMOS ISSO NA PRÓXIMA AULA..
+
+
+
+
+
+
+
+
+TAMBÉM PRATICAREMOS O QUE APRENDEMOS...
+
+
+
+
+
+
