@@ -658,6 +658,98 @@ ORDER_iD      AMOUNT    PROFIT    PROFITABLE_FLAG
 
 
 
+CERTO...
+
+
+
+
+OK... POR EXEMPLO, PODERÍAMOS USAR 1 WHERE STATEMENT 
+
+
+E PROCURAR 
+
+
+
+POR 
+
+
+"
+WHERE 
+
+ORDER_ID > 15"...
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PEGAMOS TODOS OS ORDER_ID MAIORES 
+
+DO QUE 15....
+
+
+
+
+
+
+
+
+
+--. ISSO PODE SER BEM ÚTIL, NO CASO...
+
+
+
+
+
+
+
+
+
+
+--> TUDO FUNCIONOU,
+
+
+
+
+DE FORMA FINE E EASY....
+
+
+
+
+
+
+
+
+
+
+--> MAS O QUE ACONTECE SE ACONTECEREM ALGUNS ERRORS..?
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE VEREMOS 
+
+
+"""O QUE PODEMOS FAZER QUANDO TIVERMOS ERRORS
+
+ENQUANTO FAZEMOS O COPY DE DATA"""""...
+
+
+
+
+
+
+
 
 
 
