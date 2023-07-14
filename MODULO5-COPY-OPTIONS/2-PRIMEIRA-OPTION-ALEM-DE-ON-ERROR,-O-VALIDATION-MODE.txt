@@ -356,3 +356,567 @@ por isso devemos o ver na prática...
 PARA ISSO, PRIMEIRAMENTE CRIAMOS 1 NOVA WORKSHEET,
 
 QUE CHAMAREMOS DE VALIDATION MODE...
+
+
+
+
+
+
+
+
+
+
+OK... ENTAO O PROFESSOR COMECA A ESCREVER CÓDIGO
+
+
+
+
+
+
+
+
+
+
+
+ELE ESCREVE ASSIM: 
+
+
+
+
+
+
+
+
+
+
+
+//PREPARE DATABASE E TABLE 
+CREATE OR REPLACE DATABASE COPY_DB;
+
+
+
+
+
+
+CREATE OR REPLACE TABLE COPY_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT VARCHAR(30),
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+)
+
+
+
+//PREPARE STAGE OBJECT 
+CREATE OR REPLACE STAGE COPY_DB.PUBLIC.aws_stage_copy
+    url='s3://snowflakebucket-copyoption/size/';
+
+
+
+
+
+
+LIST @COPY_DB.PUBLIC.aws_stage_copy;
+
+
+
+//LOAD DATA USING COPY COMMAND
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @aws.stage_copy
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AÍ CRIAMOS UM NOVO STAGE OBJECT...
+
+
+
+
+
+
+
+DE NOVO, O STAGE OBJECT É UM PUBLICLY AVAILABLE 
+
+S3 BUCKET....
+
+
+
+
+
+
+--> EXECUTAMOS ISSO AÍ E CRIAMOS 
+
+
+ESSE STAGE OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, TEMOS ESTE COMANDO:
+
+
+
+
+
+
+
+
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @COPY_DB.PUBLIC.aws_stage_copy
+    FILE_FORMAT=(
+        type=csv,
+        field_delimiter=",",
+        skip_header=1
+    )
+    pattern=' .*Order.*'
+
+
+
+
+
+
+
+
+
+
+TAMBÉM TEMOS AQUELE PATTERN ALI... PARA PEGAR TODOS FILES 
+
+COM "Order" no nome...
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, BEM NO FINAL, TEMOS O ""VALIDATION_MODE"" -->
+
+
+
+
+EX:
+
+
+
+
+
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @COPY_DB.PUBLIC.aws_stage_copy
+    FILE_FORMAT=(
+        type=csv,
+        field_delimiter=",",
+        skip_header=1
+    )
+    pattern=' .*Order.*'
+    VALIDATION_MODE= RETURN_ERRORS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E ISTO:
+
+
+
+
+
+
+
+
+-- LOAD DATA USING COPY COMMAND
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @COPY_DB.PUBLIC.aws_stage_copy
+    FILE_FORMAT=(
+        type=csv,
+        field_delimiter=",",
+        skip_header=1
+    )
+    pattern='.*Order.*'
+    VALIDATION_MODE= RETURN_ERRORS;
+
+
+-- LOAD DATA USING COPY COMMAND
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @COPY_DB.PUBLIC.aws_stage_copy
+    FILE_FORMAT=(
+        type=csv,
+        field_delimiter=",",
+        skip_header=1
+    )
+    pattern='.*Order.*'
+    VALIDATION_MODE= RETURN_20_ROWS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE TIVERMOS ALGUM ERROR, NAO TEREMOS NENHUM ROW RETORNADO..
+
+(
+    esse é o output de SUCCESS, SE USAMOS 
+
+    ""VALIDATION_MODE=RETURN_ERRORS""...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ SE RODAMOS O SEGUNDO STATEMENT,
+
+ESTE:
+
+
+
+
+
+-- LOAD DATA USING COPY COMMAND
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @COPY_DB.PUBLIC.aws_stage_copy
+    FILE_FORMAT=(
+        type=csv,
+        field_delimiter=",",
+        skip_header=1
+    )
+    pattern='.*Order.*'
+    VALIDATION_MODE= RETURN_20_ROWS;
+
+
+
+
+
+
+
+
+
+
+
+FICAMOS COM O LOAD DE 20 ROWS,
+
+QUE ERA EXATAMENTE O QUE QUERÍAMOS (no caso de success)...
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, PODEMOS USAR ESTA SINTAXE, PARA 
+
+
+TER O RETURN DE 20 ROWS QUANDO TEMOS SUCCESS,
+E O RETURN DE ERRORS QUANDO TIVERMOS ERRORS:
+
+
+
+
+
+
+
+
+
+-- LOAD DATA USING COPY COMMAND
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @COPY_DB.PUBLIC.aws_stage_copy
+    FILE_FORMAT=(
+        type=csv,
+        field_delimiter=",",
+        skip_header=1
+    )
+    pattern='.*Order.*'
+    VALIDATION_MODE='RETURN_ERRORS | RETURN_20_ROWS';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS ESSA SINTAXE, POR ALGUMA RAZAO, NAO ESTÁ FUNCIONANDO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, AGORA O PROFESSOR COLOCA 1 STAGE 
+
+COM FILES COM ERRORS,
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+--- Use files with errors ---
+
+create or replace stage copy_db.public.aws_stage_copy
+    url ='s3://snowflakebucket-copyoption/returnfailed/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO,
+
+
+
+
+
+RODAMOS AS MESMAS QUERIES DE COPY COM 
+
+A OPTION DE VALIDATION_MODE,
+
+
+QUE AGORA VAI TRIGGAR A OPTION DE ""RETURN_ERRORS""
+
+
+
+
+
+
+
+
+
+
+
+E, DE FATO, RECEBEMOS OS ERRORS EM 1 RESULT SET:
+
+
+
+
+
+
+
+Numeric value '7-' is not recognized	returnfailed/OrderDetails_error2 - Copy.csv	2	17	71	conversion	100,038	22018	"ORDERS"["QUANTITY":4]	1	2	B-30601,1275,10,7-,Furniture,Bookcases 
+Numeric value '3a' is not recognized	returnfailed/OrderDetails_error2 - Copy.csv	4	16	143	conversion	100,038	22018	"ORDERS"["QUANTITY":4]	3	4	B-30601,8,-244,3a,Clothing,Hankerchief 
+Numeric value 'one thousand' is not recognized	returnfailed/OrderDetails_error.csv	2	14	68	conversion	100,038	22018	"ORDERS"["PROFIT":3]	1	2	B-25601,1275,one thousand,7,Furniture,Bookcases 
+Numeric value 'two hundred twenty' is not recognized	returnfailed/OrderDetails_error.csv	3	12	115	conversion	100,038	22018	"ORDERS"["PROFIT":3]	2	3	B-25601,66,two hundred twenty,5,Clothing,Stole 
+
+
+
+
+
+
+
+
+
+
+
+certo...
+
+
+
+
+
+
+
+
+
+é claro que nada será loaded,
+
+
+justamente 
+
+
+
+pq colocamos 
+
+
+""return errors"" / return_n_rows....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É O QUE TEMOS, COMO INFORMATION, QUE PODE SER MT ÚTIL
+ 
+
+ PARA DETERMINARMOS O QUE HOUVE DE ERRADO COM ESSA FILE...
+
+
+
+
+
+
+
+
+
+
+
+ SE USAMOS O METHOD DE ""RETURN_N_ROWS"",
+
+
+
+
+
+
+
+VISUALIZAMOS A PRIMEIRA ERROR MESSAGE QUE SURGIR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok.. é assim que podemos VALIDATE nossos COPY COMMANDS,
+
+PARA VERIFICAR SE ALGUM COPY FUNCIONARIA,
+
+
+SEM ACTUALLY COPIAR COISAS NAS NOSSAS TABLES..
+
+
+
+
+
+
+
+
+
+--> MAS SERÁ QUE ISSO GASTA CREDITS?
+
+
+acho que gasta...
+
+
+
+
+
+
+parece que só é possível rodar 1 dessas options por vez (
+
+    ou ""RETURN_ERRORS"", OU ""RETURN_X_ROWS""...
+)
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+VALIDATION_MODE = RETURN_<n>_ROWS | RETURN_ERRORS | RETURN_ALL_ERRORS
+
+
+
+
+
+parece que realmente só podemos escolher 1 deles...
