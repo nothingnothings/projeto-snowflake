@@ -1,0 +1,1363 @@
+
+
+
+
+
+
+
+NESSA LICAO,
+
+VEREMOS COMO PODEMOS LIDAR 
+
+COM ERRORS 
+
+
+ENQUANTO FAZEMOS COPY DE STAGES/RESULT SETS 
+
+PARA 
+
+DENTRO 
+
+DE NOSSAS TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO PODEMOS LIDAR COM ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO LIDAR COM ERRORS ENQUANTO FAZEMOS COPY DE DATA....
+
+
+
+
+
+
+
+
+
+-> PRECISAMOS DA OPTION DE 
+
+"""ON ERROR""...
+
+
+
+
+
+
+
+
+
+AS QUERIES INICIAIS SAO ESTAS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- CREATE NEW STAGE
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage_error_example
+    url='s3://bucketsnowflakes4';
+
+
+
+
+-- LIST FILES IN STAGE
+
+
+LIST @MANAGE_DB.external_stages.aws_stage_error_example;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OS ARQUIVOS SAO 
+
+
+OrderDetails_error 
+
+
+
+e 
+
+
+OrderDetails_error2 ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEPOIS TEMOS ESTES STATEMENTS:
+
+
+
+
+
+
+-- create or replace table
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+
+
+
+
+
+POR FIM, TEMOS UM COPY STATEMENT...
+
+
+
+
+
+
+
+
+
+-- DEMONSTRATING ERROR MESSAGE
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+--> se tentamos copiar isso aí,
+
+
+
+
+ficamos com um ____ERROR_____,
+
+
+
+
+O ERRO 
+
+DE 
+
+
+"NUMERIC VALUE _ONE THOUSAND 
+
+IS NOT RECOGNIZED""....
+
+
+
+
+
+
+
+'one thousand' isso ficou escrito 
+
+dentro 
+
+
+
+
+de 'amount',
+
+que era 
+
+
+
+para ser uma int...
+
+
+
+
+
+
+
+precisamos CONVERTER 
+
+o data type desse negócio, on error....
+
+
+
+
+
+
+
+
+
+na verdade, devem existir múltiplos 
+
+comportamentos de error,
+dos quais 
+
+podemos escolher...
+
+
+
+
+
+
+
+
+
+
+
+AMBOS CSV FILES POSSUEM ALGUNS 
+
+ERROS...
+
+
+
+
+
+
+temos text values nas columns 
+
+que devem ter 
+
+apenas numbers...
+
+
+
+
+
+
+
+
+COMO O SNOWFLAKE LIDA COM ISSO?
+
+
+
+
+
+
+
+
+
+E COMO PODEMOS USAR A OPTION DE 
+
+"ON ERROR"
+
+PARA MITIGAR/LIDAR COM ESSES 
+
+ERROS....
+
+
+
+
+
+
+--> 
+
+ganhamos também uma sugestao 
+
+
+do que fazer:
+
+
+
+
+
+
+
+
+
+  File 'OrderDetails_error.csv', line 2, 
+  character 14
+  Row 1, column "ORDERS_EX"["PROFIT":3]
+  If you would like to continue 
+  loading when an error is 
+  encountered, use other values such as
+   'SKIP_FILE' or 'CONTINUE' for the
+    ON_ERROR option. For more
+     information on loading options, 
+     please run 'info loading_data'
+      in a SQL client.
+
+
+
+
+
+
+
+
+
+
+
+--> SE VC QUER CONTINUAR 
+
+
+LOADING QUANDO 
+
+
+1 ERROR FOR ENCONTRADO,
+
+
+
+
+USE OUTROS VALUES,
+
+COMO "SKIP_FILE" OU "CONTINUE",
+
+
+para a option de "ON_ERROR"..
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS VERIFICAR ISSO AGORA..
+
+
+
+
+
+
+
+ANTES DISSO, CONSTATAMOS 
+
+SE ALGUMA DATA 
+
+
+NOSSA FOI REALMENTE CARREGADA 
+
+NESSA TABLE...
+
+
+
+
+
+RODAMOS 1 SELECT,
+
+E...
+
+
+
+
+
+
+
+--> FICAMOS COM NENHUM RESULT...
+
+
+
+
+
+
+
+
+
+APARENTEMENTE,
+ESSE É O BEHAVIOR DEFAULT 
+
+DO 
+
+SNOWFLAKE.... SEMPRE QUE 
+
+TEMOS 1 ERROR DURANTE
+
+1 
+
+COPY,
+
+
+
+
+
+
+NENHUMA ENTRY É INSERIDA...
+
+
+
+
+
+
+
+
+
+MAS É CLARO QUE PODEMOS FAZER 
+
+
+OVERRIDE DESSE DEFAULT...
+
+
+
+
+
+
+
+---> MAS SE ADICIONARMOS 1 
+
+OPTION DE 
+
+"ON_ERROR",
+
+
+lá no final 
+
+DO COMANDO DE COPY,
+
+
+
+PODEMOS ESCOLHER ENTRE ALGUNS BEHAVIORS,
+
+TIPO ASSIM:
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='CONTINUE';
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO,
+
+ESTIPULAMOS QUE, A PARTIR DE ERRORS,
+
+
+O COPY DE ROWS DEVE CONTINUAR (
+    apenas os rows com errors devem 
+    ser ignorados...
+)
+
+
+
+
+
+OK...
+
+
+"CONTINUE COM O LOADING, COM A PRÓXIMA DATA 
+
+ROW",
+
+
+E IGNORE OS OUTROS ERRORS..
+
+
+
+
+
+
+SE RODAMOS ISSO AÍ 
+
+
+NO SNOWFLAKE,
+
+
+FICAMOS COM STATUS DE 
+
+"""pARTIALLY_LOADED"" --> 1498 
+
+
+
+ROWS FORAM PARSED,
+
+
+E 2 FORAM IGNORADOS... (por conta de 
+
+'one thousand')
+
+
+
+
+
+
+
+
+
+
+
+
+também temos 
+
+
+a column de "first_error",
+
+
+que nos diz 
+
+
+
+QUAL FOI O PRIMEIRO ERROR 
+
+ENCONTRADO...
+
+
+
+em "error_line",
+é mostrado o row 
+que 
+
+gerou o erro...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.... 
+
+FAZ SENTIDO....
+
+
+
+
+
+
+
+AGORA QUE VIMOS QUE ISSO ESTÁ FUNCIONANDO,
+
+
+
+
+
+
+
+PODEMOS VISUALIZAR A DATA, 1498 ROWS,
+
+DENTRO 
+
+
+
+DESSA ROW...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK.... AGORA DEVEMOS 
+
+"""TRUNCATE"""" A TABLE, PARA COMECARMOS 
+
+MAIS UMA VEZ....
+
+
+
+
+
+
+
+
+
+
+TRUNCATE --> SIGNIFICA __REMOVER__ 
+TODA A DATA DE 1 TABLE....
+
+
+
+
+
+
+-_> para isso, rodamos 
+
+"TRUNCATE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX;'..
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+ISSO FEITO, QUEREMOS 
+
+
+DAR 1 OLHADA NO DEFAULT BEHAVIOR...
+
+
+
+
+
+
+
+
+
+-> O DEFAULT BEHAVIOR 
+
+
+
+É JUSTAMENTE
+
+
+""ON_ERROR='ABORT STATEMENT'""
+
+
+
+
+
+
+
+
+
+-> isso VAI __ INTERROMPER _A QUERY,
+
+NAO VAI COPIAR COISA ALGUMA....
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+TAMBÉM REPARE QUE __ MESMO __ 
+
+
+SE NÓS 
+
+ESPECIFICARMOS ___ 2 FILES 
+
+E O ERROR ACONTECER 
+
+
+EM APENAS 1 DAS FILES,
+
+O PROCESSO TODO AINDA SERÁ INTERROMPIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+-- CREATE NEW STAGE
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage_error_example
+    url='s3://bucketsnowflakes4';
+
+
+
+
+-- LIST FILES IN STAGE
+
+
+LIST @MANAGE_DB.external_stages.aws_stage_error_example;
+
+
+
+
+
+-- create or replace table
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+-- DEMONSTRATING ERROR MESSAGE (about possible error handling options)
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    );
+-- ON_ERROR='ABORT STATEMENT'; ////ESTE É O COMPORTAMENTO DEFAULT DAS COPY OPERATIONS NO SNOWFLAKE (se existir 1 erro, a operation é ABORTADA)
+-- e ESSE ABORT ACONTECE COM TODAS AS FILES ENVOLVIDAS NO COPY, E NAO SÓ A FILE QUE PRODUZIU O ERRO.
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 1... ON_ERROR = CONTINUE.
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='CONTINUE';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... ESSE É O DEFAULT BEHAVIOR...
+
+
+
+
+
+
+
+
+
+--> A PRÓXIMA OPTION,
+
+COM O COPY DE FILES,
+
+
+
+E A ÚLTIMA, É 
+
+"SKIP_FILE"...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 2... ON_ERROR = SKIP_FILE. (nao é o default)
+-- COM ESSE BEHAVIOR, SKIPPAMOS AS FILES QUE DERAM ERRO, MAS O RESTO DAS FILES ACABA EXECUTADO E INSERIDO NA TABLE.
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='SKIP_FILE'; //skippamos a file que deu erro.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE STATEMENT SIGNIFICA QUE 
+
+SEMPRE QUE 
+1 
+
+ERRO OCORRER,
+
+A FILE EM QUE 
+
+OCORREU O ERRO SERÁ SKIPPADA, MAS A OUTRA 
+
+FILE SERÁ LOADED...
+
+
+
+
+
+
+
+
+
+
+SE CHECAMOS O RESULTADO,
+
+
+ENXERGAMOS:
+
+
+
+
+"LOAD_FAILED" NA FILE QUE TINHA OS ERRORS...
+
+
+"LOADED" NA FILE QUE NAO TINHA OS ERRORS....
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+TUDO ISSO FAZ TOTAL SENTIDO...
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA, SE TRUNCARMOS NOSSA TABLE,
+
+QUEREMOS VER 
+
+
+___ UMA _ ALTERNATIVA __ AO 
+
+
+_SKIP_FILE...
+
+
+
+
+
+
+
+
+
+
+PQ __ A OPTION DE "SKIP_FILE"
+
+POSSUI UMA OPTION EXTRA...
+
+
+
+
+
+
+
+NESSA OPTION,
+
+
+
+
+ESCREVEMOS 
+
+
+
+ON_ERROR = 'SKIP_FILE_x'
+
+
+
+
+
+
+
+
+ESSE 'x' SERÁ UM __ ABSOLUTE __NUMBER...
+
+
+
+
+
+
+
+
+
+ESSE X __ sERÁ JUSTAMENTE O 
+
+""ERROR LIMIT"",
+
+
+a quantidade de errors que queremos 
+
+definir como LIMITE 
+para 1 
+
+given file SER SKIPPADA...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 3... ON_ERROR = SKIP_FILE, mas com ___ERROR_LIMIT (ON_ERROR=SKIP_FILE_X)
+-- o "X" será o NÚMERO DE ERRORS QUE DEVEMOS TER, EM 1 GIVEN FILE, PARA SKIPPARMOS O LOAD DA FILE INTEIRA.
+-- COM ESSE BEHAVIOR, SKIPPAMOS AS FILES QUE DERAM ERRO, MAS O RESTO DAS FILES ACABA EXECUTADO E INSERIDO NA TABLE.
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='SKIP_FILE_1000'; //skippamos a file que deu erro, MAS __ APENAS_ SE TIVERMOS 1000 OU MAIS ERRORS.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... COMO TEMOS APENAS 2 ERRORS 
+
+
+NAQUELA FILE,
+
+
+O LIMITE DE 1000 NAO É ATINGIDO,
+
+
+O QUE QUER DIZER QUE
+
+AS COISAS SERAO LOADED (
+    COM A EXCECAO DAQUELES ROWS QUE DERAM 
+    ERRO...
+)
+
+
+-----------------------
+
+
+
+
+
+
+
+OK.... ESSA É A OPTION COM 
+O SKIP_FILE....
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR TAMBÉM APONTA QUE 
+
+NAO SOMOS OBRIGADOS A ESPECIFICAR 
+
+
+1 ABSOLUTE NUMBER 
+
+
+NO FINAL,
+
+
+PQ PODEMOS __ ESPECIFICAR _UMA 
+
+PORCENTAGEM...
+
+
+
+
+
+
+
+
+EX:
+
+
+ON_ERROR = 'SKIP_FILE_3%' 
+
+
+
+
+
+
+-> AGORA SE 45 ROWS DEREM 
+
+1 ERRO,
+
+
+VAMOS SKIPPAR A FILE (pq 3% de 1500 é 45)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+-- CREATE NEW STAGE
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage_error_example
+    url='s3://bucketsnowflakes4';
+
+
+
+
+-- LIST FILES IN STAGE
+
+
+LIST @MANAGE_DB.external_stages.aws_stage_error_example;
+
+
+
+
+
+-- create or replace table
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+-- DEMONSTRATING ERROR MESSAGE (about possible error handling options)
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    );
+-- ON_ERROR='ABORT STATEMENT'; ////ESTE É O COMPORTAMENTO DEFAULT DAS COPY OPERATIONS NO SNOWFLAKE (se existir 1 erro, a operation é ABORTADA)
+-- e ESSE ABORT ACONTECE COM TODAS AS FILES ENVOLVIDAS NO COPY, E NAO SÓ A FILE QUE PRODUZIU O ERRO.
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 1... ON_ERROR = CONTINUE.
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='CONTINUE';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 3... ON_ERROR = SKIP_FILE, mas com ___ERROR_LIMIT (ON_ERROR=SKIP_FILE_X)
+-- o "X" será o NÚMERO DE ERRORS QUE DEVEMOS TER, EM 1 GIVEN FILE, PARA SKIPPARMOS O LOAD DA FILE INTEIRA.
+-- COM ESSE BEHAVIOR, SKIPPAMOS AS FILES QUE DERAM ERRO, MAS O RESTO DAS FILES ACABA EXECUTADO E INSERIDO NA TABLE.
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='SKIP_FILE_1000'; --skippamos a file que deu erro, MAS __ APENAS_ SE TIVERMOS 1000 OU MAIS ERRORS.
+-- PODEMOS TAMBÉM ESPECIFICAR UMA PORCENTAGEM, TIPO ASSIM:
+-- ON_ERROR='SKIP_FILE_10%'; --skippamos a file que deu erro, MAS __ APENAS_ SE TIVERMOS 10% OU MAIS ERRORS.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+NESSA LECTURE, VIMOS A PRIMEIRA COPY OPTION,
+
+QUE É 
+
+OPTION DE "ON_ERROR"....
+
+
+
+
+
+PERCEBEMOS QUE O 
+DEFAULT STATEMENT 
+
+É 
+
+"ABORT STATEMENT"...
+
+
+
+
+
+
+
+--> MAS VIMOS OS COMPORTAMENTOS 
+
+DE 
+
+
+"CONTINUE" (que é continue carregando,
+ignore completamente os errors)...
+
+
+
+
+
+"SKIP_FILE" --> nao carregue dessa file,
+se existirem errors nela...
+
+
+
+"SKIP_FILE_X" --> APENAS SKIPPE ESSA FILE 
+SE X ERRORS ACONTECEREM NELA....
