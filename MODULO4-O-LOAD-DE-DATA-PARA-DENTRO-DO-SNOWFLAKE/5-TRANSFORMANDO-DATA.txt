@@ -997,3 +997,671 @@ pelo data type em INTEGERS,
 por conta 
 
 de "PROFIT INT"....
+
+
+
+
+
+
+
+
+
+PARA COMPREENDER 
+
+
+A QUERY DO PROFESSOR,
+
+
+
+
+
+
+ESTE CÓDIGO É ÚTIL:
+
+
+
+
+
+
+
+
+
+SELECT 
+    customer_id, //column 1
+    order_date, //column 2
+    CASE
+        WHEN CAST(order_total AS DECIMAL) >= 1000 THEN 'High'
+        WHEN CAST(order_total AS DECIMAL) >= 500 THEN 'Medium'
+        ELSE 'Low'
+    END AS order_category //column 3 (era para ser "order_total", mas manipulamos e criamos uma column de "order_category" com base nela).
+FROM
+    orders;
+
+
+
+
+-- O FORMATO DO RESULT SET FICARIA ASSIM:
+
+-- customer_id | order_date  | order_category
+-- -----------------------------------------
+-- 1           | 2023-06-15  | Medium
+-- 2           | 2023-07-02  | High
+-- 3           | 2023-06-29  | Low
+-- 4           | 2023-07-05  | High
+-- 5           | 2023-06-18  | Medium
+
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+código do professor:
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+
+    FROM (select 
+            s.$1,
+            s.$2, 
+            s.$3,
+            CASE WHEN CAST(s.$3 as int) < 0 THEN 'not profitable' ELSE 'profitable' END 
+          from @MANAGE_DB.external_stages.aws_stage s)
+    file_format= (type = csv field_delimiter=',' skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+---> quer dizer que teremos 4 columns no result set...
+
+
+
+
+field 1,2,3 e entao profitable/not profitable...
+
+
+
+
+
+
+só nao sei qual é o NOME que essa column 4 terá,
+
+pq o professor nao assignou nome algum (
+    precisaria do statement 
+    "END AS xxxx"...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+no início do run do statement,
+
+
+
+como estamos copiando data 
+
+de arquivos csv,
+
+
+esses arquivos geralmente 
+
+possuem apenas TEXTO nas cédulas...
+
+
+
+
+
+é por isso que ele usa CAST(s.$3 as INT),
+
+
+
+
+pq ele planeja UTILIZAR ESSES VALUES
+ 
+
+ COM COMPARACOES MATEMÁTICAS (< 0, por exemplo)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MUDAMOS O DATATYPE PARA INT...
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR FALA TAMBÉM DA FUNCTION 
+
+"CASE WHEN"...
+
+
+
+
+
+
+-> comecamos com o comando "CASE",
+
+
+e entao 
+
+
+COLOCAMOS O "WHEN", QUE VAI 
+
+DEFINIR AS CONDITIONS...
+
+
+
+tipo estas conditions:
+
+
+
+
+
+
+
+
+CASE
+        WHEN CAST(order_total AS DECIMAL) >= 1000 THEN 'High'
+        WHEN CAST(order_total AS DECIMAL) >= 500 THEN 'Medium'
+        ELSE 'Low'
+    END AS order_category 
+
+
+
+
+
+NO CASO DO PROFESSOR,
+ 
+
+ UMA FORMATACAO MELHOR SERIA:
+
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM (select 
+            s.$1,
+            s.$2, 
+            s.$3,
+            CASE
+                  WHEN CAST(s.$3 as int) < 0 THEN 'not profitable' 
+                  ELSE 'profitable' 
+            END //column 4, nesse result set.
+          from @MANAGE_DB.external_stages.aws_stage s)
+    file_format= (type = csv field_delimiter=',' skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+É ISSO QUE QUEREMOS, NESSE STATEMENT...
+
+
+
+
+
+
+
+
+a quarta column realmente nao teria um nome,
+a princípio,
+
+
+mas o professor havia escrito isto:
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+  ORDER_ID VARCHAR(30),
+  AMOUNT INT,
+  PROFIT INT,
+  PROFITABLE_FLAG VARCHAR(30)
+);
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+já tínhamos escrito 
+
+
+
+a criacao de 1 table com 4 columns...
+
+
+
+
+
+
+
+
+
+
+a única coisa que fazemos, com isto:
+
+
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM (select 
+            s.$1,
+            s.$2, 
+            s.$3,
+            CASE
+                  WHEN CAST(s.$3 as int) < 0 THEN 'not profitable' 
+                  ELSE 'profitable' 
+            END //column 4, nesse result set.
+          from @MANAGE_DB.external_stages.aws_stage s)
+    file_format= (type = csv field_delimiter=',' skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+
+
+
+
+
+
+É COPIAR DATA PARA DENTRO DESSA TABLE,
+
+AO MESMO TEMPO QUE __ TRANSFORMAMOS ESSA DATA...
+
+
+
+
+
+
+
+
+OK... VAMOS RODAR ESSA QUERY...
+
+
+
+
+
+a data daquele bucket é entao 
+
+TRANSFORMADA E COPIADA PARA 
+DENTRO 
+
+DE NOSSA TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... consegui loadar na table....
+
+
+
+
+
+PODEMOS VER O RESULTADO,
+
+
+COM 
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.ORDERS_EX;
+
+
+
+
+
+
+
+
+
+--> PARA OS VALUES POSITIVOS,
+
+TEMOS 
+
+PROFITABLE,
+
+
+PARA OS NEGATIVOS TEMOS NOT PROFITABLE...
+
+
+
+
+
+
+
+
+
+
+-> É EXATAMENTE ISSO QUE QUEREMOS...
+
+
+
+
+
+
+
+
+DEVEMOS VISUALIZAR OUTRO EXEMPLO SQL...
+
+
+
+
+
+
+
+
+NESSE EXEMPLO, QUEREMOS 
+
+
+
+USAR __ 1 SUBSTRING__ EM VEZ 
+
+
+DO CATEGORY NAME ___ COMPLETO___...
+
+
+
+
+
+
+
+--> talvez o category name seja 
+
+mt longo, e queremos extrair apenas 
+
+1 substring... talvez apenas 
+
+
+os primeiros 5 caracteres....
+
+
+
+
+--> quer dizer que talvez será necessário 
+
+usar coisas como "LIKE"...
+
+
+--> na verdade, usaremos 
+
+"SUBSTRING"....
+
+
+
+
+
+
+-_> PRECISAMOS FAZER O CREATE DA TABLE ANTES....
+
+
+
+
+NA VERDADE, VAMOS RECRIAR A TABLE DE ANTES,
+
+COM "CREATE OR REPLACE",
+
+
+MAS AGORA COM ESSA COLUMN 
+
+DE "CATEGORY_SUBSTRING",
+
+criada usando a function "substring()"
+
+
+do sql...
+
+
+
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+  ORDER_ID VARCHAR(30),
+  AMOUNT INT,
+  PROFIT INT,
+  CATEGORY_SUBSTRING VARCHAR(5)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+PARA ISSO, VAMOS:
+
+
+
+1) PEGAR A COLUMN DE NÚMERO 5, NO NOSSO CSV (com s_alias.$5)
+
+
+
+2) RODAR substring() em cima dessa column de number 5..
+
+
+
+
+
+
+
+
+--> é por isso que fica tipo 
+
+
+
+
+substring(s_alias.$5, 1, 5)
+
+
+
+
+(1-5 -> SIGNIFICA QUE QUEREMOS PEGAR DO SLOT 1 AO SLOT 5,
+
+EM CADA 1 DAS STRINGS)...
+
+
+
+
+
+
+
+ex:
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+  ORDER_ID VARCHAR(30),
+  AMOUNT INT,
+  PROFIT INT,
+  CATEGORY_SUBSTRING VARCHAR(5)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+ok.... consegui...
+
+
+
+
+
+foram inseridos 1500 rows...
+
+
+
+
+
+
+e o result set ficou assim:
+
+
+
+
+
+
+
+
+ORDER_iD AMOUNT PROFIT CATEGORY_SUBSTRING
+
+
+B-25601	    8	  -2	        Cloth
+B-25601	    80    -56	        Elect
+
+
+
+
+
+
+
+
+
+CERTO.... FAZ SENTIDO...
+
+
+
+
+APENAS OS 5 PRIMEIROS CARACTERES DAQUELA STRING....
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSES FORAM ALGUNS EXEMPLOS DE TRANSFORMATIONS 
+
+USANDO SQL DATA...
+
+
+
+
+
+
+
+NA PRÓXIMA AULA, VEREMOS MAIS 
+
+OPTIONS QUE PODEMOS USAR, PARA TRANSFORMAR NOSSA 
+
+DATA...
