@@ -1,0 +1,587 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NESSA SECTION, APRENDEMOS SOBRE 1 DAS COISAS 
+
+
+
+MAIS IMPORTANTES DO SNOWFLAKE,
+
+
+
+
+QUE É __ COMO __ PODEMOS CARREGAR 
+
+
+
+NOSSA DATA, DE 1 STAGE OBJECT,
+
+
+
+
+PARA _dENTRO _ DE NOSSAS DATABASES/TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SOBRE ESSE TÓPICO DO LOAD DE DATA,
+
+
+APRENDEMOS OS 2 TIPOS DE LOADING METHODS...
+
+
+
+
+
+
+1) BULK LOAD( MAIS COMUM, LOAD EM MASSA, TUDO DE UMA VEZ)
+
+
+
+
+2) CONTINUOUS LOAD (MENOS USADO, MAS É USADO PARA TER 
+THE LATEST DATA CONTINUOUSLY... FAST UPDATE RATE, SMALL AMOUNTS OF DATA)...
+
+
+
+
+
+
+
+
+
+
+-> APRENDEMOS SOBRE O QUE É UM STAGE,
+
+
+
+E SOBRE COMO PODEMOS CRIAR 1 STAGE...
+
+
+
+
+
+
+
+
+
+--> E PRECISAMOS CRIAR STAGES PARA SERMOS CAPAZES DE COPIAR 
+
+DATA, DESSES EXTERNAL STAGES, 
+
+PARA DENTRO DE NOSSAS DATABASES/TABLES..
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DE CRIARMOS ESSES STAGES,
+
+
+APRENDEMOS SOBRE 
+
+
+O IMPORTANTE 
+
+COMANDO DE "COPY INTO XX FROM YY",
+
+
+
+
+QUE USAMOS PARA CARREGAR 
+
+
+DATA DENTRO DE NOSSAS TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... E, DENTRO DESSE COMANDO DE COPY,
+
+PODEMOS RODAR __tRANSFORMATIONS,
+
+
+COMO VIMOS AO LONGO 
+
+DA SECTION:
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+  ORDER_ID VARCHAR(30),
+  AMOUNT INT,
+  PROFIT INT,
+  PROFITABLE_FLAG VARCHAR(30)
+);
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+
+-- CASE e CAST sao SQL FUNCTIONS... -- os fields sao $1 -> order_id, $2 -> amount, $3 -> profit, $4 -> profitable_flag
+    FROM (select 
+            s.$1,
+            s.$2, 
+            s.$3,
+            CASE
+                  WHEN CAST(s.$3 as int) < 0 THEN 'not profitable' 
+                  ELSE 'profitable' 
+            END //column 4, nesse result set.
+          from @MANAGE_DB.external_stages.aws_stage s)
+    file_format= (type = csv field_delimiter=',' skip_header=1)
+    files=('OrderDetails.csv');
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA REALIZAR ESSAS TRANSFORMATIONS,
+
+
+USAMOS O SELECT _ STATEMENT__ COM SQL FUNCTIONS,
+
+E AÍ TRANSFORMAMOS NOSSA DATA (se necessário)...
+
+
+
+
+
+
+
+
+
+
+
+ASSIM QUE APRENDEMOS SOBRE 
+
+ESSAS 
+
+TRANSFORMATION OPTIONS,
+
+APRENDEMOS 
+
+
+
+SOBRE 
+
+
+
+
+O MODIFIER ""ON_ERROR"",
+
+
+QUE PODE SER
+
+
+
+ADICIONADO AOS NOSSOS COPY STATEMENTS...
+
+
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- CREATE NEW STAGE
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.external_stages.aws_stage_error_example
+    url='s3://bucketsnowflakes4';
+
+
+
+
+-- LIST FILES IN STAGE
+
+
+LIST @MANAGE_DB.external_stages.aws_stage_error_example;
+
+
+
+
+
+-- create or replace table
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_EX (
+    ORDER_ID VARCHAR(30),
+    AMOUNT INT,
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+-- DEMONSTRATING ERROR MESSAGE (about possible error handling options)
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    );
+-- ON_ERROR='ABORT STATEMENT'; ////ESTE É O COMPORTAMENTO DEFAULT DAS COPY OPERATIONS NO SNOWFLAKE (se existir 1 erro, a operation é ABORTADA)
+-- e ESSE ABORT ACONTECE COM TODAS AS FILES ENVOLVIDAS NO COPY, E NAO SÓ A FILE QUE PRODUZIU O ERRO.
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 1... ON_ERROR = CONTINUE.
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='CONTINUE';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ERROR HANDLING BEHAVIOR 3... ON_ERROR = SKIP_FILE, mas com ___ERROR_LIMIT (ON_ERROR=SKIP_FILE_X)
+-- o "X" será o NÚMERO DE ERRORS QUE DEVEMOS TER, EM 1 GIVEN FILE, PARA SKIPPARMOS O LOAD DA FILE INTEIRA.
+-- COM ESSE BEHAVIOR, SKIPPAMOS AS FILES QUE DERAM ERRO, MAS O RESTO DAS FILES ACABA EXECUTADO E INSERIDO NA TABLE.
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS_EX
+    FROM @MANAGE_DB.external_stages.aws_stage_error_example
+
+    file_format=(type=csv,
+    field_delimiter=',',
+    skip_header=1
+    )
+    ON_ERROR='SKIP_FILE_1000'; --skippamos a file que deu erro, MAS __ APENAS_ SE TIVERMOS 1000 OU MAIS ERRORS.
+-- PODEMOS TAMBÉM ESPECIFICAR UMA PORCENTAGEM, TIPO ASSIM:
+-- ON_ERROR='SKIP_FILE_10%'; --skippamos a file que deu erro, MAS __ APENAS_ SE TIVERMOS 10% OU MAIS ERRORS.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Com isso, FICAMOS COM CONTROLE 
+
+SOBRE 
+
+
+COMO NOSSOS ERRORS SAO HANDLADOS...
+
+
+
+
+
+
+
+
+
+
+
+
+OPTIONS DE ERROR:
+
+
+
+
+
+
+1) "ON_ERROR=CONTINUE" --> COM ISSO, IGNORAMOS 
+OS ROWS QUE DERAM ERROR, E CONTINUAMOS COPIANDO TODO O RESTO....
+
+
+
+
+
+2) "ON_ERROR=ABORT STATEMENT" --> É O COMPORTAMENTO DEFAULT; SE 
+OCORRER 1 ERROR, O COPY É INTERROMPIDO...
+
+
+
+
+3) "ON_ERROR=SKIP_FILE" --> USAMOS SE QUEREMOS 
+
+QUE 
+A FILE __ QUE DEU ERRO SEJA SKIPPADA...
+
+
+3) "ON_ERROR=SKIP_FILE_125" --> USAMOS SE QUEREMOS 
+
+QUE 
+A FILE __ QUE DEU ERRO SEJA SKIPPADA, MAS 
+APENAS SE 
+ELA TIVER 125 OU MAIS ERRORS ( ou qualquer outro número)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OBJECT "FILE_FORMAT" --> É UM DATABASE 
+
+OBJECT, COMO _O STAGE OBJECT... -> DENTRO DESSE OBJECT,
+
+PODEMOS 
+
+ARMAZENAR INFO SOBRE __ COMO _ AS FILES 
+
+DEVEM 
+SER INTERPRETADAS SE ELAS FOREM CARREGADAS 
+DE 
+1 
+EXTERNAL 
+
+STAGE...
+
+
+
+
+
+
+
+---> AGORA DEVEMOS PRATICAR O QUE APRENDEMOS NESSA SECTION...
+
+
+
+
+
+
+vou tentando...
+
+
+
+
+
+
+
+
+
+
+
+TERMINEI O ASSIGNMENT...
+
+
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE EXERCISE_DB.PUBLIC.CUSTOMERS (
+ID INT,
+first_name VARCHAR,
+last_name VARCHAR,
+email VARCHAR,
+age INT,
+city VARCHAR
+);
+
+
+CREATE OR REPLACE SCHEMA EXERCISE_DB.STAGES;
+
+CREATE OR REPLACE SCHEMA EXERCISE_DB.FILE_FORMATS;
+
+CREATE OR REPLACE STAGE EXERCISE_DB.STAGES.some_s3_stage
+url='s3://snowflake-assignments-mc/fileformat/';
+
+CREATE OR REPLACE FILE FORMAT EXERCISE_DB.FILE_FORMATS.some_file_format
+            -- TYPE=csv //already the default
+                field_delimiter='|'
+                skip_header=1;
+
+
+LIST @EXERCISE_DB.STAGES.some_s3_stage;
+
+
+
+
+
+COPY INTO EXERCISE_DB.PUBLIC.CUSTOMERS FROM
+    @EXERCISE_DB.STAGES.some_s3_stage
+    file_format=(
+FORMAT_NAME=EXERCISE_DB.FILE_FORMATS.some_file_format
+    ); //250 rows
+
+
+
+
+
+
+
+
+
+250 ROWS...
+
+
+
+
+
+
+
+
