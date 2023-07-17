@@ -1,0 +1,1257 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... O CÓDIGO DA ÚLTIMA AULA,
+
+EM QUE VIMOS NESTING,
+
+HAVIA FICADO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- O PROCESSO, RESUMIDO:
+
+
+
+
+
+
+-- 1) CREATE STAGE --> FEITA A CONEXAO COM O LOCAL ONDE ESTÁ O ARQUIVO(s)
+
+
+
+
+
+
+
+-- 2) LOAD RAW DATA --> TODA A DATA É CARREGADA 
+--                         EM 1 TABLE SEPARADA, 
+
+--                         TABLE COM APENAS 1 COLUMN...
+--                         ESSA COLUMN 
+--                         É DE 
+
+--                         1 DATA TYPE ESPECIAL... 
+
+
+--                         DATA TYPE --> O NOME É ""VARIANT""...
+
+
+
+
+-- 3) ANALYZE E PARSE DATA (
+
+--     COM A AJUDA DAS FUNCTIONS SNOWFLAKE...
+-- )
+
+
+
+
+
+
+
+
+
+
+
+
+-- 4) FLATTEN E LOAD DATA -->  USAMOS MAIS FUNCTIONS SNOWFLAKE,
+
+-- PARA RESOLVER A HIERARQUIA ENTRE OS ARQUIVOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- aqui vemos o TERCEIRO passo.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//FIRST STEP - LOAD RAW JSON 
+
+
+//CREATE STAGE
+CREATE OR REPLACE STAGE MANAGE_DB.EXTERNAL_STAGES.JSONSTAGE
+    url='s3://bucketsnowflake-jsondemo';
+
+//CREATE FILE FORMAT
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.FILE_FORMATS.JSONFORMAT
+    TYPE=JSON; //precisamos, pois o default, csv, nao adiantará
+
+//CREATE TABLE 
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.JSON_RAW (
+    raw_file VARIANT //DATA TYPE EXTREMAMENTE ESPECIAL (é misto)
+)
+
+
+
+-- ESSA TABLE __ TERÁ APENAS _ 1 ÚNICA COLUMN,
+-- E SEU DATA TYPE 
+-- SERÁ DO TIPO __ """"VARIANT""""....
+
+
+
+-- -> essa column terá 1 nome de ""raw_file"", nesse exemplo...
+
+
+
+
+
+
+
+//SECOND STEP - COPY RAW JSON DATA INTO SINGLE COLUMN, IN JSON_RAW table...
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.JSON_RAW
+    FROM @MANAGE_DB.EXTERNAL_STAGES.JSONSTAGE
+    FILE_FORMAT=(
+        FORMAT_NAME=MANAGE_DB.FILE_FORMATS.JSONFORMAT
+    )
+    files=('HR_data.json');
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+//column field format (unstructured data, basically): {   "city": "Bakersfield", 
+  -- "first_name": "Portia",  
+  --  "gender": "Male", 
+  --    "id": 1,  
+  --     "job": {  
+  --          "salary": 32000,   
+  --            "title": "Financial Analyst"  
+  --             },  
+  --              "last_name": "Gioani",  
+  --               "prev_company": [],   
+  --               "spoken_languages": [    
+  --                    {   
+  --                           "language": "Kazakh",  
+  --                                "level": "Advanced"     },  
+  --                                   {       "language": "Lao",   
+  --                                       "level": "Basic"     }   ] }
+
+
+
+
+
+
+
+//THIRD STEP - PARSE AND ANALYZE RAW JSON...
+
+-- special snowflake syntax.
+
+-- Selecting attribute/column by key-name.
+SELECT RAW_FILE:city FROM OUR_FIRST_DB.PUBLIC.JSON_RAW; ////EIS O CÓDIGO EM QUESTAO
+
+
+
+-- OK... É ASSIM QUE PODEMOS ACESSAR KEYS E SEUS VALUES,
+
+
+-- DENTRO DE COLUMNS DE TIPO ""VARIANT"",
+
+
+
+-- no snowflake...
+
+
+
+
+
+-- AQUI TEMOS OUTRO EXEMPLO:
+
+//é a mesma coisa que ""SELECT RAW_FILE:first_name"", pq vamos selecionar a PRIMEIRA COLUMN dessa table... como essa column só tem 1 column, de nome ""raw_file"", acabamos selecionando a mesma coisa, com "$1"...
+SELECT $1:first_name FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+-- É BEM FÁCIL, NA VERDADE..
+
+
+-- APENAS PRECISAMOS 
+
+
+-- DA ESTRUTURA 
+
+-- ""COLUMN_NAME:KEY-TO-BE-ACESSED-IN-THE-COLUMN""
+
+
+
+
+
+
+
+
+
+-- AGORA QUE CONSEGUIMOS ___ PARSEAR__ ESSA DATA,
+
+
+
+
+
+-- DEVEMOS TENTAR __ FORMATAR ISSO DE UMA MANEIRA MAIS NICE...
+
+
+
+-- ISSO PQ __ O 
+
+
+
+-- COLUMN_NAME 
+
+
+-- DE 
+
+
+-- $1:FIRST_NAME 
+
+
+-- NAO FICOU LEGAL...
+
+
+
+-- SERIA MAIS LEGAL COLOCAR 1 NOME DIFERENTE, 
+
+
+-- EM VEZ DE 
+
+-- ""$1:FIRST_NAME""...
+
+
+
+
+
+
+
+-- TAMBÉM SERIA MELHOR 
+
+
+
+
+-- SE CONSEGUÍSSEMOS 
+
+
+
+
+
+-- __CONVERTER _ 
+
+
+
+
+-- OS VALUES QUE FORAM EXTRAÍDOS,
+
+
+-- PQ ATUALMENTE 
+
+
+
+
+-- ELES ESTAO COM 1 
+
+
+-- FORMATO 
+
+
+
+
+
+-- "Mina"
+
+
+-- "Doug"
+
+
+-- "Charlie",
+
+
+
+-- ETC...
+
+
+
+
+
+
+--> QUEREMOS TIRAR ESSES "", 
+
+-- e 
+
+-- fazer com que sejam retornados 
+
+
+-- COMO DATA TYPE __ STRING..
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, O PROFESSOR ESCREVE:
+
+
+
+
+
+
+
+//SELECT attribute/column by key-name -- FORMATTED RESULTS
+
+SELECT RAW_FILE:first_name::string as first_name ///eis o código em questao.
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+-- COM ESSA ESCRITA,
+
+
+-- DE ""RAW_FILE:firstname::string",
+
+
+-- CONSEGUIMOS 
+
+
+
+-- CONVERTER ESSE VALUE,
+
+
+-- CONVERTER A 1 DATA TYPE DE ___ STRING__ (em vez de variant)..
+
+
+-- depois, por meio de 
+-- ""as first_name"",
+
+-- CONSEGUIMOS RENOMEAR O NOME DA COLUMN QUE VAI APARECER NO RESULT_SET,
+
+-- PARA ""first_name"" (em vez de $1:first_name)...
+
+
+
+-- QUER DIZER QUE "::"" REALIZA A CONVERSAO DOS DATA TYPES DE NOSSAS COLUMNS...
+
+
+
+
+-- MAIS UM EXEMPLO:
+
+-- com isso, convertemos o data type do id, de ""string"" para ""INT"...
+SELECT RAW_FILE:id::INT as ID FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+-- CREATING A NEW TABLE, WITH ALL THESE TRANSFORMATIONS (applying what we learned):
+
+
+
+
+
+--> AGORA, SE COMBINARMOS TUDO ISSO,
+
+
+-- PODEREMOS CRIAR 1 TABLE/RESULT SET BEM LEGAL...
+-- TIPO ASSIM:
+
+
+
+SELECT
+    RAW_FILE:id::int as ID,
+    RAW_FILE:first_name::STRING as first_name,
+    RAW_FILE:last_name::STRING as last_name,
+    RAW_FILE:gender::STRING as gender
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+-- PARA CRIAR 1 NOVA TABLE COM BASE NESSA EXPRESSION, FARÍAMOS ASSIM:
+
+
+
+CREATE TABLE some_random_table AS
+SELECT
+    RAW_FILE:id::int as ID,
+    RAW_FILE:first_name::STRING as first_name,
+    RAW_FILE:last_name::STRING as last_name,
+    RAW_FILE:gender::STRING as gender
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+SELECT * FROM some_random_table;
+
+
+
+
+//^^^^^^^^^ TUDO VISTO ACIMA FUNCIONA __ COM __ KEY-VALUE PAIRS __ SIMPLES (sem objects e sem arrays, sem nesting)...
+
+
+
+
+
+
+//agora precisamos aprender a fazer a mesma coisa, mas com nested objects e arrays.
+
+
+
+
+
+//HANDLING NESTED DATA
+
+SELECT RAW_FILE:job::STRING as JOB from OUR_FIRST_DB.PUBLIC.JSON_RAW; //isso nao vai converter o object, ele ainda vai ficar como 1 object, mas em formato STRING.
+
+
+SELECT RAW_FILE:job:title::STRING as JOB from OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+DESCOBRI ISTO, ANTERIORMENTE:
+
+
+
+
+
+
+
+
+
+-- assim podemos acessar 1 key dentro de outra key, como se fosse dot notation.
+SELECT RAW_FILE:job:title::STRING as JOB from OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aqui, no caso, 
+
+acessamos o 'object' de 
+
+""job"" e depois ""title"", dentro desse object 
+
+""job""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> JÁ VIMOS COMO PARSEAR NOSSA DATA EM NICE-LOOKING TABLES...
+
+
+
+
+
+AGORA VEREMOS COMO PODEMOS 
+
+TRABALHAR COM DATA 1 POUCO MAIS COMPLICADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> SE VISUALIZARMOS NOSSO ARQUIVO  JSON,
+
+TÍNHAMOS 1 FORMATO ASSIM:
+
+
+
+
+
+
+    {
+      "id": 9,
+      "first_name": "Genovera",
+      "last_name": "Semered",
+      "gender": "Male",
+      "city": "Espinosa",
+      "job": { "title": "Compensation Analyst", "salary": 33200 },
+      "spoken_languages": [
+        { "language": "Haitian Creole", "level": "Advanced" },
+        { "language": "Quechua", "level": "Basic" },
+        { "language": "Thai", "level": "Expert" }
+      ],
+      "prev_company": []
+    },
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE _ TEMOS ARRAYS (
+
+    como ""prev_company""
+
+    e 
+    "spoken_languages"....
+)
+
+
+
+
+
+
+--> E TAMBÉM TEMOOS OBJECTS (
+
+COMO VISTO EM ""job""...
+
+)
+
+
+
+
+
+
+
+
+
+VEREMOS COMO PODEMOS TRABALHAR COM ISSO NO SNOWFLAKE E NAS 
+
+NOSSAS TABLES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O ATTRIBUTE DE JOB,
+PODEMOS O VISUALIZAR COM ESTE CÓDIGO:
+
+
+
+
+
+SELECT RAW_FILE:job as JOB from OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+SELECT RAW_FILE:job as JOB from OUR_FIRST_DB.PUBLIC.JSON_RAW; 
+-- formato - {"salary": 320000, "title": "Financial Analyst"} -- é um object no formato VARIANT.
+
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+
+
+nao é possível trabalhar com objects, em tables,
+sim,
+
+
+
+
+MAS FELIZMENTE 
+
+HÁ UMA MANEIRA NICE DE LIDAR 
+
+COM ISSO, NO SNOWFLAKE..
+
+
+
+
+
+
+
+BASTA ESCREVER ASSIM:
+
+
+
+
+
+SELECT RAW_FILE:job.salary as JOB from OUR_FIRST_DB.PUBLIC.JSON_RAW; 
+-- formato - {"salary": 320000, "title": "Financial Analyst"} -- é um object no formato VARIANT.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+""SELECT RAW_FILE:job.salary"",
+
+
+
+OU,
+
+ENTAO
+
+
+
+""SELECT RAW_FILE:job:salary""
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE PODEMOS 
+
+ESCOLHER QUALQUER UM DOS 2,
+
+
+
+OU O DOT NOTATION (.) 
+
+OU 
+O 
+
+
+
+(:)...
+
+
+
+
+
+
+
+
+
+CERTO, ISSO FOI BEM FÁCIL...
+
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS USAR ISSO PARA FORMAR TABLES MAIS COMPLEXAS, 
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+SELECT 
+    RAW_FILE:first_name::STRING as first_name,
+    RAW_FILE:job.salary::INT as salary,
+    RAW_FILE:job.title::STRING as title
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA VEREMOS O PRÓXIMO DESAFIO, QUE É O HANDLE DE ARRAYS...
+
+
+
+
+
+
+
+
+
+--> para o handle de arrays,
+
+temos:
+
+
+
+
+
+
+//HANDLING ARRAYS 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT 
+    RAW_FILE:prev_company as prev_company
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+SELECT 
+    RAW_FILE:prev_company as prev_company
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW; -- formato: ['exemplo1', 'exemplo2'] por cada record
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK, MAS COMO HANDLAMOS ISSO?
+
+
+
+
+
+
+
+
+BEM, AGORA TEMOS MÚLTIPLAS OPTIONS....
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA OPTION 
+
+
+
+É _ SELECT ""SEMPRE APENAS O PRIMEIRO VALUE DO ARRAY""...
+
+
+
+
+
+
+
+
+--> PARA FAZER ISSO, BASTA ESCREVER 
+
+O INDEXADOR,
+TIPO ASSIM:
+
+
+
+
+SELECT 
+    RAW_FILE:prev_company[0] as prev_company 
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW; -- formato: 'exemplo1';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... é coisa básica, meio javascript...
+
+
+
+
+
+
+
+
+
+-> certo....
+
+
+
+
+
+
+
+
+
+--> MAS E SE TIVERMOS 
+
+
+__MÚLTIPLOS VALUES EM 1 ARRAY?
+
+
+
+
+--> O PROFESSOR FALA QUE ARRAYS COM MÚLTIPLOS VALUES sao 1 POUCO 
+
+
+
+UMA ""HIERARCHICAL STRUCTURE""",
+
+
+e que precisamos de um approach DIFERENTE PARA PEGARMOS A DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+novamente, há múltiplas opcoes:
+
+
+
+
+
+
+
+
+1a OPTION --> SIMPLESMENTE ""AGGREGATE"" TODA A DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO É TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+//exemplo disso é a function "ARRAY_SIZE()", que retorna o TAMANHO DE 1 ARRAY (em elementos)
+SELECT 
+    ARRAY_SIZE(RAW_FILE:prev_company) as prev_company
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO NOS DÁ O NÚMERO DE COMPANIES EM QUE ESSA PESSOA JÁ TRABALHOU...
+
+
+
+
+
+
+
+
+
+
+-> CONTAMOS O NÚMERO DE ELEMENTS DISPONÍVEIS NESSE ARRAY...
+
+
+
+
+
+
+
+--> É CLARO QUE PODEMOS USAR ESSE METHOD, MAS __PERDEMOS __
+INFORMATION, COM ESSE APPROACH...
+
+
+
+
+
+
+
+
+
+
+-> pq aí nao sabemos quais em que companhias essa pessoa trabalhou..
+
+
+
+
+
+------------------------------------
+
+
+
+
+o outro method/approach,
+
+
+
+
+
+
+
+
+
+
+
+2o APPROACH -------> É USAR 
+
+
+
+1 COMMAND DE 
+
+""UNION"" (no caso, ""UNION ALL""),
+
+
+
+PARA _ UNIR __ 
+
+
+OS RESULT SET DOS ""DOIS (ou mais) CAMINHOS"", 
+
+o caminho que pegou o elemento 1, e o caminho que 
+pegou o elemento 2... tudo em 1 único result set.
+
+
+
+
+
+O CÓDIGO PARA ISSO É ESTE:
+
+
+
+
+
+
+SELECT 
+    RAW_FILE:id::INT as id,
+    RAW_FILE:first_name::STRING as first_name,
+    RAW_FILE:prev_company[0]::STRING as prev_company
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW 
+UNION ALL
+SELECT 
+    RAW_FILE:id::INT as id,
+    RAW_FILE:first_name::STRING as first_name,
+    RAW_FILE:prev_company[1]::STRING as prev_company
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW 
+ORDER BY id;
+
+
+
+
+
+
+The UNION ALL operation
+ combines the results of these two
+  queries into a single result set, 
+  and the final result is sorted in ascending
+   order based on the "id" column. The "id,"
+    "first_name," and "prev_company" columns are 
+    the final output of the query.
+
+
+---------------------------
+
+
+
+
+OS RESULTS FICAM TIPO assim:
+
+
+
+
+ID   FIRST_NAME        PREV_COMPANY
+
+1       PORTIA      MACGYVER
+
+1       PORTIA      JULIA
+
+2       DENVER      JEREMY
+
+1       DENVER      NULL
+
+
+
+
+-- OU SEJA, __DUPLICAMOS AS QUANTIDADES DE ROWS( isso se existirem no máximo 2 elementos nesse array)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSAS SAO AS 2 MANEIRAS QUE USAMOS PARA TRABALHAR COM ARRAYS....
+
+
+
+
+
+
+1a maneira --> AGGREGATE A DATA, TRANSFORMAR EM 1 ÚNICO VALUE, AÍ ENFIAR ESSE VALUE NA COLUMN...
+
+
+
+
+
+2a maneira --> EXPAND A DATA, EXPAND OS ROWS, PARA QUE __FIQUEMOS COM MAIS ROWS DO QUE TÍNHAMOS ANTES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> e podemos ter 1 combination de NESTED DATA COM ARRAYS...
+
+
+
+
+
+
+-> AGORA VAMOS ENTENDER ""HIERARQUIA"",
+
+
+E COMO LIDAR COM ELA...
