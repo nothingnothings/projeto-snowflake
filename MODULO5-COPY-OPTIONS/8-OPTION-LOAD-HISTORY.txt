@@ -1,0 +1,1099 @@
+
+
+
+
+
+
+
+
+
+
+
+AGORA TEMOS A OPTION DE ""LOAD HISTORY""...
+
+
+PQ ÀS VEZES TEREMOS INTERESSE 
+
+
+NA __ HISTORY__ DE NOSSA DATA...
+
+
+
+--> A HISTORY DA DATA QUE FOI CARREGADA 
+
+NAS NOSSAS TABLES POR MEIO DO COMANDO ""COPY INTO"""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA CONSEGUIR ISSO, 
+
+
+
+FELIZMENTE HÁ UMA 
+
+
+
+
+
+
+""""""VIEW"""""" (nao é bem uma option,
+
+e sim uma 
+
+___vIEW___....)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> HÁ UMA VIEW ÚTIL,
+QUE PODEMOS 
+
+FACILMENTE QUERIAR,
+
+PARA CONSEGUIR ESSA INFO..
+
+
+
+
+
+
+
+É ISSO QUE VEREMOS, NESSA LICAO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É ISSO QUE VEREMOS, AGORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS ATÉ O SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> EM CADA DATABASE QUE TEMOS NA GUI,
+
+
+
+
+
+PODEMOS OBSERVAR QUE EXISTE 1 SCHEMA 
+
+CHAMADO 
+
+DE 
+
+""""INFORMATION_SCHEMA"""""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE EXPANDIRMOS ESSE SCHEMA,
+
+
+
+
+FICAMOS COM __ MTAS VIEWS_...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VIEWS DE TODAS COISAS IMAGINÁVEIS:
+
+
+
+
+
+
+
+1) APPLICABLE_ROLES 
+
+
+
+
+2) COLUMNS 
+
+
+
+3) DATABASES 
+
+
+
+
+4) ENABLED_ROLES 
+
+
+
+
+5) EVENT_TABLES 
+
+
+
+
+6) FILE_FORMATS 
+
+
+
+7) FUNCTIONS 
+
+
+
+8) INFORMATION_SCHEMA_CATALOG_NAME 
+
+
+
+9) LOAD_HISTORY 
+
+
+10) OBJECT_PRIVILEGES 
+
+
+11) PACKAGES 
+
+
+
+12) PIPES 
+
+
+
+13) PROCEDURES 
+
+
+
+
+14) REFERENTIAL_CONSTRAINTS 
+
+
+
+15) REPLICATION_DATABASES 
+
+
+16) REPLICATION_GROUPS 
+
+
+
+17) SCHEMATA 
+
+
+
+18) SEQUENCES 
+
+
+19) STAGES 
+
+
+
+20) STREAMLITS 
+
+
+
+
+21) TABLES 
+
+
+
+
+22) TABLE_CONSTRAINTS 
+
+
+
+23) TABLE_PRIVILEGES 
+
+
+
+24) TABLE_STORAGE_METRICS 
+
+
+
+25) USAGE_PRIVILEGES 
+
+
+
+26) VIEWS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CADA DATABASE TEM 1 DESSES SCHEMAS DE INFORMATION...
+
+
+
+
+
+
+UM MONTE DE VIEWS...
+
+
+
+
+
+
+
+
+
+-> DEVEMOS ABRIR A VIEW DE ""LOAD_HISTORY""....
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+PODEMOS CLICAR BOTAO DIREITO, 
+
+
+AÍ 
+
+
+""PLACE NAME IN EDITOR"",
+
+
+para ficar com o nome 
+
+
+no editor,
+
+tipo 
+
+
+
+
+
+COPY_DB.INFORMATION_SCHEMA.LOAD_HISTORY;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS FAZER 1 QUERY 
+
+
+
+DESSA VIEW,
+
+COM ESTES COMANDOS:
+
+
+
+
+
+
+
+
+
+
+
+
+USE COPY_DB;
+
+SELECT * FROM COPY_DB.INFORMATION_SCHEMA.LOAD_HISTORY;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, É POSSÍVEL VER A LOAD HISTORY 
+
+
+DESSA TABLE (
+
+    OU SEJA,
+
+    TODOS OS ARQUIVOS QUE FORAM CARREGADOS PARA DENTRO DESSA TABLE...
+)
+
+
+
+
+
+
+
+
+
+
+
+--> É POSSÍVEL VER:
+
+
+1) SCHEMA_NAME 
+
+
+
+2) FILE_NAME QUE FOI CARREGADO
+
+
+
+
+
+3) TABLE_NAME (em que table essa data foi inserida)...
+
+
+
+
+
+
+
+4) LAST_LOAD_TIME 
+
+
+
+
+
+
+5) ROW_COUNT,
+
+
+
+
+6) STATUS 
+
+
+
+
+7) ERRORS, etc..
+
+
+
+
+
+
+
+
+
+
+
+
+--> TUDO ISSO PODEMOS OBTER DESSA TABLE ESPECÍFICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TALVEZ QUEIRAMOS VER A __ GLOBAL_ _ TABLE HISTORY....
+
+
+
+
+
+
+
+
+
+--> QUEREMOS VER A GLOBAL TABLE HISTORY __ JUSTAMENTE PQ 
+
+
+1 TABLE FOI RECRIADA,
+
+
+
+E ESSA TABLE FOI RECRIADA COM O MESMO NOME...  (
+    aí fica difícil de identificar a 
+
+    history ANTES e DEPOIS do recreate...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA OBTERMOS ACESSO A ESSA INFO,
+
+
+
+
+__dEVEMOS __ DAR UMA OLHADA _ 
+
+
+
+NA DATABASE ""SNOWFLAKE"",
+
+
+
+
+QUE É BASICAMENTE A 
+
+
+""""COMMON DATABASE"""" do snowflake...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSA DATABASE (SNOWFLAKE), 
+PODEMOS VER 
+
+INFO SOBRE __ TODAS AS COPIES _ 
+
+QUE __ ACONTECERAM NO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSA É A GLOBAL DATABASE DO NOSSO APP...
+
+
+
+
+
+
+
+
+
+
+
+NELA,
+
+
+
+TEMOS 
+
+
+
+1 SCHEMA CHAMADO DE ""ACCOUNT_USAGE""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE EXPANDIRMOS O ""ACCOUNT_USAGE"",
+
+
+
+e visualizarmos as views,
+
+
+PODEMOS SEGUIR ATÉ ""LOAD_HISTORY""...
+
+
+
+
+
+
+
+
+
+ok............ 
+
+
+
+
+
+
+COM ISSO, REALMENTE É POSSÍVEL CONSEGUIR ESSA DATA....
+
+
+
+
+
+
+
+
+VEJA:
+
+
+
+
+
+TABLE_ID | TABLE_NAME   | SCHEMA_ID | SCHEMA_NAME | CATALOG_ID | CATALOG_NAME | FILE_NAME                                                         | LAST_LOAD_TIME                 | STATUS          | ROW_COUNT | ROW_PARSED | FIRST_ERROR_MESSAGE                              | FIRST_ERROR_LINE_NUMBER | FIRST_ERROR_CHARACTER_POSITION | FIRST_ERROR_COL_NAME             | ERROR_COUNT | ERROR_LIMIT
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7172     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error2.csv                       | 2023-07-14T09:19:57.365-07:00 | LOADED          | 285       | 285        |                                  |                         |                                |                                  | 285         | 
+7172     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error.csv                       | 2023-07-14T09:19:57.365-07:00 | LOAD_FAILED     | 0         | 1500       | Numeric value 'one thousand' is not recognized         | 2                       | 14                             | """ORDERS_EX""[""PROFIT"":3]"      | 2           | 1500
+7172     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error.csv                       | 2023-07-14T09:10:50.31-07:00  | PARTIALLY_LOADED | 1498      | 1500       | Numeric value 'one thousand' is not recognized         | 2                       | 14                             | """ORDERS_EX""[""PROFIT"":3]"      | 2           | 1500
+7172     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error2.csv                      | 2023-07-14T09:10:50.31-07:00  | LOADED          | 285       | 285        |                                  |                         |                                |                                  | 285         | 
+8198     | ORDERS       | 22        | PUBLIC      | 14         | COPY_DB      | s3://snowflakebucket-copyoption/returnfailed/OrderDetails_error2 - Copy.csv | 2023-07-14T14:26:47.679-07:00 | PARTIALLY_LOADED | 283       | 285        | Numeric value '7-' is not recognized                  | 2                       | 17                             | """ORDERS""[""QUANTITY"":4]"        | 2           | 285
+8198     | ORDERS       | 22        | PUBLIC      | 14         | COPY_DB      | s3://snowflakebucket-copyoption/returnfailed/Orders.csv           | 2023-07-14T14:26:47.679-07:00 | LOADED          | 1500      | 1500       |                                  |                         |                                |                                  | 1500        | 
+6152     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error.csv                       | 2023-07-14T10:04:44.384-07:00 | PARTIALLY_LOADED | 1498      | 1501       | Numeric value 'Amount' is not recognized              | 1                       | 10                             | """ORDERS_EX""[""AMOUNT"":2]"      | 3           | 1501
+6152     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error.csv                       | 2023-07-14T10:22:44.101-07:00 | PARTIALLY_LOADED | 1498      | 1500       | Numeric value 'one thousand' is not recognized         | 2                       | 14                             | """ORDERS_EX""[""PROFIT"":3]"      | 2           | 1500
+6152     | ORDERS_EX    | 4         | PUBLIC      | 5          | OUR_FIRST_DB | s3://bucketsnowflakes4/OrderDetails_error.csv                       | 2023-07-14T10:03:53.032-07:00 | LOAD_FAILED     | 0         | 1501       | Numeric value 'Amount' is not recognized              | 1                       | 10                             | """ORDERS_EX""[""AMOUNT"":2]"      | 3           | 1501
+1028     | CUSTOMERS    | 7         | PUBLIC      | 8          | EXERCISE_DB  | s3://snowflake-assignments-mc/gettingstarted/customers.csv        | 2023-07-13T07:07:46.033-07:00 | LOADED          | 1000      | 1000       |                                  |                         |                                |                                  | 1000        | 
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, É POSSÍVEL VISUALIZAR 
+
+
+
+
+A EXATA HISTORY DE NOSSOS COMANDOS DE COPY...
+
+
+
+
+
+
+
+
+
+
+
+
+-> nessa global table,
+
+
+
+
+
+visualizamos a global data....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> dentro dali, 
+
+
+encontramos 1 column 
+
+chamada de ""table_id"" ---> ESSA COLUMN 
+
+GERALMENTE 
+
+NAO É VISÍVEL,
+
+
+
+
+E PODEMOS VER __ QUE __ AINDA QUE TENHAMOS 
+
+ESSA TABLE MÚLTIPLAS VEZES (criado e recriado várias vezes),
+
+
+
+
+
+O ACTUAL TABLE_ID SERÁ DIFERENTE.. --> OU SEJA,
+
+
+
+1 TABLE NUNCA TERÁ 1 MESMO ID,
+
+
+
+
+PODEMOS RECRIAR COM O MESMO NOME, 
+
+
+MAS O ID _SEMPRE VAI DENUNCIAR 
+
+
+
+
+QUE _A TABLE FOI RECRIADA....
+
+
+(
+    ESSA COLUMN DE ""TABLE_ID""
+
+    NUNCA TERÁ VALUES DUPLICADOS... PODE TER VALUES DUPLICADOS 
+
+    NA COLUMN DE ""TABLE_NAME"",
+
+
+    MAS NUNCA EM ""TABLE_ID""...
+)
+
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+TAMBÉM É POSSÍVE VER OS ERRORS OCORRIDOS, ETC ETC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE TAMBÉM PODEMOS __ FILTER_ POR ESSA TABLE..
+
+
+
+
+
+
+
+
+
+
+-. OU SEJA,
+
+
+PODEMOS QUERER 
+
+
+
+""SELECT ONLY _ THE TABLES THAT WERE CALLED ORDERS"",
+
+
+
+
+
+POR MEIO DE 1 __ WHERE STATEMENT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS RODAR ASSIM:
+
+
+
+
+
+
+
+
+
+//FILTER ON SPECIFIC TABLE E SCHEMA:
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.LOAD_HISTORY
+    WHERE schema_name='PUBLIC' AND 
+    table_name='ORDERS';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, CONSEGUI VER QUE 
+
+
+
+ESSA TABLE DE ORDERS 
+
+FOI RECRIADA 
+
+
+
+4 VEZES.... (pq o table_id mudou)...
+
+
+
+
+
+
+
+
+
+
+-> PODEMOS RODAR TAMBÉM ESTE COMANDO:
+
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.LOAD_HISTORY
+    WHERE schema_name='PUBLIC' AND 
+    table_name='ORDERS' AND 
+    error_count > 0; -- visualizar apenas os eventos de copy em que tivemos ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, É POSSÍVEL VISUALIZAR 
+
+APENAS 
+
+
+OS EVENTOS DE COPY EM QUE OCORRERAM ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE ESSE COMANDO PODE SER MT ÚTIL,
+
+ESPECIALMENTE 
+
+
+SE JÁ CRIAMOS E RECRIAMOS ESSA TABLE MÚLTIPLAS VEZES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR MOSTRA QUE PODEMOS FILTRAR POR TODOS OS 
+
+ERRORS QUE TENHAM OCORRIDO NESSA 
+
+TABLE ESPECÍFICA...
+
+
+
+
+
+
+
+
+
+
+
+OK.... É ASSIM QUE PODEMOS USAR ESSA GLOBAL VIEW...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NÓS TAMBÉM PODEMOS __ IR ALÉM..... --> ESPECIFICAR 
+
+
+MAIS COISAS AINDA...
+
+
+
+
+
+
+
+
+
+
+
+--. ESPECIFICAR __ OS EVENTS DE LOAD _ QUE OCORRERAM EM 1 
+
+
+__dATE __ESPECIFICA...
+
+
+
+
+ex:
+
+
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.LOAD_HISTORY
+    WHERE DATE(LAST_LOAD_TIME) <= DATEADD(days, -1, CURRENT_DATE);
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, DIZEMOS QUE ""QUEREMOS TODA A LOAD_HISTORY 
+        DE 1 DIA PARA CÁ""...
+
+
+
+
+
+
+
+
+
+
+
+OK... QUER DIZER QUE ESSA PODE SER UMA VIEW BEM ÚTIL
+
+SE QUISERMOS 
+
+VER A LOAD HISTORY 
+
+GLOBALMENTE, OU EM 1 DATABASE ESPECÍFICA, EM 1 TABLE ESPECÍFICA...
