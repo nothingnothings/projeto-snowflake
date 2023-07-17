@@ -192,3 +192,231 @@ SELECT * FROM TABLE(validate(orders, job_id => '_last'));
 --   a past execution of the COPY INTO command
 --    and returns all the errors
 --     encountered during the load, rather than just the first error
+
+
+
+
+
+
+
+
+
+-- 1) O COMANDO DE COPY FOI EXECUTADO, MAS OCORRERAM ERRORS EM ALGUNS 
+
+-- DOS INSERTS  --> MAS OS ERRORS NAO CONSEGUIAM SER VISUALIZADOS ESPECIFICAMENTE..
+
+-- APENAS SABÍAMOS QUE ELES TINHAM OCORRIDO...
+
+
+
+
+
+-- 2) por meio de 
+
+
+
+
+-- SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last')),
+
+
+
+
+
+
+
+
+-- ficamos com info sobre os errors, 1 row para cada error...
+
+
+
+
+-- o que ajuda mt a entender a causa do error...
+
+
+
+
+
+
+
+
+
+
+
+
+-- -> O RETURN DE ERRORS DE 
+
+-- """"
+-- SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last'));
+-- """""
+
+
+
+
+
+
+
+-- TAMBÉM NOS AJUDA COM O RETRIEVE DOS ROWS QUE DERAM ERROR,
+
+-- POR MEIO DA COLUMN DE 
+
+
+-- ""REJECTED RECORD""...
+
+
+
+
+
+-- -------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+-- OK... É ISSO QUE PODEMOS FAZER COM A OPTION DE 
+
+
+-- ""ON_ERROR=CONTINUE",
+
+
+
+-- COMBINADA 
+
+
+-- COM AQUELE 
+
+-- SELECT ESPECIAL,
+
+-- DE 
+
+
+
+-- """"
+-- SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last'));
+
+-- """"
+
+
+-- (select que usa essa function especial, de 
+
+-- VALIDATE(), para retornar mais data sobre os errors de 1 query anterior)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- POR FIM, 3: 
+
+
+
+
+
+
+
+-- 3) WORKING WITH REJECTED RECORDS (manipulation)....
+
+
+
+
+-- (rejected é a table com a column de ""rejected_record"", que possui toda 
+-- a data do record, em 1 data type ESPECIAL, QUE __ NÃO É UMA STRING...)...
+
+
+
+
+
+
+SELECT REJECTED_RECORD FROM rejected; //query simples 
+
+
+
+CREATE OR REPLACE TABLE rejected_values AS
+SELECT 
+SPLIT_PART(rejected_record, ',', 1 ) as ORDER_ID,  // com isso, manipulamos cada 1 dos key-value pairs, dentro daquela single col.
+SPLIT_PART(rejected_record, ',', 2 ) as AMOUNT,
+SPLIT_PART(rejected_record, ',', 3 ) as PROFIT,
+SPLIT_PART(rejected_record, ',', 4 ) as QUANTITY,
+SPLIT_PART(rejected_record, ',', 5 ) as CATEGORY,
+SPLIT_PART(rejected_record, ',', 6 ) as SUBCATEGORY
+FROM rejected;
+
+
+
+
+
+-- --> NESSE NOSSO CASO CONCRETO,
+
+
+-- QUEREMOS __ 
+
+
+-- TRANSFORMAR AQUELA COLUMN 
+
+-- DE 
+-- """"REJECTED_RECORD""""
+
+
+
+
+-- EM MÚLTIPLAS COLUMNS,
+
+-- SEPARADAS...  --> fazemos isso com ""SPLIT_PART()""....
+
+
+
+
+
+
+-- ESSA FUNCTION, 
+
+
+
+-- ""SPLIT_PART()""" --> ESSA FUNCTION EXIGE 
+
+
+-- 1 
+-- ""SPLIT DELIMIITER"""-->  E COLOCAMOS O DELIMITER 
+
+
+
+
+
+-- COMO SENDO A 
+
+-- __VÍRGULA,
+
+-- para separar cada 1 dos items 
+
+
+
+-- naquelas strings 
+
+-- de 
+
+
+
+
+
+-- ""B-12321,1,12321,10,7-,FURNITURE,BOOKCASES""
+

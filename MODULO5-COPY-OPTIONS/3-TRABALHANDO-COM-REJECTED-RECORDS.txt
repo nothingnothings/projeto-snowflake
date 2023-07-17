@@ -1024,3 +1024,1029 @@ DE ""COPY INTO"" RODADO ANTERIORMENTE...
 
 
 
+
+
+
+TEMOS QUE MENCIONAR o table name, e entao 
+
+
+o id da query que foi executada...
+
+
+
+
+
+
+
+
+O FORMATO 
+DE 
+
+
+VALIDATE É ASSIM:
+
+
+
+
+
+
+
+
+
+
+validate(orders, JOB_ID => '_last');
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA, 
+
+precisamos 
+
+
+
+escrever 
+
+""JOB_ID"" para entao, com a flecha, apontar 
+
+PARA QUAL É O ID QUE QUEREMOS USAR...
+
+
+
+
+
+
+--> para o id,
+
+podemos ou escrever 
+
+
+<query_id> (pegar o query_id específico, o que nao é possível, mtas vezes),
+
+
+ou entao 
+
+usar a variável dinamica 
+
+""_last"",
+
+
+para entao pegar 
+
+
+os errors (se existirem) 
+
+
+
+DO ÚLTIMO COMMAND DE COPY QUE FOI EXECUTADO...
+
+
+
+
+
+
+
+
+
+
+NO NOSSO CASO, O CÓDIGO ESTÁ FICANDO ASSIM:
+
+
+
+
+
+
+
+
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @OUR_FIRST_DB.PUBLIC.aws_stage
+    FILE_FORMAT = (
+        type=csv, 
+        field_delimiter= ',',
+        skip_header=1
+        )
+    PATTERN='.*Order.*'
+    ON_ERROR=CONTINUE; // para isso, precisamos da option de ""ON_ERROR=CONTINUE"""
+
+
+
+SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last'));
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, 
+
+VAMOS OBTER TODOS OS ERRORS 
+
+DAQUELE COMANDO DE ""COPY INTO"" EXECUTADO ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... mas nao recebi nenhum error, estranhamente...
+
+
+
+
+
+
+
+
+
+
+
+-> isso aconteceu pq NENHUMA FILE FOI PROCESSADA (pq esse stage deve estar INCORRETO)...
+
+
+
+
+
+
+
+
+--> acho que isso aconteceu por conta do ""PATTERN=EXPRESSAO""...
+
+
+
+
+
+
+
+
+
+
+
+nao, na verdade é porque todos esses records já haviam sido inseridos 
+
+
+na nossa table (e o snowflake é esperto, ele nao repete inserts)..
+
+
+
+
+temos que droppar a table e rodar de novo...
+
+
+
+
+
+
+
+
+
+
+rodamos 1 truncate, para limpar a table...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA NOSSO CÓDIGO FUNCIONOU...
+
+
+
+
+
+
+O QUE ACONTECEU:
+
+
+
+
+
+
+
+1) O COMANDO DE COPY FOI EXECUTADO, MAS OCORRERAM ERRORS EM ALGUNS 
+
+DOS INSERTS  --> MAS OS ERRORS NAO CONSEGUIAM SER VISUALIZADOS ESPECIFICAMENTE..
+
+APENAS SABÍAMOS QUE ELES TINHAM OCORRIDO...
+
+
+
+
+
+2) por meio de 
+
+
+
+
+SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last')),
+
+
+
+
+
+
+
+
+ficamos com info sobre os errors, 1 row para cada error...
+
+
+
+
+o que ajuda mt a entender a causa do error...
+
+
+
+
+
+
+
+
+
+
+
+
+-> O RETURN DE ERRORS DE 
+
+""""
+SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last'));
+"""""
+
+
+
+
+
+
+
+TAMBÉM NOS AJUDA COM O RETRIEVE DOS ROWS QUE DERAM ERROR,
+
+POR MEIO DA COLUMN DE 
+
+
+""REJECTED RECORD""...
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... É ISSO QUE PODEMOS FAZER COM A OPTION DE 
+
+
+""ON_ERROR=CONTINUE",
+
+
+
+COMBINADA 
+
+
+COM AQUELE 
+
+SELECT ESPECIAL,
+
+DE 
+
+
+
+""""
+SELECT * FROM TABLE(VALIDATE(COPY_DB.PUBLIC.ORDERS,JOB_ID => '_last'));
+
+""""
+
+
+(select que usa essa function especial, de 
+
+VALIDATE(), para retornar mais data sobre os errors de 1 query anterior)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RESUMINDO:
+
+
+
+
+
+
+VIMOS 2 MANEIRAS ALTERNATIVAS 
+
+DE __ USAR__ E FETCHEAR OS ERRORS (se ocorreram)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA _ QUEREMOS PROCESSAR ESSES ERRORS...
+
+
+
+
+
+
+
+
+
+
+
+PARA PROCESSAR ESSES ERRORS,
+
+PRECISAMOS RODAR ALGUMAS OUTRAS FUNCTIONS,
+
+
+
+FUNCTIONS MAIS AVANCADAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> NO INÍCIO, O STATEMENT PODE PARECER SUPER COMPLEXO,
+
+
+MAS VAMOS APRENDER ETAPA-POR-ETAPA...
+
+
+
+
+
+
+
+
+
+
+
+O STATEMENT É ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+3) WORKING WITH REJECTED RECORDS (manipulation)....
+
+
+
+
+(rejected é a table com a column de ""rejected_record"", que possui toda 
+a data do record, em 1 data type ESPECIAL, QUE __ NÃO É UMA STRING...)...
+
+
+
+
+
+
+
+
+
+
+SELECT REJECTED_RECORD FROM rejected ..... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CABE RESSALTAR QUE AQUELA TABLE QUE CRIAMOS,
+
+DE NOME 
+
+""rejected"",
+
+
+
+COM ESTE STATEMENT:
+
+
+
+
+
+
+
+-- //////ADDING ADDITIONAL EVENTUAL FAILED RECORDS TO REJECTED TABLE --
+
+INSERT INTO rejected
+SELECT rejected_record from table(result_scan(last_query_id()));
+
+SELECT * FROM REJECTED;
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA TABLE, REJECTED,
+
+
+
+ELA POSSUI ESSA COLUMN DE ""rejected_record""...
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, ESSA COLUMN __ NAO É DE TIPO STRING,
+
+APESAR DE PARECER ISSO...
+
+
+--> EM VEZ DISSO,
+
+
+
+ESSA COLUMN É DE TIPO 
+
+
+
+
+
+
+
+""""""VARIANT""""""
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE É O NOME DO DATA TYPE,
+
+""VARIANT""" ----> É UM __ VARIANT DATA TYPE,
+
+NO SNOWFLAKE,
+
+
+
+
+
+
+QUE É JUSTAMENTE 1 DATA TYPE NO SNOWFLAKE 
+QUE 
+
+PODE CONTER 
+
+TODO TIPO DE VALOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE NOSSO CASO CONCRETO,
+
+
+QUEREMOS __ 
+
+
+TRANSFORMAR AQUELA COLUMN 
+
+DE 
+""""REJECTED_RECORD""""
+
+
+
+
+EM MÚLTIPLAS COLUMNS,
+
+SEPARADAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, O PROFESSOR ESCREVEU 1 STATEMENT MALUCO:
+
+
+
+
+
+
+
+
+
+
+SELECT REJECTED_RECORD FROM rejected; //query simples 
+
+
+
+CREATE OR REPLACE TABLE rejected_values AS
+SELECT 
+SPLIT_PART(rejected_record, ' , ', 1 ) as ORDER_ID,
+SPLIT_PART(rejected_record, ' , ', 2 ) as AMOUNT,
+SPLIT_PART(rejected_record, ' , ', 3 ) as PROFIT,
+SPLIT_PART(rejected_record, ' , ', 4 ) as QUANTITY,
+SPLIT_PART(rejected_record, ' , ', 5 ) as CATEGORY,
+SPLIT_PART(rejected_record, ' , ', 6 ) as SUBCATEGORY
+FROM rejected;
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+SELECT REJECTED_RECORD FROM rejected; //query simples 
+
+
+
+CREATE OR REPLACE TABLE rejected_values AS
+SELECT 
+SPLIT_PART(rejected_record, ' , ', 1 ) as ORDER_ID,  // com isso, manipulamos cada 1 dos key-value pairs, dentro daquela single col.
+SPLIT_PART(rejected_record, ' , ', 2 ) as AMOUNT,
+SPLIT_PART(rejected_record, ' , ', 3 ) as PROFIT,
+SPLIT_PART(rejected_record, ' , ', 4 ) as QUANTITY,
+SPLIT_PART(rejected_record, ' , ', 5 ) as CATEGORY,
+SPLIT_PART(rejected_record, ' , ', 6 ) as SUBCATEGORY
+FROM rejected;
+
+
+
+
+
+
+
+-------------------
+
+
+
+
+
+
+
+
+
+
+ESSA FUNCTION, 
+
+
+
+""SPLIT_PART()""" --> ESSA FUNCTION EXIGE 
+
+
+1 
+""SPLIT DELIMIITER"""-->  E COLOCAMOS O DELIMITER 
+
+
+
+
+
+COMO SENDO A 
+
+__VÍRGULA,
+
+para separar cada 1 dos items 
+
+
+
+naquelas strings 
+
+de 
+
+
+
+
+
+""B-12321,1,12321,10,7-,FURNITURE,BOOKCASES""
+
+
+
+
+
+
+
+
+
+
+
+
+
+o último parametro,
+
+aquele número,
+
+
+é usado 
+
+
+PARA __ ESCOLHER _ QUAL PARTE __ DA STRING RESULTANTE VAMOS QUERER FICAR....
+
+
+
+
+----------------
+
+
+
+
+
+
+
+
+
+E, COM ESSE ARGUMENTO ADICIONAL,
+
+
+
+PODEMOS DIZER ""QUAL PARTE QUEREMOS PEGAR"""...
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, FIZEMOS SELECT DE TODAS ESSAS COLUMNS,
+
+
+
+
+TODAS ELAS LÁ DA TABLE DE ""REJECTED"",
+
+
+
+
+E AÍ 
+
+
+
+
+CRIAMOS 1 TABLE COM 
+
+
+
+
+
+
+
+ELAS, COM O COMANDO 
+
+
+
+
+
+
+
+"CREATE OR REPLACE TABLE rejected_values AS xxxxx" (xxx = nossa expressao)..
+
+
+
+
+
+
+
+
+
+
+
+
+ANTES DISSO, SELECIONAMOS TODAS ESSAS COLUMNS,
+
+PARA VER 
+
+
+
+SE 
+
+
+
+
+TUDO FICOU COMO ESPERÁVAMOS:
+
+
+
+
+SELECT 
+SPLIT_PART(rejected_record, ' , ', 1 ) as ORDER_ID,  // com isso, manipulamos cada 1 dos key-value pairs, dentro daquela single col.
+SPLIT_PART(rejected_record, ' , ', 2 ) as AMOUNT,
+SPLIT_PART(rejected_record, ' , ', 3 ) as PROFIT,
+SPLIT_PART(rejected_record, ' , ', 4 ) as QUANTITY,
+SPLIT_PART(rejected_record, ' , ', 5 ) as CATEGORY,
+SPLIT_PART(rejected_record, ' , ', 6 ) as SUBCATEGORY
+FROM rejected;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> isso rodou, e ficou com o que queríamos,
+
+
+
+
+
+
+4 rows,
+
+
+nas columns 
+
+
+
+
+
+de order_id,
+
+amount,
+
+profit,
+
+quantity,
+
+
+category 
+
+e subcategory....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok...
+
+
+
+
+
+
+
+
+ISSO FUNCIONOU...
+
+
+
+
+
+
+
+
+PODERÍAMOS CRIAR NOSSA TABLE AGORA, COM ESSES VALUES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU, ALTERNATIVAMENTE,
+
+PODERÍAMOS CORRIGIR 
+
+OS ERROS ANTES,
+
+
+
+
+
+
+
+CORRIGIR 
+
+AQUELA ENTRY QUE 
+
+ESTÁ 
+
+
+
+COM 
+
+
+QUANTITY COMO "7-""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK..CRIAMOS ESSA TABLE, USANDO O COMMAND DE SELECT...
+
+
+
+
+
+
+
+ISSO FEITO,
+PODEMOS 
+VALIDAR ISSO E DAR 1 OLHADA NA TABLE...
+
+
+
+
+
+
+
+
+
+
+CERTO... FUNCIONOU...
+
+
+
+
+AGORA NOSSOS ROWS ESTAO PRONTOS PARA SEREM FETCHEADOS AINDA MAIS..
+
+
+
+
+
+
+
+--> FICAMOS COM ESSES ROWS PROBLEMÁTICOS 
+
+
+INSERIDOS NESSA TABLE....
+
+
+
+
+
+
+E ESSES FORAM ALGUNS DOS APPROACHES MAIS AVANCADOS 
+
+PARA O DEAL COM ERRORS...
+
+
+
+
