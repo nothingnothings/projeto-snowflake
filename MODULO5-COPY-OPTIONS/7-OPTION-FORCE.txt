@@ -1,0 +1,385 @@
+
+
+
+
+
+
+
+
+A OPTION DE __FORCE_ TEM ESTA SINTAXE:
+
+
+
+
+
+
+
+
+
+COPY INTO <table_name>
+FROM @externalStage
+FILES=('<file_name>', '<file_name2>')
+FILE_FORMAT=(
+    FORMAT_NAME=xxxx
+)
+FORCE = TRUE | FALSE;
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+com essa OPTION SETTADA COMO TRUE,
+
+
+
+
+PODEMOS DIZER QUE 
+
+
+
+1 FILE QUE FOI 
+
+CARREGADA ___ANTERIORMENTE__, E QUE NAO MUDOU DESDE ENTAO,
+
+PODERÁ/DEVERÁ 
+
+
+__SER CARREGADA NOVAMENTE, ""MESMO ASSIM""....
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja, 
+
+fazemos overwrite do comportamento do 
+snowflake que evita o insert repetido de arquivos identicos 
+
+nas databases manageadas por ele....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ""SPECIFIES TO LOAD ALL FILES, REGARDLESS OF WHETHER THEY'VE BEEN 
+LOADED PREVIOUSLY AND HAVE NOT CHANGED SINCE THEY WERE LOADED""....
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+O DEFAULT É FALSE...
+
+
+
+
+
+
+
+
+
+
+
+-> COM FORCE=TRUE
+
+
+
+
+
+
+
+
+
+
+COPY INTO <table_name>
+FROM @externalStage
+FILES=('<file_name>', '<file_name2>')
+FILE_FORMAT=(
+    FORMAT_NAME=xxxx
+)
+FORCE = TRUE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE SE HABILITARMOS ESSA OPTION,
+
+
+
+
+PODEMOS FICAR COM _ DUPLICATED _ DATA _ NA NOSSA TABLE...
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE O DEFAULT É ""FALSE'"...
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+MAS É CLARO QUE _ 
+
+
+EXISTEM SITUACOES EM QUE FORCAR ESSE LOADING 
+
+PODE SER BENÉFICO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VOLTAMOS AO SNOWFLAKE,
+
+
+E ANALISAMOS 
+
+ISSO EM ACAO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS OS MESMOS COMANDOS DE RESET, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE COPY_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT VARCHAR(30),
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+//PREPARE STAGE OBJECT 
+
+CREATE OR REPLACE STAGE COPY_DB.PUBLIC.aws_stage_copy
+    url='s3://snowflakebucket-copyoption/size/';
+
+
+
+
+
+LIST @COPY_DB.PUBLIC.aws_stage_copy;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AÍ RODAMOS 
+
+O COPY...
+
+
+
+
+
+
+
+
+
+--> RODAMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO COPY_DB.PUBLIC.ORDERS
+    FROM @aws_stage_copy 
+    file_format=(
+        type=csv,
+        field_delimiter=',',
+        skip_header=1
+    )
+    pattern='.*Order.*'
+
+
+
+
+
+
+
+
+
+
+
+--> OK... RODEI ISSO AÍ, E CONSEGUI INSERIR TUDO DE NOVO... (o que 
+pode ser ruim)....
+
+
+
+
+
+
+
+--> MAS EM ALGUMAS SITUATIONS,
+
+VAMOS QUERER __ MESMO ASSIM FORCAR O LOAD DESSA DATA,
+
+MESMO 
+
+SENDO DUPLICADA...
+
+
+
+
+
+
+
+
+
+--> O DEFAULT É ""FORCE=FALSE""...
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE FICAREMOS COM DUPLICATAS,
+
+E PODEMOS CHECAR ISSO, COM 
+
+
+
+""SELECT * FROM COPY_DB.PUBLIC.ORDERS;""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... TIPICAMENTE NAO VAMOS QUERER 
+
+USAR O FORCE,
+
+
+
+
+
+PQ DUPLICATAS GERALMENTE SAO INCONVENIENTES...
+
+
+
+
+
+
