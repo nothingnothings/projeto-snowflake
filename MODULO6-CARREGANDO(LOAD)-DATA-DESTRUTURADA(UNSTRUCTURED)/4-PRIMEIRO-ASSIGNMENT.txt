@@ -1,0 +1,38 @@
+If you have not created the database EXERCISE_DB then you can do so - otherwise use this database for this exercise.
+
+
+
+1. Create a stage object that is pointing to 's3://snowflake-assignments-mc/unstructureddata/'
+
+
+
+2. Create a file format object that is using TYPE = JSON
+
+
+
+3. Create a table called JSON_RAW with one column
+
+Column name: Raw
+
+Column type: Variant
+
+
+
+4. Copy the raw data in the JSON_RAW table using the file format object and stage object
+
+
+
+Perguntas dessa tarefa
+What is the last name of the person in the first row (id=1)?
+
+
+
+
+
+
+
+RESPOSTA: Fasson  
+
+
+
+
