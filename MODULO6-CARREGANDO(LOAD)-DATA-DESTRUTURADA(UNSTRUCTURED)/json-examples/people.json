@@ -1,0 +1,24 @@
+{
+  "people": [
+    {
+      "city": "Grimshaw",
+      "first_name": "Rici",
+      "gender": "Female",
+      "id": 1
+    },
+
+    {
+      "city": "Rome",
+      "first_name": "John",
+      "gender": "Male",
+      "id": 2
+    },
+
+    {
+      "city": "Paris",
+      "first_name": "George",
+      "gender": "Male",
+      "id": 3
+    }
+  ]
+}

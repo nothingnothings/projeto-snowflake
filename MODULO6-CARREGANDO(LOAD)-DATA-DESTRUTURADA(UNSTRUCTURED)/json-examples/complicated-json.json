@@ -1,0 +1,26 @@
+{
+  "name": "John Doe",
+  "age": 30,
+  "is_student": false,
+  "address": {
+    "city": "New York",
+    "country": "USA"
+  },
+  "hobbies": ["reading", "painting", "hiking"],
+  "favorite_foods": {
+    "breakfast": "pancakes",
+    "lunch": "sushi",
+    "dinner": "pizza"
+  },
+  "random_data": [
+    {
+      "key1": "value1",
+      "key2": 42
+    },
+    {
+      "key3": true,
+      "key4": ["apple", "banana", "cherry"]
+    }
+  ],
+  "job_info": null
+}

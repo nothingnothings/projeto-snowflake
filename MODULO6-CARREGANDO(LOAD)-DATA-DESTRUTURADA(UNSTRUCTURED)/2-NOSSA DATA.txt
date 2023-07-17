@@ -1,0 +1,631 @@
+
+
+
+
+
+
+
+
+
+
+
+ANTES DE COMEÇARMOS A TRABALHAR COM O SNOWFLAKE,
+
+
+DEVEMOS DAR 
+
+1 OLHADA NA DATA COM QUE ESTAREMOS TRABALHANDO,
+
+
+PARA QUE 
+
+
+SAIBAMOS 
+
+EXATAMENTE COMO 
+
+
+É 
+
+A JSON FILE QUE USAREMOS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+JSON FILE -->
+
+
+
+
+
+
+
+
+É PRETTY MUCH 1 TEXT FILE QUE 
+
+É LEGÍVEL TANTO POR HUMANOS COMO MÁQUINAS..
+
+
+
+
+
+
+
+--> É FREQUENTEMENTE 
+CRIADA 
+
+POR DEVICES...
+
+
+
+
+
+
+
+
+SIMPLES EXEMPLO:
+
+
+
+{
+
+    "city": "Grimshaw",
+    "first_name": "Rici",
+    "gender": "Female",
+    "id": 1
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> OK... TEMOS 1 OBJECT,
+
+
+QUE É 
+ESPECIFICADO 
+
+
+COM CURLY BRACES,
+
+
+E QUE TEM ESSES ATTRIBUTES....
+
+
+
+
+
+
+
+
+
+
+
+KEY-VALUE...
+
+
+
+
+
+first_name => Rici...
+
+
+
+
+
+
+
+
+SE ESTIVERMOS TRABALHANDO COM MÚLTIPLOS VALUES,
+
+
+ESTAREMOS TRABALHANDO COM MÚLTIPLOS OBJECTS...
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+{
+  "people": [
+    {
+      "city": "Grimshaw",
+      "first_name": "Rici",
+      "gender": "Female",
+      "id": 1
+    },
+
+    {
+      "city": "Rome",
+      "first_name": "John",
+      "gender": "Male",
+      "id": 2
+    },
+
+    {
+      "city": "Paris",
+      "first_name": "George",
+      "gender": "Male",
+      "id": 3
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+NESSE EXEMPLO,
+
+
+
+
+
+
+
+AS COISAS PODERIAM FICAR BEM FÁCEIS NO SNOWFLAKE,
+
+
+PQ 
+
+
+
+
+CADA KEY VALUE PODERIA SER 1 COLUMN:
+
+
+EX:
+
+
+
+    {
+      "city": "Grimshaw",
+      "first_name": "Rici",
+      "gender": "Female",
+      "id": 1
+    },
+
+    {
+      "city": "Rome",
+      "first_name": "John",
+      "gender": "Male",
+      "id": 2
+    },
+
+    {
+      "city": "Paris",
+      "first_name": "George",
+      "gender": "Male",
+      "id": 3
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+3 ROWS,
+
+
+
+COM TODAS ESSAS COISAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-_> ENTRETANTO, COMO O PROFESSOR MENCIONOU,
+
+
+ESSA JSON DATA PODE SER 1 POUCO MAIS COMPLICADA...
+
+
+
+
+
+
+
+
+
+
+TOME ESTE EXEMPLO:
+
+
+
+
+
+
+
+
+{
+  "name": "John Doe",
+  "age": 30,
+  "is_student": false,
+  "address": {
+    "city": "New York",
+    "country": "USA"
+  },
+  "hobbies": ["reading", "painting", "hiking"],
+  "favorite_foods": {
+    "breakfast": "pancakes",
+    "lunch": "sushi",
+    "dinner": "pizza"
+  },
+  "random_data": [
+    {
+      "key1": "value1",
+      "key2": 42
+    },
+    {
+      "key3": true,
+      "key4": ["apple", "banana", "cherry"]
+    }
+  ],
+  "job_info": null
+}
+
+
+
+
+
+
+
+
+
+
+
+--> NESSE EXEMPLO, NOSSA JSON DATA PODE FICAR BEM MAIS COMPLICADA...
+
+
+
+
+
+
+
+
+
+
+
+-- O PROFESSOR FALA DE TODOS OS CASES QUE PODEMOS TER EM 1 JSON FILE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NESSE CASO,
+
+TUDO ISSO AÍ É 1 RECORD APENAS...
+
+
+
+
+
+
+
+
+
+-> TEMOS ""NORMAL PAIRS"",
+
+É CLARO,
+
+
+
+COMO 
+
+
+""name: John Doe"",
+
+
+
+
+
+
+
+
+
+e 
+
+"age: 30"...
+
+
+
+
+
+
+
+
+
+
+
+ENTRETANTO, AQUI TAMBÉM TEMOS MIXED VALUES,
+
+COMO _ ARRAYS...
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+  "hobbies": ["reading", "painting", "hiking"],
+
+
+
+
+
+
+
+
+DENTRO DESSA KEY,
+
+TEMOS 1 ARRAY,
+
+DE MÚLTIPLOS VALUES...
+
+
+
+
+
+ESSE É O PRIMEIRO OBSTÁCULO,
+
+
+
+
+
+____ ARRAYS____....
+
+
+
+
+
+
+
+
+
+
+O SEGUNDO OBSTÁCULO É ___ NESTED_ _DATA.....
+
+
+
+
+
+POR MEIO DE OBJECTS,
+
+COMO ISTO:
+
+
+
+
+
+
+
+  "favorite_foods": {
+    "breakfast": "pancakes",
+    "lunch": "sushi",
+    "dinner": "pizza"
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA, TEMOS O ATTRIBUTE DE "favorite_foods",
+
+
+E aí
+
+
+temos breakfast, lunch e dinner,
+com diferentes values...
+
+
+
+
+
+
+
+
+
+
+--> ok... esses sao esses NESTED OBJECTS,
+
+QUE PODEM REALMENTE ACONTECER NESSES 
+
+JSON OBJECTS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E TEMOS QUE DEAL COM ISSO,
+
+
+PQ 
+
+A ESTRUTURA DESSES JSON É BEM DIFERENTE DAS TABLES 
+
+
+COM QUE TRABALHAMOS 
+
+COM SQL DATABASES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E PODEMOS DEIXAR AS COISAS AINDA MAIS COMPLICADAS,
+TIPO AQUI:
+
+
+
+  "random_data": [
+    {
+      "key1": "value1",
+      "key2": 42
+    },
+    {
+      "key3": true,
+      "key4": ["apple", "banana", "cherry"]
+    }
+  ],
+
+
+
+
+
+
+
+
+
+
+COM ISSO, TEMOS A COMBINACAO ENTRE ARRAYS E NESTED 
+
+DATA... (
+    array de 2 objects..
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... TEMOS MT TRABALHO, MAS VAMOS ENTENDER TUDO ISSO ETAPA-POR-ETAPA,
+
+
+VAMOS APRENDER A HANDLAR 
+
+ESSA JSON DATA,
+
+TRABALHAR COM ELA...
