@@ -1,0 +1,625 @@
+
+
+
+
+
+
+LOAD UNSTRUCTURED DATA --> SE ESTAMOS TRABALHANDO COM DATA,
+
+
+
+
+FREQUENTEMENTE 
+
+
+NOS DEPARAMOS COM DATA __ UNSTRUCTURED 
+
+OU SEMI-STRUCTURED 
+
+DATA,
+
+
+
+
+
+COMO 
+
+
+
+
+JSON FILES 
+
+
+
+E XML FILES...
+
+
+
+
+
+
+
+
+
+---> FELIZMENTE,
+
+
+O SNOWFLAKE É CAPAZ 
+
+
+DE _ HANDLAR __ 
+
+ESSE TIPO DE DATA __ MT BEM...
+
+
+
+
+
+
+
+
+
+
+
+
+-> PORTANTO,  NESSA SECTION,
+
+DAREMOS UMA OLHADA EM 
+
+
+
+
+""""COMO PODEMOS TRABALHAR COM DATA SEMI-STRUCTURED 
+
+OU  UNSTRUCTURED""""...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO HÁ MÚLTIPLAS ETAPAS ENVOLVIDAS 
+
+
+
+NESSE PROCESSO DE TRABALHO COM DATA 
+
+
+
+NAO-ESTRUTURADA,
+
+
+
+
+DEVEMOS PRIMEIRAMENTE 
+
+
+DAR UMA OLHADA 
+
+
+
+
+NAS 
+
+
+
+""""OVERALL HIGH LEVEL STEPS"""
+
+
+
+
+QUE _ PRECISAMOS ENTENDER/SEGUIR 
+
+
+SE _ QUEREMOS REALMENTE CARREGAR ESSA 
+
+
+DATA NAO ESTRUTURADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AS ETAPAS, RESUMIDAS, SAO ESTAS:
+
+
+
+
+
+
+
+1) CREATE STAGE 
+
+
+
+
+
+2) LOAD RAW DATA 
+
+
+
+
+
+
+
+3) ANALYSE E PARSE DATA 
+
+
+
+
+
+
+
+4) FLATTEN E LOAD DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA ETAPA, COMO SEMPRE,
+
+
+
+
+
+É QUE __ TEMOS _ QUE _ CRIAR __ O _ STAGE OBJECT..
+
+
+
+
+
+
+
+
+
+
+
+-> JÁ FIZEMOS ISSO VÁRIAS VEZES... --> DEVE-SE ESPECIFICAR 
+
+
+
+
+O TIPO DE DATA QUE CARREGAREMOS,
+
+
+
+
+E O FILE_FORMAT TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) CREATE STAGE --> NO PROBLEM....
+
+
+
+
+
+
+
+--> COM O CREATE DO STAGE OBJECT,
+
+
+TEMOS 1 __ CONNECTION À LOCATION EM QUE 
+
+A FILE 
+
+FICA ARMAZENADA...
+
+
+
+
+
+
+
+
+
+2) LOAD RAW DATA --> COMO __ SEGUNDA ETAPA,
+
+
+TIPICAMENTE 
+
+CARREGAMOS TODA ESSA DATA, DAQUELE ARQUIVO,
+
+
+
+TODA ESSA __ RAW DATA_,
+
+
+
+
+EM UMA __ TABLE SEPARADA....
+
+
+
+
+
+------>  ESSA DATA, TODA ELA EM 1 FORMATO RAW,
+
+
+
+VAI FICAR __ EM APENAS 
+
+
+1 ÚNICA COLUMN NA TABLE,
+
+
+
+
+__ COLUMN QUE 
+
+
+TERÁ 
+
+
+
+UM DATA TYPE 
+
+
+
+
+DE 
+
+
+
+
+""""""""VARIANT"""""""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O TYPE SERÁ __ VARIANT..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RECAPITULANDO:
+
+
+
+
+
+
+
+
+
+1) CREATE STAGE --> FEITA A CONEXAO COM O LOCAL ONDE ESTÁ O ARQUIVO(s)
+
+
+
+
+
+
+
+2) LOAD RAW DATA --> TODA A DATA É CARREGADA 
+                        EM 1 TABLE SEPARADA, 
+
+                        TABLE COM APENAS 1 COLUMN...
+                        ESSA COLUMN 
+                        É DE 
+
+                        1 DATA TYPE ESPECIAL... 
+
+
+                        DATA TYPE --> O NOME É ""VARIANT""...
+
+
+
+
+
+
+
+
+--> ELE É ""NOVO"" (ficou mais popular recentemente),
+
+
+
+
+
+E ELE __ CONSEGUE _ SEGURAR 
+
+TODO TIPO 
+
+
+DE UNSTRUCTURED 
+
+DATA,
+
+
+
+
+COMO JSON FILES....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ASSIM QUE TIVERMOS CARREGADO ESSA RAW DATA 
+
+
+NESSA NOVA TABLE/ TABLE SEPARADA,
+
+
+
+
+
+PODEMOS 
+
+__ANALISAR __ 
+
+
+A DATA,
+
+
+ANALISAR E PARSEAR A DATA,
+
+
+COM A AJUDA 
+
+
+DAS FUNCTIONS SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+--> RECAPITULANDO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) CREATE STAGE --> FEITA A CONEXAO COM O LOCAL ONDE ESTÁ O ARQUIVO(s)
+
+
+
+
+
+
+
+2) LOAD RAW DATA --> TODA A DATA É CARREGADA 
+                        EM 1 TABLE SEPARADA, 
+
+                        TABLE COM APENAS 1 COLUMN...
+                        ESSA COLUMN 
+                        É DE 
+
+                        1 DATA TYPE ESPECIAL... 
+
+
+                        DATA TYPE --> O NOME É ""VARIANT""...
+
+
+
+
+3) ANALYZE E PARSE DATA (
+
+    COM A AJUDA DAS FUNCTIONS SNOWFLAKE...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> podemos usar essas functions para PARSEAR 
+E ANALISAR _ ESSA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E, COMO ESSA DATA PODE SER HIERÁRQUICA,
+
+
+FREQUENTEMENTE 
+
+PRECISAMOS 
+
+
+
+FAZER """"""FLATTEN"""""" DA DATA....
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+1) CREATE STAGE --> FEITA A CONEXAO COM O LOCAL ONDE ESTÁ O ARQUIVO(s)
+
+
+
+
+
+
+
+2) LOAD RAW DATA --> TODA A DATA É CARREGADA 
+                        EM 1 TABLE SEPARADA, 
+
+                        TABLE COM APENAS 1 COLUMN...
+                        ESSA COLUMN 
+                        É DE 
+
+                        1 DATA TYPE ESPECIAL... 
+
+
+                        DATA TYPE --> O NOME É ""VARIANT""...
+
+
+
+
+3) ANALYZE E PARSE DATA (
+
+    COM A AJUDA DAS FUNCTIONS SNOWFLAKE...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+4) FLATTEN E LOAD DATA -->  USAMOS MAIS FUNCTIONS SNOWFLAKE,
+
+PARA RESOLVER A HIERARQUIA ENTRE OS ARQUIVOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ASSIM QUE 
+
+
+TIVERMOS 
+
+__PARSEADO, ANALISADO _ E FLATTENADO NOSSA DATA,
+
+
+
+
+PODEMOS A CARREGAR NA NOSSA TABLE FINAL...
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+CERTO.... AGORA SEGUIREMOS EM FRENTE,
+
+
+
+DAREMOS UMA OLHADA NA FILE EM SI,
+
+
+
+PARA QUE 
+
+SAIBAMOS 
+
+"""COM QUE TIPO DE DATA ESTAREMOS TRABALHANDO""", 
+
+
+
+
+para entao 
+
+ESTUDARMOS CADA 1 DESSAS ETAPAS EM DETALHES....
