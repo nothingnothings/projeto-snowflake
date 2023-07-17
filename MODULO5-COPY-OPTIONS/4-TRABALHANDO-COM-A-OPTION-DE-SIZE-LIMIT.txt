@@ -1,0 +1,511 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A COPY OPTION DE ""SIZE_LIMIT"" É ESCRITA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+COPY INTO <table_name>
+FROM externalStage
+FILES=('exemplo1.csv', 'exemplo2.csv')
+FILE_FORMAT=<file_format_name>
+SIZE_LIMIT= num 
+
+
+
+
+
+
+
+
+
+
+
+
+OK... COLOCAMOS ESSA OPTION LOGO ABAIXO DE TODAS AS OUTRAS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ESSA OPTION,
+
+PODEMOS _ ESPECIFICAR 1 LIMIT,
+
+EM _ BYTES__ 
+
+
+
+
+
+-- A COPY OPTION DE ""SIZE_LIMIT" -->
+ ESPECIFICAMOS 1 LIMITE, EM BYTES, DO MAXIMUM 
+ SIZE DE DATA QUE DEVE SER CARREGADO POR ESSE COMANDO DE COPY..
+
+
+
+
+
+
+--> PERCEBA QUE __ SEMPRE _ 1 FILE 
+
+
+SERÁ CARREGADA, A PRIMEIRA FILE,
+
+
+
+NAO INTERESSA O SIZE LIMIT QUE VC TENHA 
+DEFINIDO...
+
+
+
+
+
+
+
+
+
+
+-----> sempre será esse o caso...
+
+
+
+
+
+--> E, QUANDO ESSE LIMITE É EXCEDIDO,
+
+O COMANDO DE 
+
+__cOPY___ PARA __ DE CARREGAR ARQUIVOS,
+
+
+
+
+MAIS NENHUM ARQUIVO É CARREGADO...
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... É UM COMANDO BEM SIMPLES,
+
+
+
+O ""SIZE_LIMIT""...
+
+
+
+
+
+
+
+
+
+-->  DEVEMOS DAR 1 OLHADA NESSE COMMAND, EM ACAO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR PREPAROU ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---- SIZE LIMIT ----- 
+
+
+
+
+//PREPARE DATABASE AND TABLE 
+
+
+CREATE OR REPLACE DATABASE COPY_DB;
+
+
+CREATE OR REPLACE TABLE COPY_DB.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT VARCHAR(30),
+    PROFIT INT,
+    QUANTITY INT,
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+)
+
+
+
+
+//PREPARE STAGE OBJECT 
+
+
+CREATE OR REPLACE STAGE COPY_DB.PUBLIC.aws_stage_copy
+    url='s3://snowflakebucket-copyoption/size/';
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+com isso, resetamos  tudo...
+
+
+
+
+
+
+
+
+
+-> também queremos listar todas as files dentro do bucket...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... TEMOS 2 FILES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM PERCEBEMOS QUE O SIZE DELES 
+
+É DE 
+
+54.000 BYTES.... (mais ou menos isso)...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA QUEREMOS LIMITAR/CONTROLAR 
+
+
+
+O __ TAMANHO __ DE FILES 
+
+
+QUE DEVEM SER CARREGADAS 
+
+
+NAS NOSSAS TABLES,
+
+
+
+TUDO POR MEIO 
+
+
+
+DESSE """SIZE_LIMIT""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRIMEIRAMENTE, O PROFESSOR SETTA O SIZE_LIMIT 
+
+
+COMO SENDO 
+
+20.000 BYTES,
+
+
+COM ESTE COMANDO:
+
+
+
+
+
+
+
+
+//LOAD DATA USING COPY COMMAND
+    
+
+
+    COPY INTO COPY_DB.PUBLIC.ORDERS
+        FROM @aws_Stage_copy
+        FILE_FORMAT=(type=csv, 
+        field_delimiter=',',
+        skip_header=1)
+        pattern='.*Order.*'
+        SIZE_LIMIT=20000;
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.. VAMOS RODAR ISSO AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> RODAMOS ISSO AÍ...
+
+
+
+
+
+
+-- SIZE_LIMIIT --> o tamanho definido 
+como limite diz respeito a TODAS AS FILES, 
+COMBINADAS (e nao file-por-file )
+
+
+
+
+
+--> QUER DIZER QUE ESSE LIMIT SERÁ EXCEDIDO 
+
+JÁ NA PRIMEIRA FILE...
+
+
+
+
+
+
+
+--> COMO O LIMIT TERÁ SIDO EXCEDIDO JÁ NA PRIMEIRA FILE,
+
+O RESTO DAS FILES ( o segundo arquivo)
+
+NAO SERÁ CARREGADO....
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE APENAS A PRIMEIRA FILE FOI CARREGADA...
+
+
+
+
+1) FILE FOI CARREGADA 
+
+
+
+2) LIMITE FOI EXCEDIDO NO LOAD DA PRIMEIRA FILE 
+
+
+
+3) SEGUNDA FILE JÁ NAO SERÁ CARREGADA (E NENHUMA FILE POSTERIOR, TAMBÉM)...
+
+
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+o professor entao 
+
+
+resetta a table,
+
+PARA AÍ TESTAR COM 
+
+
+
+
+
+60.000....
+
+
+
+
+
+
+
+
+--> PQ 60 MIL NAO SERÁ ATINGIDO PELA PRIMEIRA FILE...
+
+
+
+
+
+
+
+
+-> O LIMITE SERÁ ATINGIDO COM A SEGUNDA FILE,
+
+
+MAS ELA AINDA SERÁ CARREGADA (se tivéssemos 1 terceira file, ELA, SIM,
+NAO SERIA CARREGADA)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É ASSIM QUE PODEMOS USAR O SIZE_LIMIT,
+
+
+PARA CONTROLAR QUANTO SIZE 
+
+SERÁ CARREGADO NAS NOSSAS TABLES... -> NOS DÁ 
+
+1 ADDITIONAL FACTOR DE CONTROLE SOBRE O SIZE QUE CARREGAMOS 
+
+NAS NOSSAS TABLES.....
