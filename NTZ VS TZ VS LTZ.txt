@@ -1,0 +1,53 @@
+https://medium.com/snowflake/timestamps-in-snowflake-ntz-vs-ltz-vs-tz-790e8c60a00d#:~:text=TIMESTAMP_NTZ%20is%20the%20datatype%20for,wall%20and%20writing%20it%20down.
+
+
+There are 3 different timestamp types in Snowflake:
+
+TIMESTAMP_NTZ
+TIMESTAMP_TZ
+TIMESTAMP_LTZ
+
+
+TIMESTAMP_NTZ (Timestamp with No Timezone) is the datatype 
+for timestamps without a timezone
+ (ntz = no time zone). This is also referred to as “walltime”
+  as it is the time you would get by looking at a random clock on the
+   wall and writing it down
+
+
+
+
+
+
+
+TIMESTAMP_TZ (Timestamp with Timezone):
+
+It is the datatype for timestamps with timezones
+ (tz = time zone). Annoyingly,
+Snowflake does *not* store the timezone
+associated with this timestamp. 
+Instead, it stores the  -------UTC offset-------
+associated with the timezone associated with this timestamp.
+
+
+UTC OFFSET --> COISAS COMO ""-0400"", ""-0700"", ""+0300""
+
+
+
+
+
+
+TIMESTAMP_LTZ (Timestamp with Local Timezone):
+
+
+
+
+
+Snowflake uses TIMESTAMP_LTZ for
+timestamps with timezones
+in the current session timezone 
+(LTZ = local time zone). Ideally, 
+this would make consumers automatically work 
+with timestamps in their own local timezone.
+ SQL code interacting with TIMESTAMP_LTZ datatypes will not be deterministic.
+
