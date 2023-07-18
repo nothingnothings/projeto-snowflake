@@ -1,0 +1,845 @@
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR RECAPITULA OS CONCEITOS DE SCALE-UP E SCALE-OUT:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////
+
+SCALE-UP:
+
+
+-> AUMENTAMOS O __TAMANHO_ DE NOSSAS VIRTUAL WAREHOUSES (de XS para XL, por exemplo)...
+
+
+
+-> FAZEMOS ISSO _ QUANDO _ TEMOS QUERIES MAIS COMPLEXAS, QUE 
+GASTAM MAIS TEMPO EM TODAS NOSSAS MAQUINAS...
+
+////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////
+
+SCALE-OUT 
+
+--> USAMOS __ WAREHOUSES ADICIONAIS/MULTI-CLUSTER WAREHOUSES....
+
+
+
+--> USAMOS ISSO __ QUANDO TEMOS __ MAIORES QUANTIDADES DE USERS/QUERIES,
+E NAO QUERIES MAIS COMPLEXAS 
+
+
+--> PODE SER HABILITADO COM ""AUTOSCALING", E COM ""MIN_CLUSTER_COUNT"" E ""MAX_CLUSTER_COUNT""...
+
+
+///////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE TEMOS _ MTAS QUERIES EM PARALELO,
+
+
+
+
+
+MTAS QUERIES BÁSICAS ACONTECENDO POR CONTA DE MILHOES DE USERS AO MESMO 
+
+TEMPO,
+
+
+
+
+
+
+
+ESSE __ SCALING __dE WAREHOUSES EM SI (
+    do tamanho das nossas warehouses,
+
+    de XS para XL, por exemplo
+)
+
+
+
+NAO VAI AJUDAR MT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE TEMOS MTAS E MTAS QUERIES EM PARALELO,
+
+
+O QUE REALMENTE 
+
+
+
+NOS AJUDA É A FEATURE DE __ AUTOSCALING,
+
+
+
+
+
+E O ""MIN_CLUSTER_COUNT""
+
+
+E 
+""MAX_CLUSTER_COUNT""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E, ÀS VEZES,
+
+
+
+
+FICAREMOS COM MAIS PERFORMANCE ISSUES RELACIONADAS 
+
+
+COM CONCURRENT QUERIES, E NAO RELACIONADAS 
+
+COM QUERIES COMPLEXAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> é mt comum o scale OUT,
+
+
+por meio 
+
+
+
+do add de 
+
+
+
+
+
+warehouses adicionais...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E UMA BOA MANEIRA DE 
+
+
+
+FAZER SCALE-OUT É POR 
+
+
+
+MEIO DO USO 
+
+
+
+
+DE 
+
+__MULTI-CLUSTER WAREHOUSES. -->  COM ISSO,
+
+
+HANDLAMOS 
+
+
+AS PERFORMANCE 
+
+
+ISSUES 
+
+RELACIONADAS 
+
+
+
+COM 
+
+
+
+GRANDES QUANTIDADES DE CONCURRENT USERS... -> MAS ISSO 
+
+
+
+
+
+
+TAMBÉM __ NOS AJUDA__ A 
+
+
+
+AUTOMIZAR, DINAMICAMENTE,
+
+
+
+
+ESSE PROCESSO DE SCALE-OUT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> GERALMENTE EMPRESAS POSSUEM USERS FLUCTUATING --> EM CERTAS 
+
+
+HORAS DO DIA/MES,
+
+
+
+
+
+
+FICAMOS 
+
+
+COM MAIORES NÚMEROS DE USERS... -----> ESSE É  UM 
+
+
+IMPORTANTE 
+
+SELLING POINT DO SNOWFLAKE,
+
+
+
+O MULTI-CLUSTERING...
+
+
+
+
+
+
+
+
+
+
+
+
+---> ESSA FEATURE ___DEVE SER USADA__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA RECAPITULAMOS, SOBRE OS MULTI-CLUSTERS:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MULTI-CLUSTERING --> É UM PROCESSO AUTOMATIZADO --> SE TEMOS 
+
+
+
+MAIS QUERIES 
+
+DO QUE 
+
+
+
+1 
+ÚNICO CLUSTER DO WAREHOUSE CONSEGUE PROCESSAR,
+
+
+
+
+
+
+
+__ AUTOMATICAMENTE NOVAS INSTANCES DE 
+
+
+
+
+""WAREHOUSES/CLUSTERS"" (de mesmo tamanho)
+
+
+
+PODEM SER SPAWNADAS...
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS SE ESTAMOS USANDO ESSES MULTI-CLUSTER WAREHOUSES,
+
+
+DEVEMOS TER CERTAS PREOCUPACOES EM MENTE...
+
+
+
+
+
+
+
+
+DEPOIS DE ESTUDARMOS ESSAS PREOCUPACOES, DEVEMOS 
+
+
+VER ESSE AUTOSCALING NA PRÁTICA...
+
+
+
+
+
+
+
+
+
+
+AS PREOCUPACOES:
+
+
+
+
+
+
+
+
+
+
+1) SE __ VOCE USA PELO MENOS __ A VERSAO ""ENTERPRISE EDITION"",
+
+
+
+___ VOCE __ CERTAMENTE DEVE USAR __ A FEATURE DE MULTI-CLUSTER...
+
+
+
+--> TODAS AS WAREHOUSES DEVEM ESTAR SETTADAS 
+
+
+
+
+COMO _ MULTI-CLUSTER WAREHOUSES....
+
+
+
+
+
+
+
+
+
+2) QUANTO AOS PARAMETROS 
+
+
+QUE DEVEMOS DEFINIR,
+
+
+DEVEM SER: 
+
+
+
+
+
+
+MINIMUM: DEFAULT DEVE SER 1... -----> O MÍNIMO PODE SER 1,
+
+NAO HÁ PROBLEMAS COM ISSO... (
+    em caso de extrema baixa de usuários, 1 único cluster nao traz problemas...
+)
+
+
+
+
+
+
+
+
+MAXIMUM --> O NÚMERO DE CLUSTERS MÁXIMO DEVE 
+
+
+SER __ O MAIOR POSSÍVEL... --> NAO É BOM DEIXÁ-LO BAIXO....
+
+
+
+
+
+
+
+---> ISSO PQ __ O MULTI-CLUSTERING NAO FAZ MT DIFERENCA, 
+
+QUANDO O ASSUNTO É CONSUMO DE CRÉDITOS...
+
+
+
+
+
+
+--> SE TEMOS A ESCOLHA 
+
+
+ENTRE 
+
+
+
+""""1 VIRTUAL WAREHOUSE QUE DEMORA 3 HORAS 
+PARA PROCESSAR TUDO""""
+
+
+
+VS 
+
+
+"""3 VIRTUAL WAREHOUSES QUE PRECISAM DE 1 HORA, CADA 1,
+PARA PROCESSAREM AS COISAS""
+
+(
+    quer dizer que o processo 
+
+
+    vai levar 1/3 do tempo...
+)
+
+
+
+
+
+
+
+
+--> NAO HÁ MT DIFERENCA, EM TERMOS DE CUSTO....
+
+
+
+
+
+
+
+
+--> POR ISSO É UMA BEST-PRACTICE 
+
+COLOCAR 
+
+ESSE 
+
+
+NÚMERO DE MAX CLUSTERS ___BEEEEEEM ALTO_...........
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, CHEGA DE TEORIA, DEVEMOS VER ESSES MULTI-CLUSTER WAREHOUSES 
+
+
+
+
+EM ACAO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+VAMOS ATÉ NOSSAS WORKSHEETS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, PRECISAMOS DESSES MULTI-CLUSTER WAREHOUSES PARA REGULAR/LIDAR COM 
+
+PERFORMANCE 
+
+
+ISSUES RELACIONADAS A LARGAS QUANTIDADES DE CONCURRENT USERS/QUERIES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSA LICAO,
+
+SIMULAREMOS UMA 
+
+
+GRANDE QUANTIDADE DE USERS,
+
+
+
+TUDO POR MEIO 
+
+
+
+
+DO USO DE MÚLTIPLOS WORKSHEETS...
+
+
+
+
+
+
+
+
+CRIEI 5 WORKSHEETS...
+
+
+
+--> vamos criar múltiplos worksheets, com este código:
+
+
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE T1
+CROSS JOIN SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE T2
+CROSS JOIN SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE T3
+CROSS JOIN (SELECT TOP 50 * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE) T4;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS RODAR ESSAS 5 WORKSHEETS EM PARALELO...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR CRIOU 1 MULTI-CLUSTER WAREHOUSE...
+
+
+
+
+
+A WAREHOUSE DE COMPUTE_WH....-> COLOCOU UM MAXIUM AMOUNT DE 3 CLUSTERS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+SCALING POLICY DE STANDARD (
+
+    sao escaladas automaticamente, e mais cedo do que a policy de 
+
+    ""economy""...
+)
+
+
+
+
+
+
+
+
+
+OK... AÍ RODAMOS ISSO TUDO..
+
+
+
+
+
+
+
+--> O PROFESSOR CRIOU 1 QUERY MEIO COMPLEXA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> COMO TEMOS CROSS JOINS,
+
+NOSSA QUERY 
+
+
+VAI GERAR ROWS IGUAIS 
+
+A 
+
+
+
+96 * 96 * 96 * 50 
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE T1 //96 *
+CROSS JOIN SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE T2 // 96 *
+CROSS JOIN SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE T3 // 96 *
+CROSS JOIN (SELECT TOP 50 * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF100TCL.WEB_SITE) T4; /// 50 = milhoes de rows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> USAREMOS ISSO PARA SIMULAR AS MULTI-QUERIES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POSSÍVEL PERCEBER QUE 
+
+
+AS QUERIES FICARAM SENDO EXECUTADAS 
+
+
+
+
+
+POR 3 WAREHOUSES...
+
+
+
+
+
+
+
+A QUARTA E QUINTA QUERIES 
+
+FICARAM NA FILA,
+
+
+
+
+O QUE QUER DIZER QUE 
+
+
+
+
+
+nossas queries estao sendo rodadas em paralelo...
+
+
+
+
+
+
+
+
+
+
+
+
+esse é um aspecto super importante, e que sempre devemos ter em mente...
