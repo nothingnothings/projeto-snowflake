@@ -1,0 +1,41 @@
+
+
+SCALE-UP (aumentar o tamanho FIXO de 1 warehouse) --> IDEAL QUANDO FICAMOS 
+COM ___ MAIS USERS_....
+
+
+
+
+
+
+
+DETALHE --> ___ UM CENÁRIO ___ MUITO COMUM___ 
+
+
+É __ A MAIOR __ COMPLEXIDADE DE QUERIES,
+
+
+
+E NAO __ A MAIOR __ QUANTIDADE _DE USERS (
+
+
+    EM CASOS COMO __ MAIOR COMPLEXIDADE DE _ QUERIES,
+
+    __ O SCALE OUT, COM MULTI-CLUSTERING, clusters de mesmo tamanho,
+    mas em número dinamico,
+
+    É MELHOR...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+

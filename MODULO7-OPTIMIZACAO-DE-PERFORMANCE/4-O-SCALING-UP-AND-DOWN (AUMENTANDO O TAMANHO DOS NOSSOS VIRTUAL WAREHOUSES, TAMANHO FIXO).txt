@@ -1,0 +1,245 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PRÓXIMO ASPECTO SIMPLES QUE PODEMOS CONSIDERAR É O 
+
+SIMPLES _ CHANGE __ 
+
+
+
+DO TAMANHO __ DE NOSSA VIRTUAL WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+
+--> ""CHANGING THE SIZE OF THE VIRTUAL WAREHOUSE 
+
+DEPENDING ON DIFFERENT WORKLOADS IN DIFFERENT PERIODS""...
+
+
+
+
+
+
+
+
+
+
+
+
+-> A ALTERACAO DO TAMANHO DE 1 WAREHOUSE...
+
+
+
+
+
+
+
+-> FAZEMOS ISSO DEPENDENDO DO WORKLOAD 
+
+EM 1 CERTO PERÍODO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE-CASES, EXEMPLOS:
+
+
+
+
+
+
+
+
+1) ETL __ EM CERTOS __ MOMENTOS _ DO DIA (
+    por exemplo, entre 4 da noite e 8 da noite
+)
+
+
+
+2) EVENTO ESPECIAL DE NEGÓCIOS, EM QUE TEREMOS MAIOR 
+WORKLOAD...
+
+
+
+
+
+
+
+
+
+
+
+
+
+DETALHE --> ___ UM CENÁRIO ___ MUITO COMUM___ 
+
+
+É __ A MAIOR __ COMPLEXIDADE DE QUERIES,
+
+
+
+E NAO __ A MAIOR __ QUANTIDADE _DE USERS (
+
+
+    EM CASOS COMO __ MAIOR COMPLEXIDADE DE _ QUERIES,
+
+    __ O SCALE OUT, COM MULTI-CLUSTERING,
+
+    É MELHOR...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> QUER DIZER QUE 
+
+SE TIVERMOS 
+
+QUERIES MAIS COMPLEXAS,
+
+
+EM VEZ DE MAIS USERS,
+
+
+
+GERALMENTE 
+
+É 
+
+
+MELHOR 
+
+
+O SCALE OUT...
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+AGORA VEREMOS COMO FAZER O SCALE UP OU O SCALE DOWN...
+
+
+
+
+
+
+
+tanto dinamico como AUTOMÁTICO...
+
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+no nosso caso,
+
+já temos 1 existing warehouse,
+
+
+a warehouse 
+
+
+
+
+de 
+
+
+
+""COMPUTE_WH""...
+
+
+
+
+
+-- PARA MUDARMOS O TAMANHO DE 1 DE NOSSOS WAREHOUSES, PODEMOS RODAR 
+-- COMANDOS SQL.
+-- também podemos alterar esses tamanhos na GUI.
+
+ALTER WAREHOUSE COMPUTE_WH
+SET WAREHOUSE_SIZE = 'XSMALL';
+
+
+
+
+
+
+
+
+
+
+
+
+
+É ASSIM QUE PODEMOS ALTERAR O TAMANHO DO WAREHOUSE, A DEPENDER DE DIFERENTES 
+WORKLOADS,
+
+
+QUERIES MAIS COMPLEXAS,
+A DEPENDER 
+
+
+
+DA OCASIÃO...
