@@ -1,0 +1,1164 @@
+
+
+
+
+
+
+
+
+
+AGORA ESTUDAREMOS OUTRO FILE FORMAT QUE 
+
+PODEMOS USAR E PROCESSAR NO SNOWFLAKE,
+
+O 
+
+FILE FORMAT 
+
+
+
+
+DE 
+
+
+""""PARQUET"""...
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+TYPE """"PARQUET"""""-->  é um DATA FORMAT 
+
+
+
+DO ECOSSISTEMA __APACHE_ HADOOP...
+
+
+
+
+
+
+
+
+
+
+--> A VANTAGEM DESSE DATA FORMAT É QUE 
+
+
+
+__ ELE POSSUI _ UM DATA __ COMPRESSING MT EFICIENTE...
+
+
+
+
+
+
+
+
+
+---> TAMBÉM É MT ÚTIL 
+
+SERMOS CAPAZES DE TRABALHAR COM ESSE DATA FORMAT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR COMECA COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+//Create FILE FORMAT and STAGE objects...
+
+
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.FILE_FORMATS.PARQUET_FORMAT
+    TYPE='parquet';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+E FICAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+//Create FILE FORMAT and STAGE objects...
+
+
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.FILE_FORMATS.parquet_format
+    type='parquet';
+
+CREATE OR REPLACE SCHEMA MANAGE_DB.STAGES;
+
+CREATE OR REPLACE STAGE MANAGE_DB.STAGES.parquet_stage
+    url='s3://snowflakeparquetdemo'
+    FILE_FORMAT=MANAGE_DB.FILE_FORMATS.parquet_format;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+DEPOIS, PODEMOS LISTAR AS FILES 
+
+
+DESSE STAGE:
+
+
+
+LIST @MANAGE_DB.STAGES.parquet_stage;
+
+
+
+
+
+
+
+
+daily_sales_items.parquet...
+
+
+
+
+
+
+--> ESSA FILE É BEM GRANDE.... 4 MILHOES DE BYTES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok...
+
+
+
+
+
+
+
+
+ESSE FILE FORMAT ESTÁ COMO TYPE ""parquet""...
+
+
+
+
+
+
+
+
+
+
+isso pq nosso arquivo tem este formato:
+
+
+
+
+daily_sales_items.parquet (extensao "".parquet"")...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O TYPE DA FILE É ""PARQUET""...
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS EU NAO SEI COMO ESSA DATA SE PARECE....
+
+
+
+
+
+
+
+--> MAS QUE TIPO DE COLUMNS SAO INCLUIDOS, POR EXEMPLO...
+
+
+
+
+
+
+
+-> que tipo de columns temos?
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR DIZ QUE PODE SER BEM ÚTIL 
+
+
+SER __ CAPAZ_ DE QUERIAR_ DATA 
+
+
+DIRETAMENTE DESSE STAGE... --->  PQ SE PUDERMOS VISUALIZAR 
+
+
+ESSA DATA DIRETAMENTE,
+
+PODEMOS CRIAR NOSSAS TABLES A PARTIR DISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA ISSO, RODAMOS:
+
+
+
+
+
+
+SELECT * FROM @MANAGE_DB.STAGES.parquet_stage;
+
+
+
+
+
+
+
+-- O FORMATO DE CADA ROW É ESTE:
+
+
+{   "__index_level_0__": 7,
+   "cat_id": "HOBBIES", 
+     "d": 489,  
+      "date": 1338422400000000, 
+        "dept_id": "HOBBIES_1",
+           "id": "HOBBIES_1_008_CA_1_evaluation",  
+            "item_id": "HOBBIES_1_008", 
+              "state_id": "CA",   
+              "store_id": "CA_1",  
+               "value": 12 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+--> OU SEJA,
+
+
+
+
+__ CADA__ ROW,
+ 
+ NESSE ARQUIVO,
+
+ É UM ARQUIVO JSON à PARTE...
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+--------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PERCEBEMOS QUE 
+
+
+ESSAS SERAO AS COLUMNS QUE PODEREMOS USAR, 
+
+NAS NOSSAS TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR REITERA QUE O FILE_FORMAT DEFAULT É 
+
+DE TYPE
+
+CSV....
+
+
+
+
+
+
+
+---> MAS SE ESTAMOS TRABALHANDO COM OUTROS DATA TYPES,
+
+COMO PARQUET DATA,
+
+ISSO É 
+ABSOLUTAMENTE NECESSÁRIO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM, O PROFESSOR NOS FALA DE OUTRA SINTAXE, ALTERNATIVA,
+
+
+
+QUE PODEMOS COLOCAR 
+
+
+NOS NOSSOS SELECT STATEMENTS,
+
+
+SE _ NAO __ ESPECIFICAMOS O FILE_FORMAT ANTERIORMENTE...
+
+
+
+
+
+
+
+--> PARA ISSO, A ESCRITA FICA ASSIM:
+
+
+
+
+SELECT * FROM @MANAGE_DB.STAGES.parquet_stage
+    (file_format => 'MANAGE_DB.FILE_FORMATS.parquet_format');
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+ok... 
+
+
+
+mas isso é opcional...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok... cada row, na única column,
+
+possui 1 json object inteiro...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA QUE CRIAMOS ESSE STAGE OBJECT 
+
+E QUERIAMOS A DATA,
+
+
+
+PODEMOS __ CRIAR __ NOSSA 
+
+
+TABLE, para encaixar esses dados....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AS COLUMNS QUE USAREMOS SAO ESTAS:
+
+
+ // Syntax for Querying unstructured data
+
+SELECT 
+$1:__index_level_0__,
+$1:cat_id,
+$1:date,
+$1:"__index_level_0__",
+$1:"cat_id",
+$1:"d",
+$1:"date",
+$1:"dept_id",
+$1:"id",
+$1:"item_id",
+$1:"state_id",
+$1:"store_id",
+$1:"value"
+FROM @MANAGE_DB.STAGES.PARQUET_STAGE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> OK... SABEMOS QUE 
+
+
+
+ESSAS SERAO AS COLUMNS QUE TEREMOS, NA NOSSA TABLE...
+
+
+
+
+
+
+
+
+
+
+--> PARA CRIARMOS 1 TABLE A PARTIR DESSA METADATA,
+
+TRABALHAMOS DE FORMA SIMILAR 
+
+
+
+AO TRABALHO COM JSON DATA...
+
+
+
+
+
+
+
+
+
+--> COMO TEMOS APENAS 1 ÚNICA COLUMN,
+
+
+
+ESCREVEMOS ASSIM:
+
+
+
+
+
+ // Syntax for Querying unstructured data
+
+SELECT 
+$1:__index_level_0__,
+$1:cat_id,
+$1:date,
+$1:"__index_level_0__",
+$1:"cat_id",
+$1:"d",
+$1:"date",
+$1:"dept_id",
+$1:"id",
+$1:"item_id",
+$1:"state_id",
+$1:"store_id",
+$1:"value"
+FROM @MANAGE_DB.STAGES.PARQUET_STAGE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É POR ISSO QUE USAMOS ""$1"",
+
+
+
+PARA PEGARMOS ESSA SINGLE COLUMN DISPONÍVEL...
+
+depois usamos ":", para nos referirmos às keys dentro de cada data...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VERSAO MAIS ORGANIZADA DESSA QUERY:
+
+
+
+
+SELECT 
+$1:__index_level_0__ as index,
+$1:cat_id as cat_id_1,
+$1:date as date,
+$1:"__index_level_0__" as index2,
+$1:"cat_id" as cat_id_2,
+$1:"d" as d,
+$1:"date" as date,
+$1:"dept_id" as dept_id,
+$1:"id" as id,
+$1:"item_id" as item_id,
+$1:"state_id" as state_id,
+$1:"store_id" as store_id,
+$1:"value" as value
+FROM @MANAGE_DB.STAGES.PARQUET_STAGE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+
+
+
+MAS JÁ VIMOS ISSO 
+
+
+NAS JSON FILES...
+
+
+
+
+
+
+
+
+
+
+MAS AQUI JÁ ENCONTRAMOS ALGUNS PROBLEMAS...
+
+
+
+
+
+
+
+
+
+
+1o problema) --> O COLUMN_NAME --> MAS JÁ RESOLVI ISSO, BASTA USAR 
+ALIASES PARA CADA COLUMN...
+
+
+
+
+
+2o problema) --> A DATA DAS COLUMNS/KEYS ESTÁ SENDO EXTRAÍDA COMO ""VARIANT DATA""
+
+
+(
+    ou seja, ficamos com 
+
+    "HOBBIES" em vez de HOBBIES...
+)
+
+
+
+
+3o problema) a DATE_ TAMBÉM ESTÁ INCORRETA... ---> NOSSA DATE ESTÁ COMO NUMBER, 
+E PRECISAMOS QUE ELA FIQUE COMO FORMATO ""DATE""...
+
+
+
+
+
+
+
+
+
+O CÓDIGO FICOU TIPO ASSIM:
+
+
+
+
+
+
+
+SELECT 
+$1:__index_level_0__::STRING as index,
+$1:cat_id::STRING as cat_id_1,
+$1:date::STRING as date,
+$1:"__index_level_0__"::STRING as index2,
+$1:"cat_id"::STRING as cat_id_2,
+$1:"d"::STRING as d,
+$1:"date"::STRING as date,
+$1:"dept_id"::STRING as dept_id,
+$1:"id"::STRING as id,
+$1:"item_id"::STRING as item_id,
+$1:"state_id"::STRING as state_id,
+$1:"store_id"::STRING as store_id,
+$1:"value"::INT as value
+FROM @MANAGE_DB.STAGES.PARQUET_STAGE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ISSO  CONSERTOU O PROBLEMA....
+
+
+
+
+
+
+
+
+--> MAS O PROBLEMA TAMBÉM É A ""DATE"",
+
+QUE NAO ESTÁ FORMATADA CORRETAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS ISTO:
+
+
+
+--  DATE CONVERSION:
+
+
+
+
+SELECT 1; -- ficamos apenas com o value, 1....
+
+
+
+SELECT DATE(60*60*24); --  SE RODAMOS ISSO, FICAMOS COM 1970-01-02  (1 dia depois do MARCO INICIAL, QUE É 0)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA FUNCTION DE ""DATE()"",
+
+
+NO SQL,
+
+CONVERTE _ NÚMEROS GRANDES EM ___ DIAS__...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMS ISTO:
+
+
+
+
+
+
+
+
+
+
+--  DATE CONVERSION:
+
+
+
+
+SELECT 1; -- ficamos apenas com o value, 1....
+
+
+
+SELECT DATE(60*60*24); --  DATE() --> CONVERTE NÚMEROS GRANDES EM DIAS... -- FICAMOS COM 1970-01-02
+
+
+SELECT DATE(0); ---- DATE() --> FICAMOS COM 1970-01-01 (é a origem, o marco inicial de contagem de dates)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> ISSO ILUSTRA BEM QUE _  A DATE, ARMAZENADA COMO INTEGER NUMBER,
+
+
+É APENAS __ UMA REPRESENTACAO EM SEGUNDOS 
+
+
+
+DESDE AQUELA DATA LÁ...
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+-- -> ISSO ILUSTRA BEM QUE _  A DATE, ARMAZENADA COMO INTEGER NUMBER,
+
+-- É APENAS __ UMA REPRESENTACAO EM SEGUNDOS 
+
+-- DESDE AQUELA DATA LÁ (1970-01-01)...
+
+
+
+
+
+
+
+
+
+
+
+-> E SE MULTIPLICAMOS ESSES NÚMEROS POR MAIS NÚMEROS, COMO 365,
+
+
+VAMOS ""PULANDO DIAS""...
+
+
+
+
+ex:
+
+
+
+SELECT 1; -- ficamos apenas com o value, 1....
+
+
+
+SELECT DATE(60*60*24); --  DATE() --> CONVERTE NÚMEROS GRANDES EM DIAS... -- FICAMOS COM 1970-01-02
+
+
+SELECT DATE(0); ---- DATE() --> FICAMOS COM 1970-01-01 (é a origem, o marco inicial de contagem de dates)
+
+
+SELECT DATE(365*60*60*24); --> 365 DIAS DEPOIS DO MARCO 0 (ou seja, 1 ano depois, 1971-01-01).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA PODEMOS FAZER A MESMA COISA COM A COLUMN DE ""DATE"" (que está como INT),
+
+
+nessa data extraída do arquivo parquet...
+
+
+
+
+
+
+
+
+-- RODAMOS ASSIM:
+
+
+
+SELECT 
+$1:__index_level_0__::STRING as index,
+$1:cat_id::STRING as cat_id_1,
+DATE($1:date::INT) as date_1,
+$1:"__index_level_0__"::STRING as index2,
+$1:"cat_id"::STRING as cat_id_2,
+$1:"d"::STRING as d,
+DATE($1:"date"::INT) as date_2,
+$1:"dept_id"::STRING as dept_id,
+$1:"id"::STRING as id,
+$1:"item_id"::STRING as item_id,
+$1:"state_id"::STRING as state_id,
+$1:"store_id"::STRING as store_id,
+$1:"value"::INT as value
+FROM @MANAGE_DB.STAGES.PARQUET_STAGE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e isso realmente funcionou...
+
+
+
+
+
+
+
+
+
+NOSSA DATA FICOU ASSIM:
+
+
+
+
+
+2012-05-31...
+
+
+
+
+
+
+
+
+
+
+
+DATE($1:date::INT) as date_1,
+
+
+
+
+
+
+ISTO, PORTANTO, SALVOU NOSSA PELE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA QUEREMOS _ ESCREVER/COPIAR ESSA DATA 
+
+
+NAS NOSSAS TABLES.... 
+
+
+
+
+
+
+
+
+ALÉM DISSO, PROVAVELMENTE VAMOS QUERER _ ADICIONAR 1 
+POUCO 
+
+DE 
+
+""""METADATA"""" A ESSA DATA AÍ....
