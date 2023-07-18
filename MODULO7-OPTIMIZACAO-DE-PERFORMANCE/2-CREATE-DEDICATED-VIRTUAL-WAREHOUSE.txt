@@ -1,0 +1,635 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA DEVEMOS ESTUDAR O PRIMEIRO ASPECTO IMPORTANTE, QUANDO O ASSUNTO 
+
+É __ PERFORMANCE OPTIMIZATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE ASPECTO É 
+
+
+O __ CREATE_ _ DE DEDICADAS VIRTUAL WAREHOUSES,
+
+
+DIFERENTES WAREHOUSES,
+
+
+
+
+PARA __ CADA _ DIFERENTES TIPOS DE USER GROUPS/WORK GROUPS.....
+
+
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+PARA ENTENDERMOS ISSO MELHOR,
+
+
+DEVEMOS 
+
+DAR 1 OLHADA 
+
+NO HIGH LEVEL OVERVIEW 
+
+
+
+DAS COISAS... OU DE 
+
+COMO 
+
+
+
+É A ESTRUTURA DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+    [W]
+
+DATA SOURCES (ETL/ELT)              (BUSINESS INTELIGENCE)
+                        i-------  (BI) ----------
+  (hr data, sales data)                         i
+      (tools: talend, informatica)              i
+                                                V                                       (tools: QLIK)
+                                                DATABASE/DATA WAREHOUSE  ---- REPORTING [W][W]
+                                                ^               i
+                                                i               i
+                                                i               i
+                                                i               i------ MARKETING [W][W]  (tools = TABLEAU)
+                                                i               i
+                                                i               i
+                                                i               i
+                                                i               i   
+                                                i               I
+    DATA SCIENCE [W][W] -------------------------               i---> DATABASE ADMINS [w]
+                 [W][W]
+    (tools: python, spark)
+    
+
+
+
+
+
+
+
+
+
+
+
+[w] = É UMA WAREHOUSE SEPARADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+
+
+A NOSSA WAREHOUSE 
+
+
+É CONECTADA A DIFERENTES USER GROUPS...
+
+
+
+
+
+
+
+
+
+
+CADA USER GROUP É TOTALMENTE DIFERENTE DOS OUTROS...
+
+
+
+
+
+
+
+
+
+
+--> ISSO ILUSTRA QUE PODEMOS TER,
+PARA OS DIFERENTES TIPOS DE USER GROUPS,
+
+DIFERENTES WAREHOUSES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> dedicated warehouses, para 
+
+cada 
+
+USER GROUP,
+
+
+
+
+
+
+CADA 
+
+WAREHOUSE 
+
+
+
+É ACESSÍVEL APENAS PARA 
+
+
+
+O USER GROUP ATRIBUÍDO A SI..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AQUI TAMBÉM É POSSÍVEL VER QUE 
+
+
+
+PODEMOS DIVIDIR WAREHOUSES 
+
+
+
+POR COISAS ALÉM DE USER GROUPS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FAZ SENTIDO TER DIFERENTES WAREHOUSES 
+
+
+
+PARA _ DIFERENTES TIPOS DE WORKLOADS/TASKS...
+
+
+
+
+
+
+
+
+
+(por exemplo, a warehouse da data science 
+vai certamente ser maior do que a usada no marketing)...
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PODEMOS TER 2 DIFERENTES TIPOS DE WAREHOUSES,
+
+DEDICADOS 
+
+
+A 
+
+DIFERENTES TIPOS DE TASK....
+
+
+
+
+
+
+
+
+
+
+
+
+--> FAZ SENTIDO IDENTIFICAR OS USER GROUPS/DIFERENTES WORKLOADS 
+
+
+
+
+E _ ATRIBUIR __ DIFERENTES WAREHOUSES A ESSES GROUPS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK.... DEVEMOS DAR 1 OLHADA NAS ETAPAS QUE 
+
+
+DEVEMOS TOMAR _ ANTES __ 
+
+
+
+DE 
+
+
+
+
+EXAMINARMOS ISSO NA PRÁTICA...
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+A PRIMEIRA ETAPA, PARA CRIAR 1 DEDICATED VIRTUAL WAREHOUSE A 1 DEDICATED GROUP,
+É:
+
+
+
+
+
+
+
+
+
+
+
+1) IDENTIFY E CLASSIFY --> DEVEMOS IDENTIFICAR E CLASSIFICAR OS 
+
+USER GROUPS/WORKLOADS....
+
+
+
+
+
+
+
+--> QUER DIZER QUE PODEMOS TER DIFERENTES DEPARTAMENTOS 
+
+EM 1 COMPANHIA... -----> POR EXEMPLO, O DEPARTAMENTO DE MARKETING 
+
+
+PODE __ SEMPRE __ USAR 1 
+
+ÚNICO 
+DEDICATED WAREHOUSE...
+
+
+
+
+
+
+
+
+
+
+1 DEDICATED WAREHOUSE -> PARA O MARKETING 
+
+
+4 DEDICATED WAREHOUSES -- PARA O DATA SCIENCE TEAM 
+
+
+
+2 DEDICATED WAREHOUSES --> PARA A BI TEAM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) CREATE __ DEDICATED VIRTUAL WAREHOUSES,
+
+PARA CADA 1 DESSES GROUPS...
+
+
+
+
+
+
+
+--> CRIADOS ESSES WAREHOUSES,
+
+DEVEMOS _ ASSIGNAR OS USERS ADEQUADOS A CADA 1 DESSES WAREHOUSES..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NAO É TAO COMPLICADO...
+
+
+
+
+
+
+
+
+
+
+-> MAS ANTES DE FAZERMOS ISSO DE FORMA PRÁTICA,
+
+DEVEMOS 
+
+TER 
+
+ALGUMAS CONSIDERATIONS EM MENTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PREOCUPACOES:
+
+
+
+
+
+
+
+1) NAO DEVEMOS TER __ VIRTUAL WAREHOUSES 
+DEMAIS -->  PQ 
+
+
+SE 
+FORMOS MT ""FINE-GRANULAR"" E CRIARMOS 1 MONTE DE WAREHOUSES,
+
+PARA APENAS 
+
+
+
+
+2 PEQUENOS USER GROUPS,
+
+ISSO 
+
+
+PODE 
+
+
+
+FAZER COM QUE 
+
+ESSES 2 WAREHOUSES 
+
+
+NAO SEJAM 
+
+USADOS 
+
+O TEMPO TODO...
+
+
+
+
+
+--> SE OS VIRTUAL WAREHOUSES SAO 
+
+
+USADOS SÓ ÀS VEZES, E SE SAO INICIADOS E DESLIGADOS 
+CONSTANTEMENTE,
+
+
+ISSO VAI GASTAR BEM MAIS... (
+
+    MESMO COM AUTO-RESUME E AUTO-SUSPEND OPTION 
+
+    DE 10 MINUTOS..
+)
+
+
+
+
+
+
+
+-> QUER DIZER QUE MT TEMPO O WAREHOUSE 
+
+VAI FICAR ACTIVE, MAS NAO ESTARÁ SENDO UTILIZADO...
+
+
+
+
+
+--> É POR ISSO QUE DEVEMOS TER MT CUIDADO COM O CREATE EXAGERADO 
+DE WAREHOUSES...
+
+
+
+
+
+
+
+
+
+
+
+2) DEPOIS DE 1 CERTO TEMPO,
+
+PODEMOS REFINAR 
+
+
+AS NOSSAS CLASSIFICATIONS,
+
+PQ É CLARO QUE 
+
+NOSSOS WORKLOADS PODEM MUDAR, AO LONGO DO TEMPO...
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSA ERA A TEORIA 
+
+
+
+POR TRÁS DESSES DEDICATED WAREHOUSES....
+
+
+
+
+
+
+
+
+-> AGORA DEVEMOS VER TUDO ISSO EM ACAO...
