@@ -1,0 +1,1203 @@
+
+
+
+
+
+
+
+--> OK... AGORA DEVEMOS DAR 1 OLHADA NO ÚLTIMO EXEMPLO, 
+
+QUE É UM PCO MAIS COMPLEXO, MAS 
+
+QUE PODEREMOS USAR PARA 
+
+
+
+
+
+
+REVISAR TODOS OS CONTEÚDOS APRENDIDOS ATÉ AGORA....
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ESCREVE ESTA SQL QUERY:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT
+    RAW_FILE:spoken_languages::STRING as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+--> OK... NA PRIMEIRA QUERY,
+
+
+
+
+
+
+
+ficamos com resultados como este:
+
+
+
+
+SPOKEN LANGUAGES (col):
+
+[{"language":"Kazakh","level":"Advanced"},{"language":"Lao","level":"Basic"}]
+[{"language":"Assamese","level":"Basic"},{"language":"Papiamento","level":"Expert"},{"language":"Telugu","level":"Basic"}]
+[{"language":"Swati","level":"Expert"}]
+[{"language":"Chinese","level":"Advanced"},{"language":"Mongolian","level":"Basic"}]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ou seja, nessa col ESTAMOS COM ESSES ARRAYS...
+
+
+
+
+
+ARRAYS COM NESTED OBJECTS...
+
+
+
+
+
+
+
+
+
+--> E CADA 1 DESSES ARRAYS ESTÁ SENDO CONVERTIDO 
+
+
+
+EM __ STRING_....
+
+
+
+
+
+
+
+
+--> o parent é 
+
+""spoken_languages"",
+
+
+
+e dentro desse parent temos 2 objects...
+
+
+
+
+
+
+
+
+
+agora devemos ver como podemos handlar isso..
+
+
+
+
+
+
+
+A PRIMEIRA COISA QUE PODEMOS FAZER , AQUI,
+
+É 
+
+
+__AGGREGATE_ ESSA DATA,
+
+SE QUISERMOS (é uma das maneiras de handlar array data)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, RODAMOS ASSIM:
+
+
+
+
+
+
+
+
+SELECT
+    array_size(RAW_FILE:spoken_languages) as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, NOSSO RESULT SET FICA TIPO:
+
+
+
+
+
+
+SPOKEN_LANGUAGES 
+
+
+1 
+
+4
+
+3
+
+2
+3
+
+4
+
+2
+
+
+
+---------------
+
+
+
+
+
+
+
+
+
+
+OK..... PODEMOS COMBINAR 
+
+ESSA INFORMACAO COM OUTRAS COLUMNS,
+
+COMO COM O FIRST_NAME, TIPO ASSIM:
+
+
+
+
+
+-- combined with other normal columns
+SELECT
+    RAW_FILE:first_name as first_name,
+    array_size(RAW_FILE:spoken_languages) as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM PODEMOS FAZER A MESMA COISA 
+
+
+
+
+QUE FIZEMOS ANTES, ACESSAR APENAS 1 ÚNICO ELEMENTO POR VEZ, 
+
+NO ARRAY...
+
+
+
+
+
+SELECT
+    RAW_FILE:spoken_languages[0] as FIRST_language
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO ATÉ AGORA:
+
+
+
+
+
+
+-- vamos revisar tudo que aprendemos até agora...
+
+SELECT
+    RAW_FILE:spoken_languages::STRING as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+-- first way to deal with array data ---> AGGREGATE (transform in 1 value, with array_size() function):
+
+
+SELECT
+    array_size(RAW_FILE:spoken_languages) as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+-- combined with other normal columns
+SELECT
+    RAW_FILE:first_name as first_name,
+    array_size(RAW_FILE:spoken_languages) as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+-- select only a single value, first value, in an array:
+SELECT
+    RAW_FILE:spoken_languages[0] as first_language
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+-- select only a single value, first value, in an array - combined with normal columns (with transformation to string):
+SELECT
+    RAW_FILE:first_name::STRING as first_name
+    RAW_FILE:spoken_languages[0] as first_language
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+COM ESSE ÚLTIMO SQL QUERY,
+ficamos com este formato:
+
+
+
+
+
+
+
+
+
+
+FIRST_NAME              FIRST_LANGUAGE
+
+Portia              {"language": "Kazakh", "level": "Advanced"}
+
+
+
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+
+OK.... ESSE É UM NESTED OBJECT, MAS PODEMOS O ACESSAR COM A DOT NOTATION, TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+-- select only a single value, first value, in an array... also acessing property in object:
+SELECT
+    RAW_FILE:first_name::STRING as first_name
+    RAW_FILE:spoken_languages[0].language as first_language,
+    RAW_FILE:spoken_languages[0].level as level_spoken,
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- vamos revisar tudo que aprendemos até agora...
+
+SELECT
+    RAW_FILE:spoken_languages::STRING as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+-- first way to deal with array data ---> AGGREGATE (transform in 1 value, with array_size() function):
+
+
+SELECT
+    array_size(RAW_FILE:spoken_languages) as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+-- combined with other normal columns
+SELECT
+    RAW_FILE:first_name as first_name,
+    array_size(RAW_FILE:spoken_languages) as spoken_languages
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+-- select only a single value, first value, in an array:
+SELECT
+    RAW_FILE:spoken_languages[0] as first_language
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+-- select only a single value, first value, in an array - combined with normal columns (with transformation to string):
+SELECT
+    RAW_FILE:first_name::STRING as first_name,
+    RAW_FILE:spoken_languages[0] as first_language
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+-- select only a single value, first value, in an array... also acessing property in object:
+SELECT
+    RAW_FILE:first_name::STRING as first_name
+    RAW_FILE:spoken_languages[0].language as first_language, -- access property in object.
+    RAW_FILE:spoken_languages[0].level as level_spoken
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
+
+
+
+
+
+
+
+
+
+
+OK.... AGORA TEMOS ""FIRST_LANGUAGE"" JUNTO COM ""LEVEL_SPOKEN""...
+
+
+
+
+
+
+
+
+--> ISSO JÁ É PRETTY GOOD,
+
+
+
+MAS É APENAS O PRIMEIRO OBJECT DO ARRAY...
+
+
+
+
+
+
+
+--> SE QUISERMOS FAZER COM QUE _ AS OUTRAS LANGUAGES DA 
+
+
+PESSOA APARECAM,
+
+
+
+TEMOS QUE __ USAR _ o RECURSO DO UNION ALL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, ESCREVEMOS:
+
+
+
+
+SELECT
+    RAW_FILE:id::INT as ID,
+    RAW_FILE:first_name::STRING as First_name,
+    RAW_FILE:spoken_languages[0].language::STRING as Language_spoken,
+    RAW_FILE:spoken_languages[0].level::STRING as Level_Spoken
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW
+UNION ALL
+SELECT
+    RAW_FILE:id::INT as ID,
+    RAW_FILE:first_name::STRING as First_name,
+    RAW_FILE:spoken_languages[1].language::STRING as Language_spoken,
+    RAW_FILE:spoken_languages[1].level::STRING as Level_Spoken
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW
+ORDER BY ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> isso vai expandir cada entry, criar 2 rows para cada entry,
+
+
+
+
+1 para cada language da pessoa...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> E PODEMOS FAZER ISSO COM _ 3 LANGUAGES, TAMBÉM:
+
+
+
+
+
+
+
+-- PODEMOS FAZER ISSO COM QUANTAS LANGUAGES QUISERMOS:
+
+
+
+
+
+
+
+
+
+-- 3 records para cada pessoa, pq cada pessoa pode ter 1 máximo de 3 languages.
+
+SELECT
+    RAW_FILE:id::INT as ID,
+    RAW_FILE:first_name::STRING as First_name,
+    RAW_FILE:spoken_languages[0].language::STRING as Language_spoken,
+    RAW_FILE:spoken_languages[0].level::STRING as Level_Spoken
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW
+UNION ALL
+SELECT
+    RAW_FILE:id::INT as ID,
+    RAW_FILE:first_name::STRING as First_name,
+    RAW_FILE:spoken_languages[1].language::STRING as Language_spoken,
+    RAW_FILE:spoken_languages[1].level::STRING as Level_Spoken
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW
+UNION ALL
+SELECT
+    RAW_FILE:id::INT as ID,
+    RAW_FILE:first_name::STRING as First_name,
+    RAW_FILE:spoken_languages[2].language::STRING as Language_spoken,
+    RAW_FILE:spoken_languages[2].level::STRING as Level_Spoken
+FROM OUR_FIRST_DB.PUBLIC.JSON_RAW
+ORDER BY ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS É CLARO QUE ISSO É SUBOPTIMAL..
+
+
+
+RAZOES:
+
+
+
+
+
+1) TEMOS MT CÓDIGO....
+
+
+2) MTAS UNIONS
+
+
+3) NAO SABEMOS QUANTOS ELEMENTOS EXISTEM, NESSES OBJECTS... (ficamos com mtos null values)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO NAO É NADA IDEAL...
+
+PARA RESOLVER ISSO,
+
+
+HÁ UMA 
+
+
+MANEIRA BEM MAIS FÁCIL,
+
+
+
+E MAIS SIMPLES...
+
+
+
+-> PARA ISSO, O PROFESSOR NOS MOSTRA ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+SELECT RAW_FILE:first_name::STRING AS First_name,
+        f.value:language::STRING as Language,
+        f.value:level::STRING as Level_Spoken
+        FROM OUR_FIRST_DB.PUBLIC.JSON_RAW, table(flatten(RAW_FILE:spoken_languages)) f; ---- EIS O GRANDE DIFERENCIAL.
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, CONSEGUIMOS FAZER ""FLATTEN"" de 1 array...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, DEVEMOS USAR 
+
+
+A __ FUNCTION __ DE ""table()""""
+
+
+JUNTO COM A FUNCTION DE ""FLATTEN()"",
+
+combinadas com 
+
+1 
+
+ALIAS...
+
+
+
+
+
+
+
+
+
+
+
+PRIMEIRAMENTE DEVEMOS VER O RESULTADO DISSO...
+
+
+
+
+
+FICOU ASSIM:
+
+
+
+
+
+
+
+FIRST_NAME  LANGUAGE             LEVEL_SPOKEN
+Portia      Kazakh               Advanced
+Portia      Lao                  Basic
+Dag         Assamese             Basic
+Dag         Papiamento           Expert
+Dag         Telugu               Basic
+Heath       Swati                Expert
+Dita        Chinese              Advanced
+Dita        Mongolian            Basic
+Nikki       Filipino             Basic
+Nikki       Kazakh               Basic
+Austina     Northern Sotho       Basic
+
+
+
+-- OU SEJA, É O MESMO RESULTADO DAS UNION, MAS AGORA BEM MAIS FÁCIL DE ESCREVER,
+-- E COM BEM MENOS CÓDIGO (apenas com o uso de table, flatten e 1 alias)...
+-- OUTRO BENEFÍCIO É QUE NAO TEMOS NENHUM ""NULL VALUE"" EM ALGUM ROW...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+QUER DIZER QUE ""FLATTEN"" É UMA __ AUTOMATIC FUNCTION,
+
+DO SNOWFLAKE,
+
+
+QUE _ fAZ FLATTEN DESSAS HIERACHIES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSA FUNCTION É REALMENTE SUPER ÚTIL SE ESTAMOS TRABALHANDO 
+COM ESSA DATA UNSTRUCTURED/HIERARCHICAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PRIMEIRAMENTE DEVEMOS ANALISAR A SINTAXE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) A FUNCTION DE ""FLATTEN"" --> usamos essa function em conjunto com 
+
+a function de ""table()""...
+
+
+
+
+
+
+
+
+EM ""flatten()"",
+
+passamos a COLUMN, 
+
+
+a column e o parent attribute,
+tipo assim:
+
+
+
+
+flatten(RAW_FILE:spoken_languages)
+
+
+
+RAW_FILE --> É NOSSA COLUMN.
+
+
+spoken_languages -> é o attribute/propriedade que contém o array...
+
+
+
+
+
+
+
+
+
+
+OK..
+
+
+
+
+
+E, DENTRO DE 
+
+
+""spoken_languages"",
+
+
+
+
+que é um ARRAY,
+
+
+
+
+temos 
+
+
+
+objects com este formato:
+
+
+{
+    first_language: xxx,
+    level_spoken: 3
+}
+
+
+
+
+
+
+--> RODANDO O FLATTEN em cima,
+
+
+
+
+
+
+com 
+
+
+flatten(RAW_FILE:spoken_languages),
+
+
+
+
+
+
+
+
+FICAMOS 
+
+
+
+COM 
+
+
+
+1 ROW PARA CADA OBJECT...
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+OK.... MAS AQUI TEMOS OUTRA COISA CURIOSA...
+
+
+
+
+
+REVEJA O STATEMENT:
+
+
+
+
+
+SELECT RAW_FILE:first_name::STRING AS First_name,
+        f.value:language::STRING as Language,
+        f.value:level::STRING as Level_Spoken
+        FROM OUR_FIRST_DB.PUBLIC.JSON_RAW, table(flatten(RAW_FILE:spoken_languages)) f; 
+
+
+
+
+
+
+
+
+
+
+NA PARTE DE 
+
+""FROM OUR_FIRST_DB.PUBLIC.JSON_RAW, table(flatten(RAW_FILE:spoken_languages)) f;""
+
+NESSA SINTAXE, NÓS ESTAMOS __ BASICAMENTE_ FAZENDO _ UM __ JOIN....
+
+
+ESTAMOS FAZENDO 
+
+1 JOIN ENTRE 2 """"TABLES"""",
+
+
+
+
+a table de 
+
+
+
+
+
+""OUR_FIRST_DB.PUBLIC.JSON_RAW""
+
+
+e 
+
+
+a table de 
+
+""table(flatten(RAW_FILE:spoken_languages))"",
+
+
+
+QUE GANHOU UM ALIAS DE "f"....
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+OK... FAZEMOS JOIN DE ISSO COM A TABLE ORIGINAL....
+
+
+
+
+
+
+
+
+E ISSO NOS DÁ O RESULT QUE GOSTARÍAMOS DE TER..
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+OUTRO DETALHE --> PARA TODOS OS ""NESTED OBJECTS"",
+
+
+
+
+devemos usar a keyword de 
+
+"".value"",
+
+
+
+como observado nestas linhas:
+
+
+
+        f.value:language::STRING as Language,
+        f.value:level::STRING as Level_Spoken
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+"f" --> nos dá o value da table flattenada....
+
+
+
+
+"f.value" --> nos dá o VALUE de cada elemento dessa table (como {language: 'english', level: 2})
+
+
+
+
+"f.value:language" --> nos dá o VALUE DESSA CHILD/property dessa table flattenada.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É BEM ÚTIL,
+
+FAZ FLATTEN 
+
+DAS NOSSAS HIERARCHICAL TABLES...
+
+
+
+
+
+
+RESOLVIDOS TODOS ESSES PROBLEMAS E FLATTENADA NOSSA TABLE,
+
+DEVEMOS VER A ÚLTIMA ETAPA...
+
+
+
+
+
+
+
+
+A ÚLTIMA ETAPA:
+
+CREATE _ DA NOSSA FINAL TABLE,
+
+E AÍ 
+
+COPIAR _ TODA 
+
+ESSA DATA NA NOSSA TABLE FINAL,
+
+
+
+
+
+COM ESSA FORMA ESTRUTURADA LEGAL...
+
+
+
+AS OPTIONS PARA FAZER ISSO, VEREMOS NA PRÓXIMA AULA...
