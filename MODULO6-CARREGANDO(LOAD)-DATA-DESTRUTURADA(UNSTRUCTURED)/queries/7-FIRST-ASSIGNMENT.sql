@@ -42,7 +42,7 @@ FROM OUR_FIRST_DB.PUBLIC.JSON_RAW;
 
 
 
-2. The skills column contains an array. 
+3. The skills column contains an array. 
 Query the first two values in the 
 skills attribute for every record in a separate column:
 
