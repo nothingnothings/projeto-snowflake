@@ -1,0 +1,715 @@
+
+
+
+
+
+
+
+
+
+
+
+
+SE ESTAMOS CRIANDO DATA WAREHOUSES,
+
+é sempre 
+
+
+
+
+UM TÓPICO INTERESSANTE 
+
+
+_OPTIMIZAR A PERFORMANCE 
+
+
+
+
+DE NOSSAS DATABASES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AS COISAS NO SNOWFLAKE 
+
+
+SAO 1 POUCO DIFERENTES 
+
+
+
+
+DA MANEIRA ""CLÁSSICA"".... -> É CLARO QUE 
+
+O OBJETIVO,
+
+
+
+COM ESSA 
+
+OPTIMIZATION,
+
+
+
+É 
+
+
+FAZER __ NOSSAS QUERIES RODAREM MAIS RÁPIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO NOS AJUDA A, NO FINAL DAS CONTAS,
+
+
+
+SALVAR CUSTOS..
+
+
+
+
+
+
+
+
+
+-> PQ NÓS SEMPRE PAGAMOS PELO COMPUTE POWER QUE USAMOS..
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE ISSO É IMPORTANTE TANTO EM TERMOS DE VELOCIDADE 
+
+COMO DE COST..
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS AS COISAS SAO 1 POUCO DIFERENTES NO SNOWFLAKE,
+
+DIFERENTES 
+
+
+
+DAS MANEIRAS TRADICIONAIS 
+
+DE AUMENTAR PERFORMANCE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MANEIRAS ___tRADICIONAIS__ DE AUMENTAR PERFORMANCE:
+
+
+
+
+
+1) ADICIONAR INDEXES, PRIMARY KEYS...
+
+
+
+
+
+2) CRIAR __ TABLE PARTITIONS...
+
+
+
+
+
+3) ANALISAR O __ TABLE PLAN __ DA QUERY EXECUTION..
+
+(ANALISAR A QUERY EM SI, OLHAR PARA A QUERY EXECUTION TABLE 
+PLAN...)
+
+
+
+
+
+
+4) REMOVER TABLE SCANS DESNECESSÁRIOS...
+(no caso de TABLES LARGAS)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS TODAS ESSAS COISAS,
+
+E AINDA MAIS,
+
+
+
+NAO PRECISAMOS 
+
+
+
+REPARAR,
+
+COM O 
+
+
+SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+-> PQ, NO SNOWFLAKE,
+
+
+
+AS COISAS SAO MANAGED AUTOMATICAMENTE,
+
+
+
+DE UMA MANEIRA MT NICE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE O SNOWFLAKE,
+
+
+PARA MELHORAR A PERFORMANCE,
+
+
+
+
+
+
+
+CRIA AUTOMATICAMENTE 
+
+
+
+
+
+
+
+
+
+
+
+""AUTOMATICALLY MANAGED MICRO-PARTITIONS""...
+
+
+
+
+
+
+
+
+
+
+
+
+-> E SAO ESSAS MICRO-PARTITIONS QUE 
+
+GARANTEM 
+
+A PERFORMANCE DO SNOWFLAKE, quando rodamos nossas queries...
+
+
+
+
+
+
+
+
+--------> MAS ISSO NAO QUER DIZER QUE 
+
+
+""NAO DEVEMOS FAZER COISA ALGUMA""
+
+
+
+para optimizar a performance das nossas queries...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AINDA ASSIM,
+
+
+DEVEMOS MODELAR/DESIGN NOSSAS DATA WAREHOUSES 
+
+
+
+
+DE MODO QUE 
+
+
+ELAS __ TENHAM __ BOA __ PERFORMANCE...
+
+
+
+
+
+
+
+COMO GARANTIR A BOA PERFORMANCE DE NOSSAS DATA WAREHOUSES:
+
+
+
+
+
+1) ASSIGNAR DATA TYPES APROPRIADOS A COLUMNS...
+
+
+(
+    OU SPLITTAR LARGE FILES...
+)
+
+
+
+2) DIMENSIONAR VIRTUAL WAREHOUSES ADEQUADAMENTE....
+
+
+
+3) ""CLUSTER KEYS""...
+    (
+        usadas em TABLES MAIORES.
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESCOLHER O TAMANHO CERTO 
+
+
+DE VIRTUAL WAREHOUSES TAMBÉM É IMPORTANTE...
+
+
+
+
+
+
+DEVEMOS DAR 1 OLHADA NESSA LISTA DE COISAS,
+
+
+QUE 
+
+SAO AS PRINCIPAIS 
+
+
+
+GARANTIDORAS DE PERFORMANCE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NAS PRÓXIMAS AULAS,
+
+
+O PROFESSOR 
+
+
+
+MOSTRARÁ MAIS SOBRE CADA 1 DESSES ITEMS...
+
+
+
+
+
+------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+A PRIMEIRA COISA A SE FAZER, PARA GARANTIRMOS 
+
+a performance:
+
+
+
+
+
+
+
+
+
+
+
+
+1) CRIAR 1 _ DEDICATED WAREHOUSE,
+
+
+DEDICATED VIRTUAL WAREHOUSE,
+
+
+
+DEDICADA A __ APENAS _ CERTOS _ USER_ GROUPS....
+
+
+
+(
+    """"SEPARATED VIRTUAL WAREHOUSES,
+    ACCORDING TO DIFFERENT WORKLOADS""""
+)
+
+
+
+
+-> isso pq __ GERALMENTE__ temos 
+
+
+LARGOS USER GROUPS,
+
+
+
+E, DENTRO DESSES USER GROUPS,
+
+
+TEMOS 
+
+DIFERENTES 
+
+NECESSIDADES 
+
+
+
+E 
+
+
+DIFERENTES 
+
+TIPOS DE QUERIES RODADAS.... ------->  É POR ISSO QUE MTAS VEZES 
+
+PODE FAZER 
+
+SENTIDO 
+
+
+
+__INTRODUZIR 
+
+
+
+""""DEDICATED VIRTUAL WAREHOUSES""""",
+
+
+
+para esses diferentes grupos...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) DEFINIR UMA POLÍTICA DE SCALING MELHOR... (o termo é ""SCALING UP"")
+
+
+--> SE TIVERMOS CERTOS TIME PERIODS EM QUE 
+
+TEMOS MAIORES WORKLOADS,
+
+
+PODEMOS SIMPLESMENTE __ AUMENTAR O TAMANHO 
+
+DE NOSSOS VIRTUAL WAREHOUSES...  (aumento __ FIXO __ DE TAMANHO...
+
+
+
+de XS para S, de S para M, de M para L, de L para XL, etc...
+)
+
+
+
+
+
+----> ""FOR KNOWN PATTERNS OF HIGH WORKLOAD""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEPOIS DE ""SCALING UP"",
+
+
+
+
+TEMOS O ""SCALING OUT"" 
+
+
+
+
+
+
+
+
+3) COM O SCALE OUT,
+
+
+NÓS NAO AUMENTAMOS O TAMANHO DE NOSSO WAREHOUSE,
+
+E SIM 
+
+
+INTRODUZIMOS 
+
+
+
+AQUELES ""MULTI-CLUSTER WAREHOUSES"" --> A PALAVRA-CHAVE É 
+
+
+
+"""DINAMICO"""" --> NÓS ESCALAMOS 
+
+
+NOSSOS WAREHOUSES DINAMICAMENTE,
+
+
+
+SAO CRIADAS 
+
+NOVAS INSTANCES 
+
+
+DE NOSSOS WAREHOUSES... (""out"", e nao para cima),
+
+
+
+
+CRIAR AUTOMATICAMENTE NOVOS WAREHOUSE CLUSTERS....
+
+
+
+
+
+
+
+
+--> ISSO É ESPECIALMENTE ÚTIL SE 
+__ NAO _ SABEMOS OS PATTERNS... SE TIVERMOS, 
+
+EM DIFERENTES HORÁRIOS,
+
+DIFERENTES 
+
+QUANTIDADES DE USERS...
+
+
+
+
+
+
+
+
+
+
+
+
+4) POR FIM, TEMOS A 4a coisa.... --> É O __ AUTOMATIC CACHING DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+--> ""MAXIMIZE CACHE USAGE"" 
+
+
+
+-> O AUTOMATIC CACHING DO SNOWFLAKE PODE SER 
+
+__MAXIMIZADO_...
+
+
+
+
+--> PODEMOS MAXIMIZAR OS BENEFÍCIOS DESSE AUTOMATIC CACHING (veremos isso)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, 
+
+
+
+TEMOS AS __ CLUSTER_ KEYS... SAO ESPECIALMENTE 
+
+ÚTEIS EM _ TABLES LARGAS...
+
+
+
+
+
+
+5) CLUSTER KEYS --> USADAS EM LARGE TABLES... 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+agora devemos ver cada 1 desses aspectos em maiores detalhes...
+
+
+
