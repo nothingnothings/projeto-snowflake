@@ -112,11 +112,10 @@ E NAO __ A MAIOR __ QUANTIDADE _DE USERS (
 
     EM CASOS COMO __ MAIOR COMPLEXIDADE DE _ QUERIES,
 
-    __ O SCALE OUT, COM MULTI-CLUSTERING,
-
-    É MELHOR...
+    __ O SCALE UP, COM virtual houses maiores, cheias de maquinas
+    ,
+    É MELHOR...  ---> é a comparacao entre o L e o XS..
 )
-
 
 
 
