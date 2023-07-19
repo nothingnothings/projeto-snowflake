@@ -1,0 +1,351 @@
+
+
+
+
+
+
+
+Agora falaremos sobre uma feature mt importante 
+no snowflake,
+
+que é o snowpipe...
+
+
+
+
+
+
+
+
+
+
+
+ O QUE É O snowpipe,
+
+
+ E COMO PODEMOS 
+
+
+ O UTILIZAR?:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O QUE O SNOWPIPE FAZ, NO CASO,
+
+É O __ AUTOMATIC __ LOAD_ DE  __ DATA ___ SEMPRE QUE _ 
+
+
+1 FILE __ 
+
+APARECE _ 
+
+
+
+EM 
+
+
+
+1 DETERMINADO BUCKET... --> OU SEJA,
+
+SEMPRE QUE 
+
+1 
+
+FILE 
+
+É ADICIONADA A 1 BUCKET,
+
+
+
+
+NAO 
+
+
+PRECISAMOS FAZER NADA, 
+
+
+
+
+
+
+E ESSA _ FILE JÁ VAI SER CARREGADA EM 1 GIVEN TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É ESPECIALMENTE IMPORTANTE SE ESTAMOS FALANDO SOBRE:
+
+
+
+
+1) TRANSACTIONAL DATA 
+
+
+
+
+
+
+2) EVENT DATA,
+
+
+
+
+
+
+
+
+DATA __ QUE QUEREMOS QUE IMEDIATAMENTE FIQUE DISPONÍVEL PARA ANÁLISE..
+
+
+
+
+
+
+
+
+
+
+
+-> ESSE É O COMMON USE-CASE 
+
+DO SNOWPIPE --> FETCHEAR ESSA DATA AUTOMATICMANETE,
+
+
+SEMPRE QUE 
+
+ELA APARECER 
+
+EM 1 BUCKET....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OUTRO DETALHE 
+
+
+
+
+
+
+
+
+
+
+SNOWPIPE -->  ___ ELE __ É UMA __ FEATURE __ SERVERLESS...
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE, EM VEZ DE USAR OS VIRTUAL WAREHOUSES,
+
+
+
+OS _ COMPUTE RESOURCES VAO SER AUTOMATICAMENTE 
+
+
+
+MANAGEADOS 
+
+
+PELO SNOWFLAKE EM SI (
+
+
+
+O QUE QUER DIZER QUE NAO PRECISAMOS NOS IMPORTAR COM 
+
+NOSSAS VIRTUAL WAREHOUSES...
+
+)
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS DAR 1 OLHADA EM COMO O SNOWPIPE FUNCIONA,
+
+
+E QUE 
+
+ETAPAS DEVEMOS ESTABELECER PARA CONSEGUIRMOS USAR 
+
+O SNOWPIPE..
+
+
+
+
+
+
+
+
+
+-_> O CENÁRIO É ESTE:
+
+
+
+
+
+
+
+
+
+FILES ---> ENTRAM NO --> BUCKET (S3)
+                            I 
+                            I 
+                            I
+                            I 
+                    [ SERVERLESS LOAD]
+                            I 
+                            I 
+                            I 
+                            I
+                            V 
+                    [SNOWFLAKE DATABASE]
+
+
+
+
+
+
+
+
+-
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TIPICAMENTE, NO SNOWFLAKE,
+
+COPIAMOS DATA MANUALMENTE DE BUCKETS PARA TABLES...
+
+
+
+
+
+
+
+
+
+
+--> MAS O __ SNOWPIPE AUTOMATICAMENTE DETECTA SE 1 FILE 
+
+
+
+OU NOVAS FILES SAO CARREGADAS NO BUCKET (com s3 notification, SNS),
+
+
+
+
+
+
+E AÍ 
+
+
+
+__ O SNOW PIPE É TRIGGADO,
+
+
+E TARGETTA ESSA FILE QUE É UPLOADADA -->  COM ISSO,
+
+
+
+A 
+
+DATA É CARREGADA DE FORMA SERVERLESS NA NOSSA TABLE, 
+
+
+
+na database...
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+OK... ESSA É A IDEIA DO SNOWPIPE...
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA QUE TEMOS ESSA HIGH-LEVEL OVERVIEW,
+
+DEVEMOS 
+
+
+
+ANALISAR AS HIGH-LEVEL STEPS QUE DEVEMOS SEGUIR,
+PARA CRIAR E USAR ESSE SNOW PIPE...
