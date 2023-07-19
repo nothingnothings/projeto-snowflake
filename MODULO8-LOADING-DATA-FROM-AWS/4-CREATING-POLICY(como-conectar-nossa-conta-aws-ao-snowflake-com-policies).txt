@@ -1,0 +1,585 @@
+
+
+
+
+
+
+
+
+
+
+AGORA A PERGUNTA É 
+
+
+
+
+COMO PODEMOS 
+
+
+
+CRIAR A CONEXAO ENTRE 
+
+O SNOWFLAKE E NOSSA AWS ACCOUNT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA SERMOS MAIS PRECISOS, QUEREMOS NOS CONECTAR AOS S3 BUCKETS QUE 
+
+ESTAMOS USANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA CONSEGUIR FAZER ISSO, PRIMEIRAMENTE DEVEMOS USAR O SERVICE 
+
+
+""IAM""" DO AWS...
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS ATÉ ESSE SERVICE, NO AWS...
+
+
+
+
+
+
+--> IDENTITY AND ACCESS MANAGEMENT....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> É O SERVICE EM QUE CRIAMOS USERS E POLICIES
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS CRIAR 1 ROLE PARA O AWS...
+
+
+
+
+
+
+
+
+
+
+--> ESSE ROLE VAI SER USADO PARA CRIAR A CONNECTION ENTRE O SNOWFLAKE 
+
+
+E NOSSA CONTA AWS...
+
+
+
+
+
+
+
+
+
+
+--> CRIAREMOS 1 ROLE.... ROLE PARA O S3 BUCKETS,
+
+PROVAVELMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+-> QUEREMOS CRIAR 1 NOVO ROLE...
+
+
+
+
+
+
+
+--> ""CRIAR FUNCAO""...
+
+
+
+
+
+
+
+-> nessa página,
+
+
+precisamos 
+
+ESCOLHER QUE TIPO DE 
+
+
+
+ROLE ISSO SERÁ...
+
+
+
+
+
+
+
+
+
+
+
+-> COMO NAO SERÁ UM SERVICO DA AWS,
+
+
+
+
+NAO CLICAMOS NISSO....
+
+
+
+
+
+--> CLICAMOS EM ""CONTA DA AWS"-->  
+
+
+""PERMITIR QUE ENTIDADES EM OUTRAS CONTAS DA AWS PERTENCENTES 
+A VOCE OU TERCEIROS EXECUTEM ACOES NESSA CONTA""....
+
+
+
+
+
+
+
+
+
+
+--> COLOCAMOS ""OUTRA CONTA DA AWS""...
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO, PRECISAMOS COLOCAR O IDENTIFIER DE 
+
+
+
+NOSSA PRÓPRIA CONTA AWS...
+
+
+
+
+
+
+
+
+
+
+
+
+----> CLIQUE LÁ EM CIMA,
+
+
+NO AWS,
+EM 
+
+
+"""MY SECURITY CREDENTIALS""...
+
+
+
+
+
+
+
+
+--> NAS CREDENCIAIS,
+
+LÁ EMBAIXO,
+
+
+ENCONTRAMOS 
+O 
+
+
+""AWS ACCOUNT ID""....
+
+
+
+
+
+
+
+
+
+copiamos esse id (é um número, sem letras),
+
+
+
+
+
+E DEPOIS CLICAMOS NA CHECKBOX 
+
+
+
+DE 
+
+
+
+""REQUIRE EXTERNAL ID (BEST PRACTICE WHEN A THIRD PARTY WILL ASSUME THIS ROLE)""
+
+
+
+
+Exigir ID externo (prática recomendada quando 
+um terceiro for assumir essa função)
+Você pode aumentar a 
+segurança da sua função exigindo um 
+identificador externo opcional, o que 
+impede ataques de "confused deputy". 
+Isso é recomendado se você não possui ou 
+tem acesso administrativo à conta que pode
+ assumir essa função. O ID externo pode incluir todos
+  os caracteres que você escolher. Para assumir essa 
+  função, os usuários devem estar na conta confiável
+   e fornecer esse ID externo exato. Saiba mais
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> É AQUI O LOCAL EM QUE COLAREMOS O ID _ DO SNOWFLAKE....
+
+
+
+
+
+
+
+--> POR ENQUANTO, NESSE FIELD DE ""EXTERNAL ID"",
+
+
+apenas colocamos 1 
+
+DUMMY VALUE... (00000).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> CLICAMOS EM NEXT,
+
+E ENTAO PRECISAMOS ESCOLHER AS PERMISSIONS PARA ESSE NOSSO ROLE...
+
+
+
+
+
+
+NO CASO, PROCURAMOS POR ""S3"",
+
+""S3FULLACCESS'""..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COLOCAMOS 1 NOME PARA ESSE ROLE -> ""SNOWFLAKE_S3_ACCESS_ROLE""...
+
+
+
+
+
+
+
+DESCRIPTION --> ROLE USED TO GRANT BUCKET ACCESS TO SNOWFLAKE QUERIES.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... CLICAMOS EM ""cREATE ROLE""...
+
+
+
+
+
+
+--> agora teremos esse role adicional criado...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS 1 SUMMARY DESSE ROLE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DENTRO DO ROLE, TEMOS UMA SECTION DE 
+
+
+
+""TRUST RELATIONSHIPS""...
+
+ (relacoes de confianca)...
+
+
+
+
+
+
+
+
+
+
+
+
+ --. É UM ARQUIVO JSON COM UM MONTE DE COISAS...
+
+
+
+
+
+
+
+ --> A PARTE MAIS IMPORTANTE É 
+
+
+
+ """sts:ExternalId"""",
+
+
+
+ QUE ESTARÁ COM AQUELE VALUE DUMMY DE 000000...
+
+
+
+
+
+
+
+
+
+
+
+
+ --> TAMBÉM TEMOS A TRUSTED ENTITY,
+
+
+ QUE É JUSTAMENTE 
+
+
+ O ID DE NOSSA CONTA MAIN AWS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> NA PRÓXIMA LICAO, VAMOS MUDAR O VALUE DE 
+
+  """sts:ExternalId"""" 
+
+
+  PARA CONSEGUIRMOS REALIZAR 
+
+  A CONEXAO DE NOSSA CONTA SNOWFLAKE 
+
+
+
+  AO AWS BUCKET...
+
+
+
+
+
+
+
+
+
+
+
+PODEMOS CLICAR EM ""EDIT TRUSTED RELATIONSHIP"",
+
+
+
+
+PARA EDITARMOS A JSON FILE E UPDATARMOS A POLICY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. OK... CRIADO ESSE ROLE,
+
+
+
+
+PODEMOS DEIXAR ESSA JANELA ABERTA, PQ 
+
+
+
+NA PRÓXIMA AULA VAMOS IR ATÉ O SNOWFLAKE E CRIAR 
+
+
+A CONNECTION NO SNOWFLAKE.... COM ESSA CONNECTION ,VAMOS 
+
+
+
+__UPDATAR_ _ESSA ""TRUST POLICY"",
+
+
+ESSA TRUST RELATIONSHIP...
+
+
+
