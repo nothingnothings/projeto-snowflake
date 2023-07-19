@@ -700,6 +700,9 @@ SELECT * FROM ORDERS_CACHING WHERE MONTH(DATE)=8;
 
 
 
+(percebemos que o cluster key foi usado, por conta de 
+
+""partitions scanned 19 out of 80"")...
 
 
 
@@ -733,7 +736,9 @@ CLUSTER KEYS EM CERTAS COLUMNS, EM CERTAS EXPRESSIONS...
 
 
 
+
 AGORA DEVEMOS FAZER O ASSIGNMENT..
+
 
 
 
