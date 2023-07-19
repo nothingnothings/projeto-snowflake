@@ -1,0 +1,262 @@
+
+
+
+
+
+
+
+
+
+OK... MAS ANTES DE CRIARMOS 1 POLICY, NO SNOWFLAKE,
+
+PARA CONSEGUIRMOS FAZER 
+
+
+
+ACESSO 
+
+
+AO S3,
+
+
+
+
+
+
+DEVEMOS PRIMEIRAMENTE 
+
+
+
+UPLOADAR DATA AO NOSSO BUCKET....
+
+
+
+
+
+
+
+
+UPLOADAR ESSA DATA NOS FOLDERS QUE CRIAMOS..
+
+
+
+
+
+
+
+
+BASTA IR ATÉ O FOLDER EM QUE 
+
+QUEREMOS 
+
+
+ADICIONAR DATA... -> CLIQUE EM ""UPLOAD"" -->
+
+
+
+
+AÍ UPLOADE OS ARQUIVOS QUE O PROFESSOR PROVIDENCIOU...
+
+
+
+
+
+
+
+
+MUSICAL INSTRUMENTS E NETFLIX_TITLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... CARREGUEI ESSAS 2 FILES...
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+FICAMOS COM URLS TIPO ISTO:
+
+
+
+
+s3://snowflake-test-masterclass-bucket/JSON/
+
+
+E ISTO:
+
+s3://snowflake-test-masterclass-bucket/CSV/
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+
+MAIS TARDE TAMBÉM PRECISAREMOS DESSA DESTINATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR ENQUANTO APENAS UPLOADAMOS ESSA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+
+
+
+
+__ SE PRECISAMOS CRIAR 1 OUTRO BUCKET,
+
+
+QUE PODEMOS FAZER,
+
+
+
+BASTA IR ATÉ ""AMAZON S3"",
+
+
+
+E AÍ CRIAR OUTRO BUCKET....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> VAMOS CRIAR OUTRO BUCKET...
+
+
+
+
+
+
+
+--> BUCKET NAMES DEVEM SER UNIQUE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA TEMOS 2 BUCKETS,
+
+E NO PRIMEIRO BUCKET TEMOS 
+
+
+
+
+3 FOLDERS, 2 deles com data...
+
+
+
+
+
+
+
+
+--> O OUTRO BUCKET ESTÁ VAZIO..
+
+
+
+
+
+
+
+
+
+--> MAS AGORA DEVEMOS VER:
+
+
+
+
+
+1) COMO PODEMOS CRIAR A POLICY 
+
+
+
+
+2) A CONNECTION DE NOSSA SNOWFLAKE ACCOUNT AO AWS,
+
+PARA QUE CONSIGAMOS FAZER LOAD DA DATA DE NOSSOS BUCKETS...
