@@ -1,0 +1,342 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. PARA ESTA LECTURE, VAMOS CRIAR 1 S3 BUCKET (object storage)...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É NOS BUCKETS QUE VAMOS COLOCAR NOSSA DATA...
+
+
+
+
+
+
+
+
+--> DEPOIS, MAIS TARDE, 
+
+SEREMOS CAPAZES DE COPIAR ESSA DATA DE ESTE LUGAR...
+
+
+
+
+
+
+
+
+
+
+
+
+--> É O LOCAL DE ONDE PODEMOS COPIAR DATA....
+
+
+
+
+
+
+
+
+--> CRIAMOS 1 BUCKET...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DESMARCAMOS ""BLOCK ALL PUBLIC ACCESS"",
+
+
+
+
+pq o professor quer que ele fique publico..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> é importante, na AWS,
+
+
+ESCOLHERMOS 
+
+
+
+
+
+1 REGION PARA NOSSO BUCKET QUE SEJA A MESMA 
+
+
+
+DO NOSSO APP SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+NO CASO, MINHA REGION DO SNOWFLAKE É 
+
+""us-east-1"",
+
+
+
+POR ISSO COLOCO A MESMA COISA NO AWS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PQ AÍ NOSSA DATA TRANSFER SERÁ FREE,
+
+
+SE 
+
+
+
+A NOSSA SNOWFLAKE ACCOUNT EXISTIR NA MESMA REGION 
+
+EM QUE ESSE BUCKET FOR
+
+
+CRIADO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-O PROFESSOR DEIXOU A OPTION DE ""BLOCK PUBLIC ACCESS"" (
+
+    quer dizer que vamos precisar providenciar access keys,
+
+    no stage.... (ou no comando de copy, como metadata)...
+
+)
+
+
+
+
+
+
+
+
+
+
+
+--> OK...C RIADO ESSE BUCKET,
+
+PODERÍAMOS 
+
+UPLOADAR 
+
+
+
+
+FILES DIRETAMENTE A ELE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS CRIAR FOLDERS DENTRO DO BUCKET...
+
+
+
+
+
+
+
+
+
+
+--> CRIAMOS FOLDERS:
+
+
+
+
+
+
+
+1) CSV 
+
+
+2) JSON 
+
+
+
+3) DIFFERENT_FILES
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... FIZ ISSO... CRIEI ESSES 3 FOLDERS... E AGORA 
+
+POSSO UPLOADAR DATA A ELES...
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA TEMOS QUE CONFIGURAR A CONNECTION AO SNOWFLAKE,
+
+
+
+E TAMBÉM A """""POLICY'""""",
+
+
+
+
+tudo para que 
+
+
+
+O 
+
+
+
+SNOWFLAKE CONSIGA ACESSAR  ESSE BUCKET...
+
+
+
+
+
+
+
+
+
+
+E FAREMOS TUDO ISSO POR MEIO DE __ ROLES__..
+
+
+
+
+
+
+
+
+
+--> veremos isso na próxima aula....
