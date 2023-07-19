@@ -1,0 +1,185 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS DAR 1 OLHADA NAS STEPS QUE DEVEMOS SEGUIR PARA CONSEGUIR 
+
+CRIAR 1 WORKING SNOWPIPE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+1A STEP -->  CRIAR 1 STAGE OBJECT...
+
+
+nada de novo... PRECISAMOS DESSE OBJECT PARA TANTO 
+
+COMANDOS MANUAIS DE COPY COMO  TAMBÉM 
+
+O SNOWPIPE...
+
+
+
+
+
+
+
+
+STAGE OBJECT --> CONTÉM A CONNECTION E A LOCATION 
+
+AO EXTERNAL STAGE DE QUE QUEREMOS ""COPY DATA FROM""...
+
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, 
+
+
+PRECIAMOS:
+
+
+
+
+
+
+
+2A STEP --> CRIAR UM COMANDO DE COPY --> É EXATAMENTE 
+
+A MESMA COISA QUE UM COMANDO DE COPY COMUM,
+
+MANUAL,
+
+
+mas será usado com o snowpipe...
+
+
+
+
+
+
+
+
+
+
+
+-> ALÉM DISSO, É BEM BOM TESTAR ESSE COMANDO DE COPY.... --> PQ, MAIS TARDE,
+
+
+VAMOS __ GOSTAR _ DE TER 1 ""WORKING COPY COMMAND"" NA DEFINITION 
+
+DE 
+
+NOSSO SNOWPIPE (
+
+    para que ele nao realize copias de forma errada/com errors.
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO, TEMOS:
+
+
+
+
+
+
+
+3a STEP --> CRIAR __ O NOSSO PIPE, QUE VAI 
+
+CONTER ESSA DEFINITION DO COPY COMMAND 
+
+
+
+
+
+
+4a STEP --> DEPOIS DISSO, DEPOIS DE TER CRIADO ESSA PIPE,
+
+            PRECISAMOS SETTAR __ 
+
+
+            ""S3 NOTIFICATIONS"",
+
+
+
+            LÁ NO NOSSO CLOUD PROVIDER (como o amazon 
+            s3...
+            )
+
+
+            PRECISAMOS SETTAR 1 EVENT NOTIFICATION, QUE VAI ACABAR 
+            TRIGGANDO O SNOWPIPE (
+                vai declarar que existe 1 novo object no bucket,
+
+                e que ele pode comecar a carregar essas files/copiar 
+                as files para dentro das databases...
+            )
+
+
+
+
+
+
+
+
+
+
+E ESSAS SAO AS STEPS QUE PRECISAMOS SETTAR...
+
+
+4 STEPS..
+
+
+
+
+
+
+
+
+
+
+DEVEMOS VER TUDO ISSO EM PRÁTICA, HANDS-ON...
+
+
