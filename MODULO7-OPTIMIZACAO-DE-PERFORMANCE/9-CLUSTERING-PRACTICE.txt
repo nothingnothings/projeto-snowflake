@@ -1,0 +1,739 @@
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS VER COMO PODEMOS NOS BENEFICIAR 
+
+DESSE CLUSTERING,
+
+
+E COMO PODEMOS _ cRIAR NOSSO PRÓPRIO CUSTOM CLUSTER KEYS/CLUSTERING....
+
+
+
+
+
+
+
+
+
+
+COMECAMOS COM O SETUP:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Public accessible staging area 
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.stages.aws_stage
+    url='s3://bucketsnowflakes3';
+
+
+
+//List files in stage 
+
+LIST @MANAGE_DB.stages.aws_stage;
+
+
+
+//Load data, using copy command 
+
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @MAANGE_DB.stages.aws_stage
+    FILE_FORMAT=(
+        TYPE=csv,
+        field_delimiter=',',
+        skip_header=1
+    )
+    PATTERN='.*Orderdetails.*';
+
+
+
+-- Create table 
+
+    CREATE OR REPLACE TABLE ORDERS_CACHING (
+        ORDER_ID VARCHAR(30),
+        AMOUNT NUMBER(38, 0),
+        PROFIT NUMBER(38, 0),
+        QUANTITY NUMBER(38, 0),
+        CATEGORY VARCHAR(30),
+        SUBCATEGORY VARCHAR(30),
+        DATE DATE
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, FICAMOS COM 2 TABLES,
+
+
+
+
+1 DE ""ORDERS"",
+
+padrao,
+
+
+
+e outra 
+
+
+
+de 
+
+""ORDERS_CACHING"",
+
+
+
+
+
+que será um pouco mais complexa.
+
+
+
+
+
+
+--> inclui uma column de ""date""..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA INSERIR DATA NESSA TABLE DE CACHING,
+
+ESCREVEMOS:
+
+
+
+
+
+
+
+
+
+
+
+INSERT INTO ORDERS_CACHING 
+    SELECT 
+t1.ORDER_ID,
+t1.AMOUNT,
+t1.PROFIT,
+t1.QUANTITY,
+t1.CATEGORY,
+t1.SUBCATEGORY,
+DATE(UNIFORM(1500000000000, 1700000000000, RANDOM() ))
+FROM ORDERS t1
+CROSS JOIN (SELECT * FROM ORDERS) t2
+CROSS JOIN (SELECT TOP 100 * FROM ORDERS) t3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> FAZEMOS CROSS JOINS, TAMBÉM, APENAS PARA DEIXAR A TABLE 
+
+1 POUCO MAIS COMPLEXA...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO INTEIRO FOI FICANDO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Public accessible staging area 
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.stages.aws_stage
+    url='s3://bucketsnowflakes3';
+
+
+
+-- List files in stage 
+
+LIST @MANAGE_DB.stages.aws_stage;
+
+
+
+-- Load data, using copy command 
+
+
+-- CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS (
+--     ORDER_ID VARCHAR(30),
+--     AMOUNT INT,
+--     PROFIT INT,
+--     QUANTITY INT,
+--     CATEGORY VARCHAR(30),
+--     SUBCATEGORY VARCHAR(30)
+-- );
+
+
+COPY INTO OUR_FIRST_DB.PUBLIC.ORDERS
+    FROM @MANAGE_DB.stages.aws_stage
+    FILE_FORMAT=(
+        TYPE=csv,
+        field_delimiter=',',
+        skip_header=1
+    )
+    FILES=('OrderDetails.csv');
+
+
+
+//Create table 
+
+    CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.ORDERS_CACHING (
+        ORDER_ID VARCHAR(30),
+        AMOUNT NUMBER(38, 0),
+        PROFIT NUMBER(38, 0),
+        QUANTITY NUMBER(38, 0),
+        CATEGORY VARCHAR(30),
+        SUBCATEGORY VARCHAR(30),
+        DATE DATE
+    );
+
+
+
+//insert data into table 
+
+
+
+-- TRUNCATE TABLE OUR_FIRST_DB.PUBLIC.ORDERS;
+
+USE DATABASE OUR_FIRST_DB;
+
+
+INSERT INTO ORDERS_CACHING
+    SELECT 
+t1.ORDER_ID,
+t1.AMOUNT,
+t1.PROFIT,
+t1.QUANTITY,
+t1.CATEGORY,
+t1.SUBCATEGORY,
+DATE(UNIFORM(1500000000000, 1700000000000, RANDOM() ))
+FROM ORDERS t1
+CROSS JOIN (SELECT * FROM ORDERS) t2
+CROSS JOIN (SELECT TOP 100 * FROM ORDERS) t3;
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> agora essa table ficou 1 pouco mais complexa...
+
+
+
+
+
+
+
+
+
+--> a query demorou 1 certo tempo...
+
+
+
+
+
+
+--> depois de 4 minutos, temos o resultado...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEMORA 4 MINUTOS, COM A WAREHOUSE DE TAMANHO EXTRA SMALL...
+
+
+
+
+
+
+
+--> QUANDO CRIARMOS ESSA TABLE,
+
+
+
+DE ""ORDERS_CACHING"",
+
+
+
+
+
+
+
+PERCEBEMOS QUE 
+
+
+FICAMOS SEM NENHUM CLUSTER KEY NELA...
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+ANTES DISSO, RODAMOS 1 QUERY PARA CONSTATAR A PERFORMANCE ANTES 
+
+
+DE COLOCARMOS 
+
+A CLUSTER KEY NO LUGAR..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- PARA ISSO, O PROFESSOR 
+
+
+
+RODA ESTA QUERY:
+
+
+
+
+
+
+
+
+
+
+// Query performance BEFORE cluster key 
+
+SELECT * FROM ORDERS_CACHING WHERE DATE = '2020-06-09';
+
+
+
+
+
+
+
+
+
+
+RODAMOS ESSA QUERY, VISUALIZAMOS QUANTO TEMPO DEMORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.31 segundos...
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS VISUALIZAR A QUERY PROFILE, NO QUERY ID...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NA QUERY PROFILE,
+
+FICAMOS COM:
+
+
+
+
+
+
+
+TABLESCAN[2] --> Filter[1] --> RESULT [0]
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PERCEBEMOS ""57.8%"" NO TABLESCAN --> QUER DIZER QUE 
+
+
+QUASE 60% DO TEMPO FOI GASTO COM 1 TABLE SCAN COMPLETO (full)..
+
+
+
+
+
+
+
+
+
+
+
+
+--> TAMBÉM É POSSÍVEL VER __ QUE _ 59 de 59 partitions foram 
+escaneadas...
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE TODAS NOSSAS PARTITIONS TIVERAM DE SER 
+
+ESCANEADAS...
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE ISSO NAO É IDEAL,
+
+
+
+E REALMENTE PODEMOS MUDAR ESSE CENÁRIO...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, PODEMOS INTRODUZIR UMA CLUSTER KEY,
+
+
+E AÍ 
+
+
+COMPARAR OS RESULTADOS COM ESSE QUERY ANTERIOR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> RODAMOS, E A PERFORMANCE FICOU ___PIOR____...
+
+
+
+
+
+
+--> o tablescan TOMOU 67.9% -->  E FOI 1 FULL SCAN --> 
+
+
+TODAS AS PARTITIONS FORAM ESCANEADAS... --> ISSO ACONTECEU/ACONTECE 
+
+
+PQ _ DEMORA __ ALGUMAS HORAS PARA 
+
+
+1 NOVA CLUSTER KEY SER ADICIONADA/IMPLEMENTADA..
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS ESPERAR ALGUNS MINUTOS,
+
+E RODAR 
+
+DE NOVO..
+
+
+
+--> MUDAMOS 1 POUCO A DATA USADA NO STATEMENT,
+
+PARA NAO USARMOS O CACHING DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> rodamos, e a query realmente ficou mais rápida... 
+
+
+
+--> E AGORA TEREMOS 
+
+
+ESCANEADO APENAS 3 PARTITIONS, EM VEZ DE 
+
+74...
+
+
+
+
+
+
+
+
+
+
+
+---> REALMENTE, AGORA ISSO FUNCIONOU....
+
+
+
+
+
+
+
+
+
+--> isso pode nos ajudar um monte, e realmente melhorar a performance 
+
+um monte,..
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS TESTAR ISSO, MAS COM CASES QUE NAO SAO IDEAIS...
+
+
+
+
+
+
+-- NOT IDEAL CLUSTERING TARGET EXAMPLE (dont do this), AND USING EXPRESSIONS/FUNCTIONS IN THE PLACE OF COLUMNS, to create clusters:
+
+SELECT * FROM ORDERS_CACHING WHERE MONTH(DATE)=8;
+
+
+
+
+
+-- PARA RESOLVER ESSA DEMORA, PODEMOS USAR ESSA MESMA EXPRESSION (""" MONTH(DATE) "") COMO CLUSTER KEY, TIPO ASSIM:
+ALTER TABLE ORDERS_CACHING CLUSTER BY (MONTH(DATE));
+
+
+
+
+-- WITH CLUSTER KEY in that expression...
+SELECT * FROM ORDERS_CACHING WHERE MONTH(DATE)=8;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... É CLARO QUE ESSA MUDANCA PODE DEMORAR 1 TEMPO ATÉ SER APLICADA...
+
+
+
+
+
+
+
+COM ISSO, VIMOS OS BENEFÍCIOS DE 
+
+CLUSTER KEYS EM CERTAS COLUMNS, EM CERTAS EXPRESSIONS...
+
+
+
+
+
+AGORA DEVEMOS FAZER O ASSIGNMENT..
+
+
+
