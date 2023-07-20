@@ -603,3 +603,44 @@ SELECT * FROM OUR_FIRST_DB.public.test_backup;
 -- data is now restored to what it was, in original table,
 -- and its timeline is still maintained.
 SELECT * FROM OUR_FIRST_DB.public.test;
+
+
+
+
+
+
+
+
+-----------------------
+
+
+
+
+
+OK... FICAMOS COM A METADATA ANTIGA INTACTA,
+
+BASICAMENTE...
+
+
+
+
+
+POR FIM, PODEMOS DROPPAR A TABLE DE BACKUP,
+
+
+
+
+
+SE NAO FOR MAIS NECESSÁRIA..
+
+
+
+
+
+
+
+percebemos que o approach 2 é bem melhor....
+
+nao devemos create or replace nossas tables,
+
+se desejamos usar as time travel features...
