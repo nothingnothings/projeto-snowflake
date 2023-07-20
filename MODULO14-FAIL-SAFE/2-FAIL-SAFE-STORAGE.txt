@@ -1,0 +1,173 @@
+
+
+
+
+
+
+
+DE VOLTA A NOSSA CONTA,
+
+QUEREMOS 
+
+
+
+DESCOBRIR COMO PODEMOS CONSEGUIR INFO SOBRE 
+
+QUANTA 
+
+STORAGE ESTÁ SENDO USADA PELO SNOWFLAKE...
+
+
+
+
+HÁ 2 MANEIRAS DE DESCOBRIR ESSE VALUE....
+
+
+
+
+
+
+
+
+
+
+1a MANEIRA) 
+
+
+
+-- Storage usage on account level 
+
+
+SELECT * FROM SNOWFLAKE.ACCOUT_USAGE.STORAGE_USAGE 
+ORDER BY USAGE_DATE DESC;
+
+
+-- STORAGE USAGE ON ACCOUNT LEVEL, FORMATTED 
+
+SELECT USAGE_DATE,
+        STORAGE_BYTES / (1024 * 1024 * 1024) AS STORAGE_GB,
+        STAGE_BYTES / (1024 * 1024 * 1024) AS STAGE_DB,
+        FAILSAFE_BYTES / (1024 * 1024 * 1024) AS FAILSAFE_GB
+FROM SNOWFLAKE_ACCOUNT.ACCOUNT_USAGE.STORAGE_USAGE
+ORDER BY USAGE_DATE DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+ok... temos gastos com storage até com 
+
+o failsafe, mesmo.
+
+
+
+
+
+
+-> precisamos usar o role de ACCOUNTADMIN,
+
+para podermos 
+
+checar essas tables....
+
+
+
+
+
+
+
+
+
+
+
+
+O SEGUNDO METHOD 
+
+
+
+
+
+
+
+
+
+
+2o method) USAR A GUI...
+
+
+
+
+
+
+->  com isso, é possível ver que foram 
+
+gastos 23mb com storage...
+
+
+
+
+
+a data consumida pelas databases,
+
+
+1.5gb...
+
+
+
+
+
+0.946149668656
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS MT DATA ARMAZENADA NESSA FAILSAFE ZONE.
+
+
+
+
+
+ISSO NOS DÁ MAIS DETALHES SOBRE A DATA CONSUMIDA POR NOSSAS 
+
+TABLES,
+
+E O SPLIT ENTRE 
+
+
+""STORAGE"""
+
+""TIME TRAVEL STORAGE""
+
+E 
+
+""FAIL SAFE STORAGE""...
+
+
+
+
+
+
+
+COM ISSO, FICAMOS COM 1 OVERVIEW DE NOSSAS TABLES, E QUANTA STORAGE 
+
+CADA 1 DAS TABLES ESTÁ USANDO.
+
+
