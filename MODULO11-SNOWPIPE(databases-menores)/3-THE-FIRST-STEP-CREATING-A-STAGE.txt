@@ -93,3 +93,332 @@ CREATE OR REPLACE STAGE MANAGE_DB.stages.csv_folder
 
 
 precisamos colocar a url de verdade, naquele slot.
+
+
+
+
+
+
+
+
+
+
+tipo assim: 
+
+
+
+s3://snowflake-test-masterclass-bucket/CSV/
+
+
+
+
+
+
+
+
+
+
+MAS O PROFESSOR COLOCOU TAMBÉM UM PATH DE /snowpipe/,
+
+
+dentro desse folder 
+
+
+CSV que eu já havia criado, deixando a url assim:
+
+
+
+
+s3://snowflake-test-masterclass-bucket/CSV/snowpipe
+
+
+
+
+
+
+
+
+
+
+editamos nosso código:
+
+
+
+
+
+
+-- CREATE TABLE FIRST 
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.employees (
+        ID INT,
+        first_name STRING,
+        last_name STRING,
+        email STRING,
+        location STRING,
+        department STRING
+    );
+-- Create File format Object 
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.csv_file_format_new TYPE = CSV field_delimiter = ',',
+    skip_header = 1 null_if =('NULL', 'null') empty_field_as_null = TRUE;
+
+
+
+
+-- CREATE STAGE
+CREATE OR REPLACE STAGE MANAGE_DB.stages.csv_folder
+    URL = 's3://snowflake-test-masterclass-bucket/CSV/snowpipe'
+    STORAGE_INTEGRATION= S3_EXAMPLE_INTEGRATION
+    FILE_FORMAT=(
+        FORMAT_NAME=MANAGE_DB.FILE_FORMATS.CSV_FILE_FORMAT
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+
+OK... CRIEI ESSE STAGE...
+
+
+
+
+
+
+
+
+
+--> TAMBÉM COLOCAMOS A ACCESS INFORMATION 
+
+
+A ESSE FOLDER,
+
+
+POR MEIO 
+
+
+
+DA INTEGRATION 
+
+DE S3_EXAMPLE_INTEGRATION...
+
+
+
+
+
+EX:
+
+
+
+
+
+
+-- CREATE STAGE
+CREATE OR REPLACE STAGE MANAGE_DB.stages.csv_folder
+    URL = 's3://snowflake-test-masterclass-bucket/CSV/snowpipe'
+    STORAGE_INTEGRATION= S3_EXAMPLE_INTEGRATION
+    FILE_FORMAT=(
+        FORMAT_NAME=MANAGE_DB.FILE_FORMATS.CSV_FILE_FORMAT
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+CRIADO ESSE STAGE OBJECT,
+
+VISUALIZAMOS AS FILES 
+
+JÁ DISPONÍVEIS 
+
+NESSE FOLDER..
+
+
+
+
+
+
+COM 
+
+
+LIST @MANAGE_DB.stages.csv_folder;
+
+
+
+
+
+
+
+
+--> É CLARO QUE ANTES PRECISAMOS UPLOADAR 
+A CSV DATA 
+
+A ESSE FOLDER, COM DRAG AND DROP.
+
+
+
+
+
+ARQUIVO EMPLOYEE_dATA_1...
+
+
+
+
+
+
+
+
+
+
+
+
+
+A PROXIMA ETAPA É CRIAR 
+
+O PIPE...
+
+
+
+
+
+
+
+
+
+
+
+--> PARA MANTER AS COISAS MAIS 
+
+ORGANIZADAS,
+
+VAMOS CRIAR 1 SCHEMA, ONDE COLOCAREMOS 
+
+ESSE PIPE...
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+-- CREATE TABLE FIRST 
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.employees (
+        ID INT,
+        first_name STRING,
+        last_name STRING,
+        email STRING,
+        location STRING,
+        department STRING
+    );
+-- Create File format Object 
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.csv_file_format_new TYPE = CSV field_delimiter = ',',
+    skip_header = 1 null_if =('NULL', 'null') empty_field_as_null = TRUE;
+
+
+
+
+-- CREATE STAGE
+CREATE OR REPLACE STAGE MANAGE_DB.stages.csv_folder
+    URL = 's3://snowflake-test-masterclass-bucket/CSV/snowpipe'
+    STORAGE_INTEGRATION= S3_EXAMPLE_INTEGRATION
+    FILE_FORMAT=(
+        FORMAT_NAME=MANAGE_DB.FILE_FORMATS.CSV_FILE_FORMAT
+    );
+
+
+
+-- LIST FILES IN BUCKET FOLDER/stage 
+
+LIST @MANAGE_DB.stages.csv_folder;
+
+
+
+-- CREATE SCHEMA TO STORE SNOWPIPE PIPES 
+
+CREATE OR REPLACE SCHEMA MANAGE_DB.pipes;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA TEMOS O CÓDIGO DE CREATION DE PIPES:
+
+
+
+
+
+
+
+
+
+-- Create ACTUAL PIPE OBJECT 
+
+CREATE OR REPLACE PIPE MANAGE_DB.pipes.employee_pipe
+    AUTO_INGEST = TRUE
+    AS 
+    COPY INTO OUR_FIRST_DB.PUBLIC.employees
+    FROM @MANAGE_DB.stages.csv_folder;
+
+
+
+
+
+
+
+
+
+ESSA É A DEFINITION DE NOSSA PIPE,
+
+QUE ANALISAREMOS NA PRÓXIMA AULA.
+
+

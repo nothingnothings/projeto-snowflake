@@ -16,8 +16,20 @@ CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.csv_file_format_new TYPE = 
 
 -- CREATE STAGE
 CREATE OR REPLACE STAGE MANAGE_DB.stages.csv_folder
-    URL = 's3://snowflakes3bucket123/csv/snowpipe'
+    URL = 's3://snowflake-test-masterclass-bucket/CSV/snowpipe'
     STORAGE_INTEGRATION= S3_EXAMPLE_INTEGRATION
     FILE_FORMAT=(
         FORMAT_NAME=MANAGE_DB.FILE_FORMATS.CSV_FILE_FORMAT
     );
+
+
+
+-- LIST FILES IN BUCKET FOLDER/stage 
+
+LIST @MANAGE_DB.stages.csv_folder;
+
+
+
+-- CREATE SCHEMA TO STORE SNOWPIPE PIPES 
+
+CREATE OR REPLACE SCHEMA MANAGE_DB.pipes;

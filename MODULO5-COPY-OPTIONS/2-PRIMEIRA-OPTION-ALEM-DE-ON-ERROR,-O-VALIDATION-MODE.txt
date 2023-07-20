@@ -920,3 +920,14 @@ VALIDATION_MODE = RETURN_<n>_ROWS | RETURN_ERRORS | RETURN_ALL_ERRORS
 
 
 parece que realmente só podemos escolher 1 deles...
+
+
+
+
+
+
+
+
+
+
+
