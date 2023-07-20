@@ -1,0 +1,665 @@
+
+
+
+
+
+
+
+NA ÚLTIMA LICAO,
+
+
+
+
+
+ESCREVEMOS ESTAS LINHAS, NO SNOWFLAKE:
+
+
+
+
+-- CREATE TABLE FIRST 
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.employees (
+        ID INT,
+        first_name STRING,
+        last_name STRING,
+        email STRING,
+        location STRING,
+        department STRING
+    );
+-- Create File format Object 
+CREATE OR REPLACE FILE FORMAT MANAGE_DB.file_formats.csv_file_format_new TYPE = CSV field_delimiter = ',',
+    skip_header = 1 null_if =('NULL', 'null') empty_field_as_null = TRUE;
+
+
+
+
+-- CREATE STAGE
+CREATE OR REPLACE STAGE MANAGE_DB.stages.csv_folder
+    URL = 's3://snowflake-test-masterclass-bucket/CSV/snowpipe'
+    STORAGE_INTEGRATION= S3_EXAMPLE_INTEGRATION
+    FILE_FORMAT=(
+        FORMAT_NAME=MANAGE_DB.FILE_FORMATS.CSV_FILE_FORMAT
+    );
+
+
+
+-- LIST FILES IN BUCKET FOLDER/stage 
+
+LIST @MANAGE_DB.stages.csv_folder;
+
+
+
+
+
+
+-- CREATE SCHEMA TO STORE SNOWPIPE PIPES 
+
+CREATE OR REPLACE SCHEMA MANAGE_DB.pipes;
+
+
+
+
+-- Create ACTUAL PIPE OBJECT 
+
+CREATE OR REPLACE PIPE MANAGE_DB.pipes.employee_pipe
+    AUTO_INGEST = TRUE -- sempre deve ser definido como TRUE
+   -- podemos executar apenas esta parte, do copy into, para verificar se coisas estao funcionando (para que o pipe nao execute 1 copy que nao funciona)
+    AS 
+    COPY INTO OUR_FIRST_DB.PUBLIC.employees
+    FROM @MANAGE_DB.stages.csv_folder;
+
+
+
+
+
+-- CHECKS FOR EXISTENCE OF PIPE.
+DESC PIPE MANAGE_DB.pipes.employee_pipe;
+
+-- OS FIELDS SAO:
+
+
+
+-- NAME -> NOME DO PIPE 
+
+-- DATABASE_NAME -> NOME DA DATABASE 
+
+-- SCHEMA_NAME - NOME DO SCHEMA 
+
+
+-- OWNER -> ACCOUNTADMIN, ETC 
+
+
+-- NOTIFICATION_CHANNEL -->  ESSE É O __ VALUE _ _MAIS IMPORTANTE.
+
+
+
+
+
+
+
+
+-- COPIAMOS O VALUE DE NOTIFICATION_CHANNEL,
+
+
+-- PQ É ISSO QUE USAREMOS NO NOSSO "EVENT",
+
+-- PARA QUE O EVENT __ CONSIGA _ 
+
+-- ENVIAR ESSA NOTIFICATION 
+
+-- A ESSE CANAL (é o target)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, O SNOWPIPE FOI CRIADO 
+
+
+NO SNOWFLAKE,
+
+
+MAS ELE AINDA NAO ESTÁ FUNCIONANDO,
+
+
+POIS 
+
+
+
+
+AINDA NAO CONFIGURAMOS O SEND 
+
+DE NOTIFICATIONS 
+
+A AQUELE NOTIFICATION_CHANNEL,
+
+
+LÁ NA AWS..
+
+
+
+
+
+
+
+
+VAMOS 
+
+
+ATÉ O CONSOLE DO S3, NA AWS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CLICAMOS EM "PROPERTIES"....
+
+
+
+
+
+
+--> DENTRO DO BUCKET,
+
+
+TEMOS A OPTION 
+
+
+PARA SETTAR EVENT NOTIFICATIONS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CLICAMOS EM CREATE EVENT NOTIFICATION,
+
+
+
+E AÍ VAMOS SETTANDO...
+
+
+
+
+
+
+
+
+
+--> COLOCAMOS 1 NOME QUALQUER,
+
+
+E AÍ 
+
+
+
+
+DEFINIMOS 
+
+
+
+
+mais coisas...
+
+
+
+
+
+
+
+
+
+
+
+"prefix" --> COM ISSO,
+
+
+ESPECIFICAMOS 
+
+QUE QUEREMOS 
+
+""
+Limit the notifications to objects with key starting with specified characters.
+""
+
+
+
+
+
+
+
+
+
+
+USAMOS ESSA OPTION SE QUISERMOS QUE _ APENAS __ 
+
+ALGUNS SUB FOLDERS 
+
+ENVIE NOTIFICATIONS, E OUTROS NAO...
+
+
+
+
+
+
+NO NOSSO CASO,
+
+
+
+CRIAMOS OS FOLDERS DE 
+
+
+
+CSV/SNOWPIPE,
+
+
+
+POR ISSO ESCREVEMOS ISSO AÍ MESMO,
+
+
+
+
+
+CSV/snowpipe
+
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM PODEMOS SETTAR O SUFIXO,
+
+
+
+PARA 
+
+MANIPULAR APENAS FILES DESSE TIPO... --> COLOCAMOS 
+".csv"...
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+NOS EVENT TYPES, DEFINIMOS 
+
+
+
+OS METHODS QUE TRIGGARAO ESSE EVENT 
+
+(PUT, POST, COPY, ETC)...
+
+
+
+
+
+
+
+
+--. O PROFESSOR DEFINE TODOS OS METHODS, DIZ QUE ISSO NAO IMPORTA TANTO.
+
+
+
+
+
+
+
+
+
+
+-> TODOS OS OBJECT CREATION EVENTS.
+
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+AO FINAL, NESSA TELA DE CREATE NOTIFICATION,
+
+TEMOS OPTIONS ENTRE:
+
+
+
+
+
+1) LAMBDA FUNCTION 
+
+
+2) SNS TOPIC 
+
+
+3) SQS QUEUE...
+
+
+
+
+
+
+
+
+
+---> ISSO É SUPER IMPORTANTE... --> DEVEMOS ESCOLHER 
+
+O SQS...
+
+
+
+
+
+
+-> DEPOIS DISSO, ESCOLHEMOS ""ENTER SQS QUEUE ARN"....
+TAMBÉM 
+ tipo isto:
+
+
+
+
+
+
+
+arn:aws:sqs:us-east-1:475055360349:sf-snowpipe-AIDAW5G4BRFO5Q3ZE3DWI-0N6R2utYyOFCy5TOernvnw
+
+
+
+
+
+
+
+
+ok... colocamos isso...
+
+
+
+
+
+
+
+
+
+
+---- certo... sem problema.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SALVAMOS AS MUDANCAS....
+
+
+
+
+
+
+
+
+ESSA NOTIFICATION ENTAO FOI SETTADA COM SUCESSO....
+
+
+
+
+
+
+
+AGORA DEVEMOS TESTAR NOSSO SNOWPIPE...
+
+
+
+
+
+
+
+NO FOLDER SNOWPIPE, NO BUTCKET,
+
+
+
+TEMOS APENAS 1 CSV DENTRO DELE...
+
+
+
+
+
+
+
+-> devemos uploadar outro arquivo,
+
+para testar....
+
+
+
+
+
+-> ESCOLHEMOS ALGUMAS ADDITIONAL FILES...
+
+
+
+
+employee_data_2...
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, VAMOS ATÉ NOSSA TABLE,
+
+
+
+E CHECAMOS QUANTOS ROWS TEMOS NELA (para
+
+verificar se o add automatico ocorreu)
+
+
+
+
+
+
+
+
+
+
+ok... mas nada aconteceu.
+
+
+
+
+
+
+
+
+
+
+
+
+opa, mas agora aconteceu.... funcionou....
+
+
+
+
+
+
+o snowpipe automaticamente adicionou 
+
+os rows, daquele arquivo csv,
+
+dentro 
+
+
+de nossa table employees...
+
+
+
+
+
+
+
+
+
+-- é claro que o snowpipe é mais lento...
+
+
+
+
+
+
+
+PODEMOS CRIAR O PIPE USANDO ESSE COMANDO:
+
+
+
+
+
+-- Create ACTUAL PIPE OBJECT 
+
+CREATE OR REPLACE PIPE MANAGE_DB.pipes.employee_pipe
+    AUTO_INGEST = TRUE -- sempre deve ser definido como TRUE
+   -- podemos executar apenas esta parte, do copy into, para verificar se coisas estao funcionando (para que o pipe nao execute 1 copy que nao funciona)
+    AS 
+    COPY INTO OUR_FIRST_DB.PUBLIC.employees
+    FROM @MANAGE_DB.stages.csv_folder;
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+ok... o setup nao é tao complexo...
+
+
+
+
+
+
+
+
+AGORA A DATA DE NOSSAS FILES É COPIADA AUTO,
+SEMPRE QUANDO 
+
+
+COLOCAMOS ELAS NO BUCKET...
+
+
+
+
+
+
+
+CERTO, MAS ISSO ASSUME QUE TUDO DEU CERTO....
+
+
+
+E SE OCORREREM ERRORS,
+
+
+
+COMO DEVE SER FEITO O HANDLING, COM O SNOWPIPE?
+
+
+
+
+
+
+
+veremos isso na proxima aula..
