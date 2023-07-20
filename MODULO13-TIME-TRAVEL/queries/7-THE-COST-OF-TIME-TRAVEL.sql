@@ -1,0 +1,141 @@
+-- time travel cost --
+
+
+-- informacoes genéricas de storage gasta/custos de storage
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE
+ORDER BY USAGE_DATE DESC;
+
+
+-- METRICAS DE GASTOS COM STORAGE MAIS DETALHADOS.
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS;
+
+
+
+
+
+-- --> MAS A PRIMEIRA QUERY NAO NOS FALA 
+
+-- SOBRE 
+
+
+-- O QUANTO GASTAMOS 
+
+-- COM O TIME TRAVEL (account level)..
+
+
+
+
+
+
+
+
+
+
+
+
+-- --> MAS SE INSPECIONARMOS AS 
+
+-- METRICS DA TABLE EM SI,
+
+
+-- DA ACCOUNT,
+
+-- FICAMOS 
+
+
+-- COM MAIS INFORMACOES...
+
+
+
+
+
+
+-- para ficarmos com informacoes mais concretas de quanto 
+
+
+-- gastamos, podemos rodar assim:
+
+
+
+
+
+
+
+
+-- Query time travel storage 
+
+SELECT ID,
+       TABLE_NAME,
+       TABLE_SCHEMA,
+       TABLE_CATALOG,
+       ACTIVE_BYTES / (1024 * 1024 * 1024) AS STORAGE_USED_GB,
+       TIME_TRAVEL_BYTES/(1024 * 1024 * 1024) AS TIME_TRAVEL_STORAGE_USED_GB
+FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS
+ORDER BY STORAGE_USED_GB DESC, TIME_TRAVEL_STORAGE_USED_GB DESC;
+
+
+
+
+
+
+
+
+
+
+
+-- MAS O "TIME_TRAVEL_STORAGE"
+
+
+-- TAMBÉM EXISTE --------_> NAO TEMOS 
+
+
+
+-- MT COISA
+
+
+-- DE VALUE 
+
+
+-- NESSE TIME_TRAVEL COLUMMN --> ESSA 
+
+
+
+-- COLUMN SÓ 
+
+
+-- VAI 
+
+
+-- AUMENTAR BASTANTE DE VALUE 
+
+
+
+-- SE TIVERMOS 
+
+
+-- ____MUITAS__ ALTERACOES 
+
+
+-- NAS NOSSAS TABLES...
+
+
+
+-- --> NAO TEMOS NENHUMA 
+
+-- TIME TRAVEL USAGE 
+
+
+-- NAS NOSSAS TABLES 
+
+
+-- JUSTAMENTE PQ 
+
+
+-- NAO REALIZAMOS 
+
+
+-- NENHUMA MUDANCA NOS ÚLTIMOS TEMPOS...
+
+
+
+

@@ -1,0 +1,447 @@
+
+
+
+
+
+
+
+
+
+AGORA QUE SABEMOS SOBRE 
+
+ESSA PROPRIEDADE DE RETENTION,
+
+RELACIONADA 
+
+
+AO TIME TRAVEL,
+
+
+
+E AGORA QUE 
+
+
+
+
+SABEMOS QUE 
+""QUANTO MAIS DIAS DE TIME-TRAVEL AO PASSADO, MAIS CARO"",
+
+
+PQ 
+
+GASTAMOS MAIS STORAGE,
+
+
+
+
+
+
+
+VAMOS DESCOBRIR 
+
+
+QUANTO MAIS GASTAMOS..
+
+
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+TEMOS CUSTOS, RELACIONADOS 
+
+À 
+
+
+STORAGE...
+
+
+
+
+
+
+
+
+-->  PQ QUANTO MAIS TIME TRAVEL RETENTION 
+
+
+TEMOS NAS NOSSAS TABLES,
+
+
+
+MAIS STORAGE PODERÍAMOS GASTAR, PARA CONSEGUIRMOS 
+
+
+
+ACCOUNT PARA ESSA CAPACIDADE 
+
+
+DE TIME TRAVEL..
+
+
+
+
+
+
+
+--> POR EXEMPLO, SE FIZEMOS CHANGES 
+
+
+__ ONTEM, OU 2 SEMANAS ATRÁS,
+
+
+TODA ESSA DATA QUE FOI ALTERADA 
+
+
+PRECISA 
+
+
+
+__ SER ARMAZENADA... -> AÍ O COST VAI AUMENTAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE SETTAR 1 TIME RETENTION DE 
+
+90 DIAS 
+NEM SEMPRE É UMA BOA IDEIA...
+
+
+
+
+MAS PODERÍAMOS FAZER ISSO, SE QUISÉSSEMOS....
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA ESTUDAREMOS O TIME TRAVEL COST:
+
+
+
+
+
+
+
+
+
+
+
+-- TIME TRAVEL COST --
+
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE
+ORDER BY USAGE_DATE DESC;
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+-- time travel cost --
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE
+ORDER BY USAGE_DATE DESC;
+
+
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+DENTRO DALI,
+
+VIMOS 
+
+
+O STORAGE GROUP 
+
+
+AGRUPADO POR
+
+DAYS...
+
+
+
+
+
+
+--> MAS A PRIMEIRA QUERY NAO NOS FALA 
+
+SOBRE 
+
+
+O QUANTO GASTAMOS 
+
+COM O TIME TRAVEL (account level)..
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE INSPECIONARMOS AS 
+
+METRICS DA TABLE EM SI,
+
+
+DA ACCOUNT,
+
+FICAMOS 
+
+
+COM MAIS INFORMACOES...
+
+
+
+
+
+
+
+
+
+--> certifique-se de que vc 
+
+é o accountadmin,
+para 
+
+checar essa 
+
+table de storage_usage....
+
+
+
+
+
+
+
+
+
+
+--> A COLUNA IMPORTANTE É 
+
+
+""TIME_TRAVEL_BYTES""....
+
+
+
+
+
+
+
+
+para ficarmos com informacoes mais concretas de quanto 
+
+
+gastamos, podemos rodar assim:
+
+
+
+
+
+
+
+
+//Query time travel storage 
+
+SELECT ID,
+       TABLE_NAME,
+       TABLE_SCHEMA,
+       TABLE_CATALOG,
+       ACTIVE_BYTES / (1024 * 1024 * 1024) AS STORAGE_USED_GB,
+       TIME_TRAVEL_BYTES/(1024 * 1024 * 1024) AS TIME_TRAVEL_STORAGE_USED_GB
+FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS
+ORDER BY STORAGE_USED_GB DESC, TIME_TRAVEL_STORAGE_USED_GB DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, VEMOS O VALUE DE STORAGE EM __GIGABYTES...
+
+
+
+
+
+
+
+
+
+ESTAMOS USANDO 1GB....
+
+
+
+
+
+
+
+
+
+
+MAS O "TIME_TRAVEL_STORAGE"
+
+
+TAMBÉM EXISTE --------_> NAO TEMOS 
+
+
+
+MT COISA
+
+
+DE VALUE 
+
+
+NESSE TIME_TRAVEL COLUMMN --> ESSA 
+
+
+
+COLUMN SÓ 
+
+
+VAI 
+
+
+AUMENTAR BASTANTE DE VALUE 
+
+
+
+SE TIVERMOS 
+
+
+____MUITAS__ ALTERACOES 
+
+
+NAS NOSSAS TABLES...
+
+
+
+--> NAO TEMOS NENHUMA 
+
+TIME TRAVEL USAGE 
+
+
+NAS NOSSAS TABLES 
+
+
+JUSTAMENTE PQ 
+
+
+NAO REALIZAMOS 
+
+
+NENHUMA MUDANCA NOS ÚLTIMOS TEMPOS...
+
+
+
+
+
+
+
+
+
+
+
+--> OK... ESSE É O BACKGROUND...
+
+
+
+
+
+
+É POR ISSO QUE O RETENTION TIME DEFAULT 
+
+
+É 1....
+
+
+
+
+
+
+
+
+
+--> E VIMOS COMO PODEMOS MONITORAR O STORAGE USE,
+
+TANTO O TOTAL COMO 
+
+
+
+O GASTO COM A FEATURE DE TIME TRAVEL...
