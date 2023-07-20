@@ -1,0 +1,996 @@
+
+
+
+
+
+
+
+FALAREMOS SOBRE TIME-TRAVEL...
+
+
+
+
+
+
+
+
+
+
+
+
+TIME-TRAVEL É UMA FEATURE 
+
+DO 
+
+
+SNOWFLAKE QUE PODEMOS USAR PARA 
+
+RESTAURAR DATA QUE 
+
+
+UPDATAMOS/DELETAMOS 
+
+SEM QUERER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, PODEMOS VIAJAR NO TEMPO E VISUALIZAR 
+
+A DATA 
+
+
+__ COMO ELA _ ERA _ ANTES 
+
+DE 
+
+
+NÓS TERMOS A UPDATADO....
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS TAMBÉM VISUALIZAR COMO NOSSA 
+DATA SE PARECIA,
+EM 1 
+
+PONTO NO PASSADO...
+
+
+
+
+
+
+
+VEREMOS OS USE-CASES DESSA FEATURE...
+
+
+
+
+
+
+
+
+PARA ISSO, PRIMEIRAMENTE DEVEMOS 
+
+SETTAR AS TABLES 
+
+QUE VAMOS USAR NO EXEMPLO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Setting up example table 
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.test (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CRIAMOS UMA TABLE CHAMADA 
+
+DE TEST,
+
+QUE VAI CONTER 
+
+
+
+ALGUMA CUSTOMER DATA....
+
+
+
+
+
+
+
+
+
+DEPOIS 
+
+CRIAMOS O FILE FORMAT E O STAGE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+-- Setting up example table 
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.test (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+--create file format
+CREATE OR REPLACE FILE FORMAT OUR_FIRST_DB.file_formats.time_travel_format
+    TYPE=CSV
+    FIELD_DELIMITER=","
+    SKIP_HEADER=1;
+
+
+-- create stage
+CREATE OR REPLACE STAGE OUR_FIRST_DB.stages.time_travel_stage
+    url='s3://data-snowflake-fundamentals/time-travel',
+    file_format=(
+    FORMAT_NAME=OUR_FIRST_DB.file_formats.time_travel_format
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+AÍ LISTAMOS AS FILES
+
+
+NO STAGE,
+
+TIPO ASSIM:
+
+
+-- List files in stage 
+LIST @OUR_FIRST_DB.stages.time_travel_stage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, AGORA QUEREMOS COPIAR O CONTEÚDO 
+
+
+DO BUCKET PARA 
+DENTRO DESSA TABLE,
+
+COM ESTE COMANDO:
+
+
+
+
+
+
+-- Setting up example table 
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.test (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+--create file format
+CREATE OR REPLACE FILE FORMAT OUR_FIRST_DB.file_formats.time_travel_format
+    TYPE=CSV
+    FIELD_DELIMITER=","
+    SKIP_HEADER=1;
+
+
+-- create stage
+CREATE OR REPLACE STAGE OUR_FIRST_DB.stages.time_travel_stage
+    url='s3://data-snowflake-fundamentals/time-travel',
+    file_format=(
+    FORMAT_NAME=OUR_FIRST_DB.file_formats.time_travel_format
+    );
+
+-- List files in stage 
+LIST @OUR_FIRST_DB.stages.time_travel_stage;
+
+
+
+-- copy data from stage into table 
+COPY INTO OUR_FIRST_DB.public.test
+FROM @OUR_FIRST_DB.stages.time_travel_stage;
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.TEST;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA ASSUMAMOS O SEGUINTE 
+
+
+USE-CASE:
+
+
+
+
+
+
+
+DIGAMOS QUE TEMOS ESSA TABLE AÍ...
+
+
+
+
+
+
+
+ENTAO, POR ACIDENTE,
+
+ACABAMOS ATUALIZANDO ESSA DATA,
+
+
+
+
+POR MEIO DESTE COMANDO:
+
+
+
+
+
+
+
+UPDATE OUR_FIRST_DB.public.test
+SET FIRST_NAME = 'Joyen';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ESSE COMANDO,
+
+
+
+O VALUE DE TODOS OS ROWS,
+
+NA COLUMN FIRST-NAME,
+
+
+FICOU COMO 
+
+
+"JOYEN"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA, ESQUECEMOS 1 WHERE CLAUSE...
+
+
+
+
+
+
+
+
+
+-> 
+
+
+
+
+
+ISSO PODERIA SER MT RUIM PARA NÓS...
+
+
+
+
+
+
+
+
+
+
+
+
+FELIZMENTE, PODEMOS USAR ESSE METHOD 
+
+DE __TIME TRAVEL...
+
+
+
+
+
+
+MAS COMO PODEMOS USAR ESSE METHOD...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PARA USAR TIME-TRAVEL,
+
+
+
+
+PODEMOS _ TRAVEL 
+
+BACK 
+
+
+
+A CERTA QUANTIDADE DE 
+
+MINUTOS OU SEGUNDOS...
+
+
+
+
+
+
+PARA CONSEGUIRMOS 
+"TRAVEL BACK",
+
+
+
+
+PRECISAMOS DA 
+
+KEYWORD DE 
+
+""""AT"""" (denomina TEMPO)....
+
+
+
+
+
+-- EXEMPLO:
+
+
+
+-- Using time travel: First method - 2 minutes back.
+SELECT * FROM OUR_FIRST_DB.public.test AT (OFFSET => 60 * 0.5);
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS EU RECEBI 1 ERROR... --> faltou o "-" (para dizer que queremos voltar PARA TRÁS)
+
+
+
+
+
+
+DEPENDENDO DA EDITION QUE ESTAMOS USANDO,
+
+PODEMOS FAZER TRAVEL 
+BACK 
+
+DIFERENTES 
+QUANTIAS DE TEMPO (O LIMITE É 90 DIAS)...
+
+
+
+
+
+
+E ISSO REALMENTE FUNCIONA....
+
+
+
+
+
+
+
+
+
+
+COLOQUEI 1 VALUE DE 
+
+
+""-2000*0.5""",
+
+E ISSO ME MOSTROU A TABLE 
+
+ANTES DE ELA SER ALTERADA 
+
+
+POR CONTA DAQUELE UPDATE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS RECRIAR A TABLE, COM A DATA/RESULT 
+
+SET QUE EXISTIA ANTES,
+
+
+
+PARA 
+
+CONSERTARMOS NOSSO ERRO.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+SIM, ISSO FUNCIONA...
+
+
+
+
+
+Podemos rodar isto:
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.test 
+AS
+SELECT * FROM OUR_FIRST_DB.public.test AT (OFFSET => -120*0.5);
+
+
+SELECT * FROM OUR_FIRST_DB.public.test;
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+
+
+
+
+
+MAS EXISTEM DIFERENTES METHODS DE TIME-TRAVEL....
+
+
+
+
+
+
+
+ESSE É O PRIMEIRO, COM USO DE ""AT"",
+
+junto de ""OFFSET => <number_of_seconds_to_travel_back>""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUAL É O SEGUNDO METHOD QUE PODEMOS USAR, 
+
+PARA 
+
+""TRAVEL BACK IN TIME""?
+
+
+
+
+
+
+
+
+
+
+
+-> o segundo method envolve 
+
+
+o uso 
+
+
+
+da keyword 
+
+"BEFORE()",
+
+
+
+
+JUNTO COM O PASS DE 1 TIMESTAMP...
+
+
+
+
+
+
+-- SEGUNDO METHOD:
+
+
+
+
+-- Using time travel: Second method - BEFORE (timestamp => <timestamp>)
+
+SELECT * FROM OUR_FIRST_DB.public.test BEFORE (timestamp => '2023-07-20 22:05:20'::timestamp);
+
+SELECT * FROM OUR_FIRST_DB.public.test BEFORE (timestamp => current_timestamp - INTERVAL '2 HOURS');
+
+SELECT * FROM OUR_FIRST_DB.public.test BEFORE (timestamp => current_timestamp - INTERVAL '0.6 HOURS');
+
+
+
+
+
+
+
+
+
+O 
+
+PROFESSOR NOS MOSTRA ISSO TAMBÉM COM OUTRO EXEMPLO:
+
+
+
+-- test do segundo method:
+
+
+-- Setting up example table 
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.test (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+//copy data from stage into table 
+COPY INTO OUR_FIRST_DB.public.test
+FROM @OUR_FIRST_DB.stages.time_travel_stage;
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.TEST;
+
+
+//setting up UTC time for convenience 
+ALTER SESSION SET TIMEZONE = 'UTC';
+SELECT CURRENT_TIMESTAMP;
+
+
+UPDATE OUR_FIRST_DB.PUBLIC.test 
+SET Job = 'Data Scientist';
+
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.TEST;
+
+
+SELECT * FROM OUR_FIRST_DB.public.test BEFORE (timestamp => '2023-07-20 17:34:10.113 +0000'::timestamp);
+
+
+
+
+
+
+
+
+
+OK.... 
+
+
+
+
+
+
+
+
+
+ESSE É O SEGUNDO METHOD, POR MEIO 
+
+
+
+DO 
+
+
+USO DE ""BEFORE"" E ENTAO O TIMESTAMP...
+
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+FINALMENTE, TEMOS O TERCEIRO METHOD,
+
+QUE O PROFESSOR CONSIDERA AINDA MAIS SIMPLES 
+
+
+E MT MT MT ÚTIL..
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O TERCEIRO METHOD USA O QUERY ID,
+
+E É O MAIS SAFE/GARANTIDO DOS 3...
+
+
+
+
+
+
+
+
+
+
+
+
+// Using time travel - METHOD 3 -- BEFORE QUERY ID...
+
+
+
+
+
+
+
+
+
+
+
+
+
+BASTA PASSAR O ID DA QUERY A QUE VC QUER RETROCEDER...
+
+
+
+
+
+
+
+
+--> PEGAR A TABLE 
+
+
+
+ANTES __ DE CERTA QUERY SER EXECUTADA...
+
+
+
+
+
+
+
+
+
+
+
+O CÓDIGO É ESTE:
+
+
+
+
+
+
+
+
+
+
+-- Using time travel - METHOD 3 -- BEFORE QUERY ID...
+
+
+
+
+//prepare table:
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.test (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+//copy data from stage into table 
+COPY INTO OUR_FIRST_DB.public.test
+FROM @OUR_FIRST_DB.stages.time_travel_stage;
+
+
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.test;
+
+
+
+
+-- ALTERING TABLE (BY MISTAKE)
+UPDATE OUR_FIRST_DB.PUBLIC.TEST 
+SET EMAIL = null;
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.test;
+
+
+
+
+//TIME TRAVEL - METHOD 3 - BEFORE JUNTO DE "statement", e aí colamos a QUERY ID....
+
+
+SELECT * FROM OUR_FIRST_DB.PUBLIC.test BEFORE (statement =>  '01adc1e8-0604-acac-0077-a6870002f2ca');
+
+
+
+
+
+
+
+
+
+ALGO BEM ÚTIL É 
+
+
+
+OBTER ESSES QUERY IDS.... --> 
+
+
+
+
+SE VC TEM ESSES QUERY IDS,
+
+
+É BEM FÁCIL FAZER 
+
+TIME TRAVEL...
+
+
+
+
+
+
+É BEM FÁCIL ACESSAR A QUERY ID,
+
+
+
+
+LÁ NO SNOWFLAKE.....
+
+
+
+
+
+
+
+
+
+PODEMOS CHECAR O QUERY ID NA QUERY HISTORY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMOS VER QUAL É A BEST PRACTICE 
+
+PARA __ RESTAURAR __ A DATA ORIGINAL,
+
+A DATA PERDIDA,
+
+
+
+NA NOSSA TABLE ORIGINAL...
+(
+
+    ou seja,
+
+
+    aquele comando de CREATE OR REPLACE TABLE xxxx AS ,
+
+
+    mas com comandos melhores...
+)
