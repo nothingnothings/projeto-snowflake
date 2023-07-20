@@ -1,0 +1,858 @@
+
+
+
+
+
+
+AGORA VEREMOS O SEGUNDO COMPONENTE 
+SUPER IMPORTANTE 
+
+DA FEATURE DE TIME TRAVEL DO SNOWFLAKE,
+
+
+
+
+QUE É 
+
+
+
+A CAPACIDADE 
+
+DE 
+
+""UNDROP"" OBJECTS QUE 
+
+
+
+
+
+JÁ 
+
+
+TINHAMOS DROPPADO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A CAPACIDADE DE UNDROP OBJECTS DROPPADOS... --> 
+
+NA MAIOR PARTE DOS CASOS,
+
+
+NA MAIOR PARTE DAS DATABASES, ISSO É BEM 
+
+
+___DIFÍCIL___...
+
+
+
+
+
+
+
+
+
+ENTRETANTO, NO SNOWFLAKE,
+
+ISSO É BEM SIMPLES...
+
+
+
+
+
+
+
+
+
+-- DEVEMOS DAR 1 OLHADA NO NOSSO EXEMPLO....
+
+
+
+
+
+
+
+NOSSO EXEMPLO É ESTE:
+
+
+
+
+
+
+
+
+-- setting up table 
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.stages.time_travel-stage
+    url='s3://data-snowflake-fundamentals/time-travel'
+    file_format=(
+        FORMAT_NAME=MANAGE_DB.file_formats.csv_file_format
+    );
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.customers (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+COPY INTO OUR_FIRST_DB.public.customers
+FROM @MANAGE_DB.stages.time_travel_stage;
+
+
+
+
+
+
+
+
+
+
+
+
+SETTAMOS 1 STAGE,
+
+
+
+SETTAMOS A TABLE,
+
+E AÍ COPIAMOS DTA DENTRO DESSA TABLE..
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- O UNDROP DE TABLES É A OUTRA GRANDE FEATURE 
+-- DE TIME TRAVEL DO SNOWFLAKE.
+
+-- setting up table 
+
+
+CREATE OR REPLACE STAGE MANAGE_DB.stages.time_travel_stage
+    url='s3://data-snowflake-fundamentals/time-travel'
+    file_format=(
+        FORMAT_NAME=MANAGE_DB.file_formats.csv_file_format
+    );
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.customers (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+COPY INTO OUR_FIRST_DB.public.customers
+FROM @OUR_FIRST_DB.stages.time_travel_stage;
+
+
+
+
+
+SELECT * FROM OUR_FIRST_DB.public.customers;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA DIGAMOS QUE FAZEMOS ALGO, ALGO COM QUE 
+
+DEVERÍAMOS TER MT CUIDADO...
+
+
+
+
+
+
+
+
+
+
+
+
+-> e, em alguns casos, por acidente,
+isso pode acontecer...
+
+
+
+
+
+
+
+
+--> PODEMOS ACABAR DROPPANDO NOSSA TABLE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+//UNDROP command - tables 
+
+DROP TABLE OUR_FIRST_DB.public.customers;
+
+
+
+
+
+
+
+
+
+
+DROPPADA ESSA TABLE,
+
+
+NAO CONSEGUIMOS MAIS QUERIAR...
+
+
+
+
+
+
+
+
+
+
+OK... MAS NO SNOWFLAKE,
+
+PODEMOS CONSERTAR 
+ESSE DROP FACILMENTE,
+
+
+COM 1 SIMPLES STATEMENT...
+
+
+
+
+
+
+
+
+--> BASTA RODAR 
+
+
+"""""
+
+UNDROP TABLE OUR_FIRST_DB.public.customers;
+
+"""""
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO VAI FAZER __ UNDROP_ DE NOSSA TABLE,
+
+
+
+COM SUCESSO....
+
+
+
+
+
+
+
+--> É TAO SIMPLES ASSIM...
+
+
+
+
+
+AGORA PODEMOS SELECIONAR NOSSA TABLE MAIS UMA VEZ,
+
+E VISUALIZAR TODA A DATA...
+
+
+
+
+
+
+
+
+
+
+E  COISA MAIS ABSURDA É QUE SOMOS CAPAZES 
+
+DE FAZER UNDROP NAO SÓ DE 
+
+TABLES,
+
+
+MAS DE SCHEMAS TAMBÉM...
+
+
+
+
+
+
+
+
+
+O PROFESSOR ESCREVE:
+
+
+
+
+
+
+
+
+
+-- UNDROP COMMAND - SCHEMAS 
+
+
+DROP SCHEMA OUR_FIRST_DB.public;
+
+
+SELECT * FROM OUR_FIRST_DB.public.customers; -- will be missing, because we dropped its parent schema.
+
+UNDROP SCHEMA OUR_FIRST_DB.public; -- will restore schema.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... QUER DIZER QUE 
+
+
+
+
+
+
+É ASSIM QUE PODEMOS UNDROP NOSSOS SCHEMAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+É UMA FEATURE MT BOA,
+
+ESSE UNDROP...
+
+
+
+
+
+
+
+
+
+TAMBÉM PODEMOS FAZER A MESMA COISA 
+
+
+
+COM DATABASES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, CONSEGUIMOS RESTAURAR 
+
+A DATABASE COMPLETAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+
+
+
+
+
+
+
+--> POR FIM, AGORA O PROFESSOR QUER 
+
+MOSTRAR 
+
+
+COMO PODEMOS __ 
+
+
+RESTAURAR__ UMA TABLE 
+
+QUE 
+
+
+FOI ""REPLACED"",
+
+
+""REPLACED"" POR OUTRA 
+
+
+
+TABLE...
+
+
+
+
+
+
+
+
+
+
+-> PQ, SE LEMBRARMOS BEM,
+
+
+
+
+RODAMOS ESTE COMANDO 1 MONTE DE VEZES:
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.customers 
+AS SELECT * FROM OUR_FIRST_DB.public.customers BEFORE (
+    statement => 
+)
+
+
+
+
+
+
+
+
+
+
+
+-- esse comando, o create or replace, às vezes pode nos incomodar,
+-- pq ele impossibilita o uso das time travel features 
+-- do snowflake, pq ele FAZ OVERWRITE DA TABLE ANTERIOR...
+-- aí nao conseguimos fazer travel por meio de 1 id ou tempo anterior...
+
+
+
+
+
+
+--> OK.... MAS O UNDROP PODE NOS AJUDAR 
+
+
+COM ESSES RUNS INDEVIDOS DE "CREATE OR REPLACE",
+
+ESSAS EXECUTIONS QUE ACABAM OVERWRITTANDO 
+NOSSOS TABLE OBJECTS (E SUAS TIMELINES) anteriores.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+-- how to restore a REPLACED (create or replace) TABLE, with UNDROP
+
+
+UPDATE OUR_FIRST_DB.public.customers
+SET LAST_NAME = 'Tyson';
+
+
+
+UPDATE OUR_FIRST_DB.public.customers
+SET JOB = 'Data Analyst';
+
+
+
+
+
+
+
+--UNDROPING A TABLE WHICH USES A NAME THAT ___ ALREADY EXISTS___ (in other words, this dropped table was probably REPLACED)
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.customers
+-- nós escolhemos a última etapa, que é a errada, de propósito. (consertamos apenas metade dos updates errados)
+AS SELECT * FROM OUR_FIRST_DB.public.customers BEFORE (
+    statement => '01adc265-0604-ad11-0077-a687000373b2' //before set job statement, but not before last_name update statemnt.
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, FAZEMOS RESTORE DE NOSSA TABLE,
+
+
+MAS RESTORE A 1 STEP 
+
+
+EM QUE AINDA ESTÁVAMOS COM OS "lAST_NAME"
+
+ERRADOS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DIGAMOS QUE USAMOS O APPROACH BAD 
+
+
+DE 
+
+RESTAURAR TABLES,
+
+EM QUE 
+
+
+SUBSTITUÍMOS NOSSA TABLE 
+
+ORIGINAL 
+
+
+
+POR UMA TABLE NOVA, COM MESMO NOME.... (visto logo acima).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> COMO APRENDEMOS ANTERIORMENTE,
+
+SE SUBSTITUÍMOS/RECRIAMOS 1 TABLE COM 
+
+1 MESMO NOME,
+
+AS FEATURES DE TIME-TRAVEL 
+
+COM "AT" E "BEFORE" 
+DEIXAM DE FUNCIONAR....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AINDA ASSIM,
+NEM TUDO ESTÁ PERDIDO...
+
+
+
+
+
+
+
+--> ISSO PQ _ PODEMOS USAR __ 
+
+
+
+
+A FUNCTION DE "uNDROP" 
+
+PARA 
+
+
+UNDROP ESSA CUSTOMERS TABLE ANTERIOR,
+
+
+
+A TABLE QUE ACABAMOS DROPPANDO 
+
+
+
+COM O COMANDO DE 
+
+
+
+""
+
+
+
+CREATE OR REPLACE TABLE OUR_FIRST_DB.public.customers
+-- nós escolhemos a última etapa, que é a errada, de propósito. (consertamos apenas metade dos updates errados)
+AS SELECT * FROM OUR_FIRST_DB.public.customers BEFORE (
+    statement => '01adc265-0604-ad11-0077-a687000373b2' //before set job statement, but not before last_name update statemnt.
+);
+
+
+
+""
+
+
+
+rodado anteriormente...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> certo, mas se rodarmos 
+
+
+apenas 
+
+
+"UNDROP TABLE OUR_FIRST_DB.public.customers;",
+
+
+
+ISSO NAO FUNCIONARÁ,
+ 
+ PQ 
+
+ ESSA TABLE JÁ EXISTE,
+
+ A TABLE DE CUSTOMERS...
+
+
+
+
+
+
+
+
+
+
+
+ --> talvez a solucao seja fazer O
+
+
+ RENAME__ DESSA TABLE....
+
+
+
+
+
+
+
+ --> REALMENTE, A SOLUCAO É FAZER:
+
+
+
+ 1) O RENAME DA TABLE 
+
+ ___aTUAL___ de 
+ "customers" para algo como "customers_wrong" (ou qualquer outra coisa)
+
+
+
+ 2) DEPOIS DISSO,
+ DEVEMOS RODAR 
+
+
+ "UNDO OUR_FIRST_DB.public.customers", que 
+
+ agora REALMENTE VAI CONSEGUIR TARGETTAR 
+
+ AQUELA __ TABLE QUE HAVIA SIDO DROPPED...
+
+
+
+
+ quer dizer que o código fica assim:
+
+
+
+ 
+
+
+//rename the present (And wrong) table
+ ALTER TABLE OUR_FIRST_DB.public.customers
+ RENAME TO OUR_FIRST_DB.public.customers_wrong;
+
+ //undrop table that had been replaced with the wrong table.
+UNDROP TABLE OUR_FIRST_DB.public.customers;
+
+
+
+
+
+
+
+
+
+COM ESSE CÓDIGO, CONSEGUIMOS RESTAURAR 
+
+AS FEATURES DE 
+TIME TRAVEL QUE 
+
+TÍNHAMOS PERDIDO,
+COM O REPLACE/RECREATE 
+DESSA TABLE... --------_> BASTA RENOMEAR 
+ESSA TABLE,
+
+E ENTAO 
+
+
+__ RESTAURAR A TABLE ORIGINAL/ANTERIOR,
+
+
+COM "UNDO"...
