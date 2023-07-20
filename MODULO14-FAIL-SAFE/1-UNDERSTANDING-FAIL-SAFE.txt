@@ -1,0 +1,661 @@
+
+
+
+
+
+
+AGORA QUE FALAMOS 
+
+
+SOBRE A FEATURE DE TIME TRAVEL,
+
+
+
+
+DEVEMOS FALAR 
+
+
+
+
+
+SOBRE O COMPONENTE 
+DE 
+
+""FAIL SAFE""...
+
+
+
+
+
+
+---------------
+
+
+
+
+
+
+ESSE COMPONENTE TAMBÉM FAZ PARTE 
+
+
+DO 
+
+"DATA PROTECTION LIFECYCLE'
+
+
+DO SNOWFLAKE..
+
+
+
+
+
+
+
+
+
+
+
+
+
+FAILSAFE ------> É OUTRA FEATURE....
+
+
+
+
+
+
+
+
+
+MAS O QUE É O FAILSAFE?
+
+
+
+
+
+--> O CASO DO FAILSAFE É QUE 
+
+
+
+__ ELE __ SERVE 
+
+COMO 
+
+
+
+
+"dATA PROTECTION" DE NOSSA DATA,
+
+
+
+EM CASOS DE DESASTRE....
+
+
+----------------
+
+
+
+
+
+
+FAILSAFE:
+
+
+
+--> Protection of historical data in case 
+of disaster 
+
+
+
+
+--> protecao de data, em caso de desastre...
+
+
+
+--> EM CASOS EM QUE PERDEMOS DATA,
+
+OU ELA ACABA CORROMPIDA,
+ 
+
+ALGUM TIPO DE DISASTER EVENT, EM QUE PERDEMOS TODA ESSA DATA...
+
+
+
+
+-- COM O FAILSAFE, CONSEGUIMOS 
+
+RECUPERAR ESSA DATA..
+
+
+
+
+
+
+
+
+
+
+--> RESUMO: É UM
+
+"""NON-CONFIGURABLE, 7-DAY PERIOD ___ FOR PERMANENT TABLES""....
+
+
+
+
+
+
+
+
+
+
+
+
+--> GERALMENTE AS NOSSAS TABLES SAO PERMANENT TABLES,
+
+
+
+E _ ESSE É O DEFAULT VALUE PARA NOSSAS TABLES...
+
+
+
+
+
+
+
+-> MAIS TARDE FALAREMOS SOBRE TYPES DIFERENTES DE TABLES...
+
+
+
+
+
+--> MAS, POR ENQUANTO, ESSAS PERMANENT TABLES/FAILSAFE TABLES 
+
+SAO NOSSAS COMMON TABLES....
+
+
+
+
+
+
+
+
+
+
+--> OK... QUER DIZER QUE RECEBEMOS 
+
+___ UM _ TIME-PERIOD DE 7 DIAS PARA NOSSAS TABLES,
+
+
+TIME-PERIOD DE FAILSAFE... E ESSE PERIOD 
+
+
+__COMECA __ IMEDIATAMENTE __ DEPOIS _ 
+
+DO PERIODO 
+
+
+
+DE TIME-TRAVEL (DATA_RETENTION_TIME_IN_DAYS) 
+
+
+TER ACABADO...
+
+
+
+
+
+
+--> quer dizer que depois do time-travel period 
+acabar, 
+
+
+A NOSSA TABLE ACABA "MOVED" PARA DENTRO 
+
+DESSA ÁREA DE "FAILSAFE"...
+
+
+
+
+
+
+
+
+
+
+--> E, DENTRO DESSA FAILSAFE AREA,
+
+
+
+AINDA PODEMOS RESTAURAR 
+
+NOSSA DATA...
+
+
+
+
+
+
+
+
+
+--> MAS O PROBLEMA, COM ISSO,
+
+
+É QUE _ NAO CONSEGUIMOS RESTAURAR 
+
+
+A DATA __ COLOCADA NO "FAILSAFE"
+
+
+POR CONTA PRÓPRIA, POR NÓS MESMOS...
+
+
+
+
+
+
+
+
+
+--> EM VEZ DISSO, PARA CONSEGUIRMOS RECUPERAR 
+
+A DATA DO FAILSAFE,
+
+É NECESSÁRIO CONTATAR __ A EQUIPE DO SNOWFLAKE EM SI...
+
+
+
+
+
+-----------------------------------------
+
+
+
+
+--> É O SUPORTE SNOWFLAKE QUE RECUPERA ESSA DATA....
+
+
+
+
+
+
+--> AO CONTRÁRIO DO QUE VIMOS COM O TIME TRAVEL,
+
+
+NÓS NAO PODEMOS QUERIAR 
+ESSA DATA 
+
+DIRETAMENTE...
+
+
+
+
+--> ""NO USER INTERACTION, AND RECOVERABLE ONLY BY 
+SNOWFLAKE"...
+
+
+
+
+---> ALÉM DISSO, VALE A PENA DESTACAR 
+
+
+QUE ESSA 
+
+"FAILSAFE ZONE"
+
+
+TAMBÉM TEM QUE SER PAGA... -->  PAGAMOS 
+
+CUSTOS ADICIONAIS...
+
+
+
+
+
+
+
+
+--> SE 1 TABLE ACABA "MOVED" PARA DENTRO 
+DESSA FAILSAFE ZONE,
+
+
+ISSO TAMBÉM CONTRIBUI PARA NOSSO OVERALL 
+
+
+STORAGE COST...
+
+
+
+
+
+
+
+
+
+--> OK... MAS AGORA DEVEMOS VER COMO ESSE 
+
+
+FAILSAFE FUNCIONA, E COMO ELE ESTÁ RELACIONADO COM O TIME TRAVEL 
+
+COMPONENT DO SNOWFLAKE...
+
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+PRIMEIRAMENTE,
+
+
+
+SABEMOS QUE TEMOS 
+
+
+
+
+ISTO:
+
+
+
+
+
+
+
+
+[CURRENT DATA STORAGE] --> ESSA É A DATA QUE
+                            SOMOS CAPAZES DE VISUALIZAR,
+                            ACESSAR, QUERIAR, ETC...
+
+
+
+
+
+--> além dessa data,
+
+
+
+
+APRENDEMOS ISTO:
+
+
+
+
+
+
+
+                    
+
+
+ TIME TRAVEL <--- [CURRENT DATA STORAGE] --> ESSA É A DATA QUE
+                                            SOMOS CAPAZES DE VISUALIZAR,
+                                        ACESSAR, QUERIAR, ETC...
+   ^^^^^ (
+        0-90 DAYS RETENTION TIME 
+        SELECT ... AT | BEFORE 
+        UNDROP 
+    )
+
+
+
+
+
+
+
+
+
+
+--> OK... PODEMOS RODAR BEFORE AT E UNDROP,
+
+PARA VISUALIZARMOS A DATA DA DATABASE NO PASSADO...
+
+
+
+
+
+
+
+
+-> PODEMOS TAMBÉM FAZER UNDROP DA DATA,
+POR MEIO 
+DE 
+
+1
+ SIMPLES QUERY DE "UNDROP"...
+
+
+
+
+
+
+
+
+ --> TAMBÉM TEMOS O PARAMETER DE "DATA_RETENTION_TIME_IN_DAYS",
+
+
+ DEFINIDO NAS NOSSAS TABLES,
+
+
+ QUE PODE SER SETTADO DE 1 A 90 DIAS (MAIS CARO)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ AGORA, NESTA AULA, APRENDEMOS SOBRE O FAILSAFE:
+
+
+
+
+
+
+
+
+
+
+
+ FAIL SAFE <------- TIME TRAVEL <--- [CURRENT DATA STORAGE] --> ESSA É A DATA QUE
+   (ZONE)                                                       SOMOS CAPAZES DE VISUALIZAR,
+                                                                ACESSAR, QUERIAR, ETC...
+                        ^^^^^ (
+                                0-90 DAYS RETENTION TIME 
+                                SELECT ... AT | BEFORE 
+                                UNDROP 
+                            )
+
+
+
+
+^^^^ --- É CLARO QUE 
+
+O "PUT" NO FAIL SAFE É FEITO AUTOMATICAMENTE....
+
+
+
+EX: 1 DIA DE RETENTION TIME (TIME TRAVEL)....
+
+ASSIM QUE ISSO ACABA, ESSA DATA __ ACABA 
+
+MOVIDA PARA DENTRO DESSA 
+
+""""FAIL SAFE ZONE""""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas é importante destacar, novamente,
+
+que nao somos capazes de queriar essa data 
+
+do failsafe zone,
+
+
+E QUE É APENAS RECOVARABLE PELO SNOWFLAKE SUPPORT...
+
+
+
+
+
+
+
+
+--> essa data fica disponível por 1 período de 7 dias,
+ apenas... (além do time travel)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ É CLARO QUE TEMOS ESSE PERÍODO DE 7 DIAS APENAS __ PARA 
+
+ AS __ PERMANENT__ TABLES...
+
+
+
+
+
+
+
+
+ PARA AS """TRANSIENT TABLES""",
+
+
+
+
+ temos actually ___ ZERO DIAS__....
+
+
+
+
+
+
+
+
+
+ TRANSIENT TABLES SAO 
+
+
+
+ TABLES-EXCECAO,
+
+
+ PQ GERALMENTE 
+
+ NOSSAS TABLES SAO PERMANENT TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ --> TRANSIENT TABLES --> ISSO É APENAS 
+
+ USADO 
+
+ SE QUEREMOS 
+
+ SALVAR O STORAGE COST --> 
+
+
+
+
+
+
+ MAS PARA TODAS AS OUTRAS TABLES,
+
+
+ TEMOS ESSE FAILSAFE,
+
+
+ QUE PODEMOS USAR, CONTATANDO 
+
+ O 
+
+ SUPPORT 
+
+ SNOWFLAKE,
+
+ EM CASO DE CORRUPCAO/PERDA DE DADOS...
+
+
+
+
+
+
+
+
+
+
+
+
+agora que sabemos o que é esse failsafe,
+
+devemos 
+
+
+olhar na nossa conta snowflake A STORAGE 
+
+QUE É CONSUMIDA PELO 
+
+RECURSO FAILSAFE...
+
+
+
+
+
+
+
+
+
+
+
+
+
