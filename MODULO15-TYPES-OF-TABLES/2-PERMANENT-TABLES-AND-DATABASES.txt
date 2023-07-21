@@ -1,0 +1,450 @@
+
+AGORA DEVEMOS ESTUDAR AS PERMANENT TABLES...
+
+
+
+
+
+
+--> PERMANENT TABLE --> É O DEFAULT VALUE PARA QUALQUER TABLE QUE CRIARMOS,
+
+SE NAO ESPECIFICARMOS MAIS NADA....
+
+
+
+
+
+
+
+
+DEVEMOS ESTUDAR COMO CRIAR ESSES OBJECTS, E VER COMO ELES SE COMPORTAM,
+
+
+EM RELACAO AO FAILSAFE E TIMETRAVEL....
+
+
+
+
+
+
+
+
+
+--> NO NOSSO CASO,
+
+ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+//permanent tables 
+
+USE OUR_FIRST_DB;
+
+
+CREATE OR REPLACE TABLE customers (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+CREATE OR REPLACE DATABASE PDB;
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+DEPOIS DISSO, ESTES COMANDOS:
+
+
+
+
+
+
+
+
+
+
+
+
+SHOW DATABASES;
+
+
+
+SHOW TABLES;
+
+
+
+
+
+
+
+
+
+
+ao rodar show databases,
+ficamos com todas as databases...
+
+
+
+
+
+
+
+
+
+há também uma column de 
+
+""is_current",
+
+
+que varia entre N e Y (
+
+    como estamos com ""OUR_FIRST_DB"" usado,
+
+
+
+    isso ficou como Y....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAIS IMPORTANTE, TEMOS A COLUMN DE ""options"",
+
+
+
+QUE NOS DIZ _ SE 1 GIVEN DATABASE/SCHEMA/TABLE __ É TRANSIENT OU NAO..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NAO ENXERGAMOS NADA NESSA COLUMN,
+
+PQ 
+
+__TODAS ESSAS DATABASES SAO PERMANENT DATABASES...
+
+
+
+
+
+
+
+
+
+--> ALÉM DISSO, É POSSÍVEL VER QUE O RETENTION_TIME 
+
+
+ESTÁ SETTADO COMO 1,
+
+
+
+
+QUE É REALMENTE O DEFAULT...
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SHOW TABLES NOS MOSTRA INFO SOBRE AS TABLES NA NOSSA DATABASE...
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+
+-----> SE QUISERMOS TER INFO MAIS DETALHADA __ SOBRE A STORAGE 
+
+-- GASTA, 
+
+-- PODEMOS USAR ESTA QUERY:
+
+
+
+
+
+
+
+//view table metrics (takes a bit to appear) 
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CONSEGUIMOS MAIS INFO SOBRE AS TABLES....
+
+
+
+
+
+--> TEMOS A FLAG DE ""IS_TRANSIENT"",
+
+
+
+
+QUE NOS FALA SE ESSA TABLE 
+É OU NAO TRANSIENT...
+
+
+
+
+
+
+
+
+
+//view table metrics (takes a bit to appear) - can check is_transient, failsafe_bytes (always 0 in temporary and transient tables) and time_travel_bytes 
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS;
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+OS TIME TRAVEL BYTES PODEM FICAR MAIORES DO QUE OS ACTIVE BYTES (
+
+    se tivermos rodado mtos update statements...
+)
+
+
+
+
+
+
+OS FAILSAFE BYTES SAO ALGO A MAIS, algo diferente dos time travel bytes...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS VER TUDO ISSO EM 1 FORMATO MELHOR, MAIS CONVENIENTE:
+
+
+
+
+
+// More details about DROPPED tables, better formatted.
+SELECT ID,
+       TABLE_NAME,
+       TABLE_SCHEMA,
+       TABLE_CATALOG,
+       ACTIVE_BYTES / (1024 * 1024 * 1024) AS ACTIVE_STORAGE_USED_GB,
+       TIME_TRAVEL_BYTES / (1024 * 1024 * 1024) AS TIME_TRAVEL_STORAGE_USED_GB,
+       FAILSAFE_BYTES / (1024 * 1024 * 1024) AS FAILSAFE_STORAGE_USED_GB,
+       IS_TRANSIENT,
+       DELETED,
+       TABLE_CREATED,
+       TABLE_DROPPED,
+       TABLE_ENTERED_FAILSAFE
+FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS
+WHERE TABLE_DROPPED IS NOT NULL
+ORDER BY FAILSAFE_BYTES DESC;
+
+
+
+
+
+
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+--> COM ESSA QUERY AÍ,
+
+
+
+CONSEGUIMOS DATA SOBRE__ AS DROPPED TABLES...
+
+
+
+
+
+
+
+
+todas as tables que SUPOSTAMENTE teriam deixado de existir...
+
+
+
+
+
+
+
+NOS NOSSOS RESULTS, É POSSÍVEL VER QUE 
+
+
+
+
+__ OS ACTIVE_bYTES DESSAS TABLES REALMENTE ESTAO COMO 0...
+
+
+
+
+ENTRETANTO,
+
+OS FAILSAFE_BYTES E TIME_TRAVEL_BYTES 
+
+
+
+
+NAO __ eSTAO COMO 0,
+
+ESTAO COMO ALGO BEM GRANDE...
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+ISSO ACONTECE/ACONTECEU JUSTAMENTE PQ TODAS ESSAS TABLES 
+
+
+NAO SAO TRANSIENT/TEMPORARY....
+
+
+
+
+SE VISUALIZARMOS ALGUMAS TABLES QUE SAO TEMPORARY/TRANSIENT,
+
+
+VEREMOS QUE 
+
+
+
+
+
+A QUANTIDADE DE FAILSAFE_BYTES SERÁ SEMPRE 0 (
+
+    pq isso de failsafe, esse recurso,
+
+    existe só para AS PERMANENT TABLES...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA ESTAMOS COMECANDO A ENTENDER A RELACAO ENTRE ""FAILSAFE BYTES"",
+""TIME TRAVEL BYTES"", ""ACTIVE BYTES"" E PERMANENT TABLES E TRANSIENT/TEMPORARY TABLES (e como sao diferentes de permanent objects/tables)...
