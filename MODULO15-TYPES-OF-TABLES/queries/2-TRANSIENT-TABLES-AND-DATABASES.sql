@@ -206,3 +206,141 @@ SET DATA_RETENTION_TIME_IN_DAYS = 0;
 
 --     e essa restricao existe em todas as transient tables...
 -- )
+
+
+
+
+
+
+--> A PRÓXIMA COISA QUE 
+
+
+
+-- DEVEMOS 
+
+
+-- TER EM MENTE É QUE
+
+
+
+-- SE CRIAMOS 
+
+
+-- 1 TRANSIENT SCHEMA 
+
+-- E 1 TABLE DENTRO DESSE SCHEMA,
+
+
+
+
+
+
+-- ESSA TABLE __ TAMBÉM SERÁ 
+
+-- DE TIPO 
+
+-- ""TRANSIENT""...
+
+
+
+
+
+
+
+-- ex:
+
+
+
+
+
+
+
+-- CREATING TRANSIENT SCHEMA AND THEN TABLE:
+CREATE OR REPLACE TRANSIENT SCHEMA TDB.transient_example;
+
+
+SHOW SCHEMAS;
+
+-- this table will automatically be of type TRANSIENT
+CREATE OR REPLACE TABLE TDB.TRANSIENT_EXAMPLE.new_transient_table (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+
+
+
+
+-- --> PARA TESTAR ISSO,
+
+-- PODEMOS TENTAR 
+
+-- ALTERAR O VALUE DE DATA_RETENTION_TIME_IN_DAYS..
+
+
+
+
+-- --> tentar colocar como 2.... --> nao será possível,
+
+-- justamente 
+
+-- pq 
+
+-- esse table type será 
+
+-- "transient"... (o máximo é 1, nesse table type)...
+
+
+
+
+-- EX:
+
+
+ALTER TABLE TDB.TRANSIENT_EXAMPLE.new_transient_table
+SET DATA_RETENTION_TIME_IN_DAYS = 2; -- vai falhar, pq o máximo possível em tables de tipo "transient" é 1...
+
+
+
+
+
+
+
+
+
+
+
+--> RESUMINDO, O QUE PRECISAMOS SABER:
+
+
+
+
+
+
+-- TRANSIENT TABLES:
+
+
+
+
+-- 1) NO FAILSAFE 
+
+
+
+
+-- 2) RETENTION TIMES POSSÍVEIS 
+
+-- SAO APENAS 0 OU 1...
+
+
+
+
+-- 3) TODAS AS TABLES CRIADAS 
+
+-- DENTRO DE DATABASES/SCHEMAS DE TIPO "TRANSIENT"
+
+-- TAMBÉM TERÃO UM TYPE DE "TRANSIENT"...

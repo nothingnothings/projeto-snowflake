@@ -284,3 +284,252 @@ COMO 1 OU 0... (
 
 
 
+
+OK.... --> SEMPRE TENHA EM MENTE QUE TRANSIENT TABLES 
+
+NAO POSSUEM FAILSAFE ZONE....
+
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+--> APENAS PODEMOS DEFINIR OS VALUES DO 
+
+DATA_RETENTION_TIME_IN_DAYS  COMO 0 OU 1...
+
+
+
+
+--> SE TENTAMOS DEFINIR
+
+
+isso como um value diferente, ganhamos 
+
+invalid parameter...
+
+
+--------------------------------
+
+
+
+
+
+
+
+--> A PRÓXIMA COISA QUE 
+
+
+
+DEVEMOS 
+
+
+TER EM MENTE É QUE
+
+
+
+SE CRIAMOS 
+
+
+1 TRANSIENT SCHEMA 
+
+E 1 TABLE DENTRO DESSE SCHEMA,
+
+
+
+
+
+
+ESSA TABLE __ TAMBÉM SERÁ 
+
+DE TIPO 
+
+""TRANSIENT""...
+
+
+
+
+
+
+
+
+-> ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+-- CREATING TRANSIENT SCHEMA AND THEN TABLE:
+
+
+
+CREATE OR REPLACE TRANSIENT SCHEMA TDB.transient_example;
+
+
+SHOW SCHEMAS;
+
+
+CREATE OR REPLACE TABLE TDB.TRANSIENT_SCHEMA.new_transient_table (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE EXECUTARMOS ISSO, E SE CRIARMOS 1 TABLE
+
+DENTRO 
+DESSE SCHEMA,
+
+
+
+ELA AUTOMATICAMENTE SERÁ DE TIPO TRANSIENT...
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA TESTAR ISSO,
+
+PODEMOS TENTAR 
+
+ALTERAR O VALUE DE DATA_RETENTION_TIME_IN_DAYS..
+
+
+
+
+--> tentar colocar como 2.... --> nao será possível,
+
+justamente 
+
+pq 
+
+esse table type será 
+
+"transient"... (o máximo é 1, nesse table type)...  
+
+
+
+
+
+
+
+
+
+
+
+
+OK... NOSSA TABLE REALMENTE 
+
+
+VIROU TRANSIENT,
+
+
+TUDO PQ FOI CRIADA DENTRO 
+
+
+DO SCHEMA DE TYPE "TRANSIENT"...
+
+
+
+
+
+
+
+
+--> RESUMINDO, O QUE PRECISAMOS SABER:
+
+
+
+
+
+
+TRANSIENT TABLES:
+
+
+
+
+1) NO FAILSAFE 
+
+
+
+
+2) RETENTION TIMES POSSÍVEIS 
+
+SAO APENAS 0 OU 1...
+
+
+
+
+3) TODAS AS TABLES CRIADAS 
+
+DENTRO DE DATABASES/SCHEMAS DE TIPO "TRANSIENT"
+
+TAMBÉM TERÃO UM TYPE DE "TRANSIENT"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA VEREMOS O ÚLTIMO TABLE TYPE,
+
+QUE 
+
+É O TEMPORARY...
+
+
+
+
+
