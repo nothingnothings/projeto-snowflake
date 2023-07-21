@@ -1,0 +1,175 @@
+
+
+
+
+
+
+
+AGORA VEREMOS COMO PODEMOS CLONAR SCHEMAS E DATABASES...
+
+
+
+
+
+
+
+
+
+-> TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+-- CLONING SCHEMAS (copying a transient schema 
+-- is possible, the only impossible thing is copying a TEMPORARY SCHEMA/database/table) 
+CREATE TRANSIENT SCHEMA OUR_FIRST_DB.COPIED_SCHEMA
+CLONE OUR_FIRST_DB.PUBLIC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+-- CLONING SCHEMAS (copying a transient schema 
+-- is possible, the only impossible thing is copying a TEMPORARY SCHEMA/database/table) 
+CREATE TRANSIENT SCHEMA OUR_FIRST_DB.COPIED_SCHEMA
+CLONE OUR_FIRST_DB.PUBLIC;
+
+
+-- now has all data from the original table, but as a TRANSIENT TABLE  (can be used for development/tests)....
+SELECT * FROM COPIED_SCHEMA.CUSTOMERS;
+
+-- creating a transient schema, using the 'stages" schema, in manage_db database, as a base.
+CREATE TRANSIENT SCHEMA OUR_FIRST_DB.copied_stages
+CLONE MANAGE_DB.STAGES;
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É CLARO QUE TUDO É COPIADO,
+
+
+TODAS AS COISAS NESTEADAS NAS DATABASES/SCHEMAS...
+
+
+
+
+
+--> TODOS OS OBJECTS SAO INCLUÍDOS...
+
+
+
+
+
+
+
+--> E PODEMOS FAZER A MESMA COISA 
+
+
+COM O CLONE DE DATABASES INTEIRAS,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+-- Cloning Database 
+CREATE TRANSIENT DATABASE OUR_FIRST_DB_COPY
+CLONE OUR_FIRST_DB;
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE CONSEGUIMOS 1 COPIA INTEIRA 
+
+DA PRIMEIRA DATABASE...
+
+
+
+(com todos os schemas/tables/objects)...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+
+In Snowflake, when you clone a database, it creates a new database that is an exact copy of the original database at the time of cloning. The cloned database becomes an independent object with its own set of metadata and data, completely separate from the original database. Therefore, if you delete the original database after cloning, the cloned database will continue to exist unaffected.
+
+Specifically, the following happens when you clone a Snowflake database and delete the original:
+
+Cloning: The new database is created as a clone of the original database, including all its schemas, tables, views, and other database objects. However, the data in the cloned database may not be physically duplicated at the time of cloning; it shares the same underlying data storage as the original.
+
+Deletion of the original: Deleting the original database has no impact on the cloned database. The cloned database remains fully functional and independent.
+
+Keep in mind that although the cloned database is a snapshot of the original at the time of cloning, they will continue to evolve independently. Any changes made to the original database after the cloning process will not be reflected in the cloned database and vice versa.
+
+It's important to be cautious when deleting databases, as the action is permanent, and data will be lost if not backed up or preserved in another form. Always ensure you have proper backups and follow best practices to avoid any unintended data loss.

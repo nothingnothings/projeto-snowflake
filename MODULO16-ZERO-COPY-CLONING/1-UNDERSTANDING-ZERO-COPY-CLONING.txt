@@ -1,0 +1,851 @@
+
+
+
+
+
+
+
+
+
+AGORA FALAREMOS SOBRE OUTRA FEATURE AVANCADA 
+
+
+DO SNOWFLAKE,
+
+
+QUE DEIXA TUDO BEM MAIS FÁCIL PARA NÓS...
+
+
+
+
+
+
+
+--> BEM MAIS FÁCIL DO QUE O NORMAL...
+
+
+
+
+É O "ZERO-COPY CLONING"....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA FEATURE NOS PERMITE FACILMENTE 
+
+
+CRIAR ___ CÓPIAS__ 
+
+
+DE DATABASES,
+
+SCHEMAS, TABLES _ E OUTROS OBJECTS...
+
+
+
+
+
+
+
+
+
+
+--> CREATE COPIES OF A DATABASE, SCHEMA 
+
+OR A TABLE....
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+E ESSA FEATURE DE COPY É 
+
+BEM MAIS FÁCIL 
+
+
+
+E SIMPLES 
+
+
+DO QUE 
+
+
+
+1 CÓPIA COMUM...
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO PQ, HABITUALMENTE,
+
+
+
+SE __ DESEJAMOS __ COPIAR 
+
+ALGO COMO 1 DATABASE,
+
+
+TERÍAMOS DE COPIAR A ESTRUTURA COMPLETA DESSA 
+
+
+
+DATABASE... ----------> QUER DIZER QUE PRECISARÍAMOS 
+
+
+
+COPIAR:
+
+
+
+1) TODA A METADATA 
+
+
+
+2) TODAS AS PRIMARY KEYS 
+
+
+3) E TODO O RESTO...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS NO SNOWFLAKE, ESSE PROCEDIMENTO
+
+
+DE COPY É SUPER SIMPLES,
+
+E É FEITO COM 1 
+
+SIMPLES COMANDO DE 
+
+""CLONE"",
+
+
+QUE SIMPLESMENTE 
+
+COPIA __ TODA A DATA, METADATA 
+
+
+E STRUCTURE,
+
+
+COM 1 SIMPLES COMANDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO NOS AJUDA PRINCIPALMENTE 
+
+
+QUANDO ESTAMOS DEVELOPING,
+PQ 
+
+
+EXISTIRAO HIPÓTESES EM QUE VAMOS QUERER 
+
+CRIAR 1 CLONE, PARA TESTAR COISAS...
+
+
+
+
+
+
+
+
+--> MAS QUAL É A RAZAO DESSA FEAUTURE
+
+
+SE CHAMAR 
+
+
+""ZERO-COPY CLONING""??
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, DEVEMOS COMPREENDER COMO ESSA FEATURE FUNCIONA...
+
+
+
+
+
+
+-----------------------------------------------
+
+
+
+
+
+COMECAMOS COM ESTE EXEMPLO:
+
+
+
+
+
+
+
+
+
+
+
+
+PASTA (BUCKET) ------ (toda a metadata)   ---->   TABLE (SNOWFLAKE)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> A DATA 
+
+ORIGINAL ESTÁ ARMAZENADA EM 1  BUCKET...
+
+
+
+
+
+
+--> SE RODAMOS O COMANDO DE "CLONE",
+
+DO SNOWFLAKE, ISTO ACONTECE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PASTA (BUCKET) ------ (toda a metadata)   ---->   TABLE (SNOWFLAKE)...
+        i
+        i
+        i
+     (toda a meta data) 
+        i 
+        i 
+        i
+        V
+
+    (COPIA) 
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+O PROFESSOR APONTA QUE 
+
+ESSA É UMA ""META DATA OPERATION"" --> ISSO QUER DIZER QUE 
+
+
+ESSE CLONE/COPY  __ FICARÁ DISPONÍVEL 
+
+
+NA NOSSA DATABASE... ELE FICARÁ DISPONÍVEL 
+
+NA NOSSA DATABASE, SIM,
+
+
+__ MAS _ ELE __ AINDA 
+
+
+REFERENCIARÁ 
+
+
+TODA _ A METADATA 
+
+
+DA _ TABLE ORIGINAL...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER, EM OUTROS TERMOS,
+
+
+QUE _ PODEMOS _ CLONAR_ ESSA TABLE 
+
+__INTEIRA____ SEM - 
+
+TER NENHUM 
+
+OUTRO CUSTO A RESPEITO DA STORAGE..
+
+
+
+
+
+
+
+
+
+
+--> MAS É CLARO QUE _ SE UPDATARMOS 
+
+NOSSA TABLE,
+
+
+
+TEREMOS COSTS, TAMBÉM  EM TERMOS 
+
+
+DE STORAGE...
+
+
+
+
+
+
+
+
+--> AINDA ASSIM, ESSE 
+
+
+"META DATA MANAGEMENT" 
+
+É SUPER EFICIENTE,
+
+
+TUDO PARA QUE 
+
+APENAS TENHAMOS 
+
+ADDITIONAL COSTS 
+
+
+
+SE NOSSA DATA FOR ALTERADA OU UPDATADA....
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE O "ZERO-COPY CLONING"
+
+
+É UMA MANEIRA SUPER RÁPIDA E MT EFICIENTE 
+
+DE _ CLONAR __ NOSSA DATA_...
+
+
+
+
+
+--------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE NOSSA "CLONED TABLE"
+
+É UM 
+
+
+OBJECT _ COMPLETAMENTE 
+
+INDEPENDENTE 
+
+da table original...
+
+
+
+
+
+
+
+SE QUISERMOS FAZER MODIFICATIONS A ESSE CLONE, 
+
+NÓS AINDA PODEMOS FAZÊ-LAS,
+
+
+
+
+E ELAS AINDA ASSIM APENAS AFETARAO 
+
+
+
+A TABLE CLONADA...
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE ESSA COPIA/CLONE 
+
+É REALMENTE 1 
+
+OBJECT INDEPENDENTE NA NOSSA DATABASE ,
+
+NA NOSSA CONTA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E A VANTAGEM DESSE ZERO-COPY CLONING É 
+
+QUE É SUPER FÁCIL,
+
+
+
+SUPER FÁCIL COPIAR TODA 
+
+A ESTRUTURA, TODA A META DATA,
+
+E ISSO 
+
+
+TAMBÉM 
+
+É 
+
+
+SUPER COST EFFICIENT ( 
+    O STORAGE MANAGEMENT
+    É SUPER 
+
+    EFICIENTE, AINDA MAIS SE 
+
+    NAO RODARMOS UPDATES NA TABLE --> SE RODARMOS 
+
+    UPDATES, TEREMOS COSTS,
+
+    MAS AINDA SERAO BAIXOS...
+)
+
+
+
+
+
+
+
+
+
+O PROPÓSITO 
+
+
+
+DISSO É:
+
+
+
+
+1) CREATE BACKUPS FOR DEVELOPMENT PURPOSES...
+
+--> PODEMOS  CRIAR CLONES PARA TER 
+
+TEST ENVIRONMENTS... ESSE PROCESSO 
+
+DE CLONE É SUPER SIMPLES E COST-EFFICIENT...
+
+
+
+
+
+
+
+
+
+
+
+
+aí podemoos rodar tests nessa cloned database,
+
+por exemplo...
+
+
+
+
+
+
+-> E ESSE CLONING TAMBÉM FUNCIONA 
+
+
+
+
+COM O TIME TRAVEL...
+
+
+
+
+
+
+
+
+--> DAREMOS 1 OLHADA NA COMBINACAO 
+
+
+DOS 2 (TIME TRAVEL + CLONING),
+
+
+MAIS TARDE...
+
+
+
+
+
+
+
+
+
+
+
+--> O COMANDO PARA ISSO, NO CASO, É ESTE:
+
+
+
+
+
+
+
+
+CREATE TABLE <table_name>
+    CLONE <source_table_name>...
+
+
+
+
+---------------------
+
+
+
+
+
+
+BASTA VC ESCREVER "CREATE TABLE",
+
+
+colocar o nome que vc quer que esse clone tenha,
+
+
+e entao 
+
+
+"CLONE" + NOME DA TABLE ORIGINAL....
+
+
+
+
+
+
+
+
+
+
+--> OK... COM ISSO, ESSA TABLE SERÁ CRIADA,
+
+
+
+COMO CLONE DESSA SOURCE TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ALÉM DISSO, O PROFESSOR MENCIONOU QUE PODEMOS 
+USAR
+
+
+ESSE COMANDO DE "CLONE"
+
+
+junto com a feature de 
+
+"TIME TRAVEL",
+
+
+
+tipo assim:
+
+
+
+
+
+CREATE TABLE <table_name> ...
+CLONE <source_table_name>
+BEFORE (TIMESTAMP => <timestamp>)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMO VOCE PODE IMAGINAR, ISSO É EXTREMAMENTE 
+
+ÚTIL,
+
+
+
+PQ __ QUER DIZER QUE CONSEGUIMOS 
+
+CRIAR 
+
+
+CLONES _ DE NOSSAS TABLES _ EM QUALQUER 
+
+
+MOMENTO 
+DE SUA TIMELINE...
+
+
+
+
+
+
+
+-----------------------------------------------
+
+
+
+
+
+
+
+CRIAMOS 1 COPIA DESSA TABLE, AT 1 CERTAIN 
+TIMESTAMP/query id...
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+OK... AGORA DEVEMOS RESUMIR TUDO ISSO, 
+
+
+
+E OBSERVAR COMO FUNCIONA, NA NOSSA CONTA 
+
+SNOWFLAKE...
+
+
+-----------------------------
+
+
+RESUMO:
+
+
+
+
+
+
+
+1) TODA A ESTRUTURA E META DATA DO 
+OBJETO INICIAL SAO __ HERDADAS (
+    clustering keys, comments, etc...
+)
+
+
+
+
+
+
+
+2) OS OBJECTS QUE PODEM SER CLONADOS SAO:
+    - DATABASES 
+    - SCHEMAS 
+    - TABLES 
+
+
+
+
+--> OU SEJA, TODOS OS DATA STORAGE OBJECTS,
+
+DESDE QUE ELES SEJAM 
+
+""PERMANENT"" OU ""TRANSIENT"" (
+    nao podemos clonar temporary tables/objects...
+)
+
+
+
+
+
+
+
+3) ALÉM DISSO, PODEMOS __ CLONAR COISAS ADICIONAIS,
+
+OBJECTS ADICIONAIS,
+
+COMO:
+
+
+1) STAGES 
+
+
+2) FILE FORMATS 
+
+
+3) TASKS....
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+-> OK... É IMPORTANTE SABER TUDO ISSO,
+
+PARA QUE SAIBAMOS COMO CLONAR 
+
+OUTROS OBJCTS...
+
+
+
+
+
+
+
+
+
+--> AGORA DEVEMO VER ISSO NAS NOSSAS WORKSHEETS,
+
+VER COMO É FÁCIL O CLONE DE OBJECTS...
+
+
+
+
+
+
+
+
+

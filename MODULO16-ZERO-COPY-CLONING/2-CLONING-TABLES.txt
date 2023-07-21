@@ -1,0 +1,239 @@
+
+
+
+
+
+
+O CLONING DE TABLES...
+
+
+
+
+
+
+
+
+
+
+
+-> para esse propósito,
+
+
+
+teremos este código:
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- CLONING 
+
+
+--check initial data/table
+SELECT * FROM OUR_FIRST_DB.PUBLIC.customers;
+
+
+
+-- create clone from table (With all its metadata and data)
+CREATE TABLE OUR_FIRST_DB.PUBLIC.CUSTOMERS_CLONE
+CLONE OUR_FIRST_DB.PUBLIC.CUSTOMERS;
+
+
+
+
+
+-- VALIDATE/check THE DATA 
+SELECT * FROM OUR_FIRST_DB.PUBLIC.CUSTOMERS_CLONE;
+
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS DIGAMOS QUE AGORA 
+
+
+QUEREMOS UPDATAR 
+
+ESSA TABLE QUE FOI CLONADA....
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, TEMOS ESTE CÓDIGO:
+
+
+
+
+-- CLONING 
+
+
+--check initial data/table
+SELECT * FROM OUR_FIRST_DB.PUBLIC.customers;
+
+
+
+-- create clone from table (With all its metadata and data)
+CREATE TABLE OUR_FIRST_DB.PUBLIC.CUSTOMERS_CLONE
+CLONE OUR_FIRST_DB.PUBLIC.CUSTOMERS;
+
+
+
+
+
+-- VALIDATE/check THE DATA - same data as copied/cloned table.
+SELECT * FROM OUR_FIRST_DB.PUBLIC.CUSTOMERS_CLONE;
+
+
+
+--update CLONED TABLE (to show how cloned table is completely independent from original table )
+UPDATE OUR_FIRST_DB.public.CUSTOMERS_CLONE
+SET LAST_NAME = NULL;
+
+
+
+SELECT * FROM OUR_FIRST_DB.public.customers_clone;
+SELECT * FROM OUR_FIRST_DB.public.customers;
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+OK.. MAS SE TENTARMOS CLONAR 1 
+
+TEMPORARY TABLE, 
+
+FALHAREMOS...
+
+
+
+
+
+
+
+
+--> PQ ISSO NAO É possível
+
+
+
+
+
+
+
+-- ERROR:
+-- 002119 (0A000):
+--  SQL compilation error: 
+--  Temp table cannot be cloned 
+--  to a permanent table; clone to 
+--  a transient table instead.
+
+
+
+
+
+
+
+
+--> ok.... copia de tables temporary 
+
+nao é possível...
+
+
+
+
+
+
+
+
+
+
+
+--> VOCE PODE CLONAR TRANSIENT 
+
+TABLES PARA PERMANENT TABLES,
+
+
+MAS NAO 
+
+PODE 
+
+CLONAR 
+
+
+TEMPORARY TABLES PARA PERMANENT TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> 
+
+
+ok... isso nos mostra o quao facilmente 
+
+
+conseguimos clonar 
+
+tables....
+
+
+
+
+
+
+-> AGORA VEREMOS A MESMA COISA,
+
+
+O PROCESSO DE CLONE,
+
+
+
+
+
+
+MAS AGORA COM SCHEMAS,
+
+DATABASES E OUTROS OBJECTS...
+
+
