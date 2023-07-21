@@ -1,0 +1,70 @@
+Pergunta 1:
+If we clone a table that uses 20GB of storage and make no changes on it we afterwards have to pay 40GB of storage for both tables. True or false?
+
+
+
+
+
+FALSE. ...
+
+
+
+
+For databases, schemas, and tables, a clone does 
+not contribute to the overall data storage for the
+ object until operations are performed on
+
+ the clone that modify existing data or add new data.
+
+
+ Pergunta 3:
+If we make changes made to the source object this will 
+be reflected/updated in the clone object as well. True or false?
+
+
+
+
+
+FALSE
+
+
+
+
+
+A clone is an independent object. Therefore if
+ we update the source object this will not be reflected in the clone.
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Pergunta 4:
+If we clone a table this clone will also contain
+ the data of the source table from the moment it has been cloned -
+  even though no additional storage is needed
+   for the initial clone. True or false?
+
+
+
+
+
+
+TRUE
+
+
+
+
+Yes even though it is only a meta data 
+operation and the underlaying data will not be 
+clone the table will contain the data.
+
+
+
