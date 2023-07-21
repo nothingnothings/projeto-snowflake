@@ -1,0 +1,532 @@
+
+
+
+
+
+
+VEREMOS O ÚLTIMO TABLE TYPE...
+
+
+
+
+
+
+
+
+
+ELE É MAIS ESPECIAL...
+ 
+
+ O TEMPORARY TABLE TYPE...
+
+
+
+
+
+
+
+
+
+
+ -> VEREMOS COMO PODEMOS CRIAR 
+
+ ESSAS TABLES DE TIPO TEMPORARY,
+
+ E OS 
+
+
+ SPECIAL BEHAVIOR DESSAS TABLES...
+
+
+
+
+-------------------------------------
+
+
+
+
+
+
+comecamos com este código:
+
+
+
+
+
+
+
+
+USE DATABASE TDB;
+
+-- Create example PERMANENT table 
+
+CREATE OR REPLACE TABLE TDB.public.customers (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+-- create data and insert into table
+INSERT INTO TDB.public.customers
+SELECT t1.* FROM OUR_FIRST_DB.public.customers t1
+CROSS JOIN (SELECT * FROM OUR_FIRST_DB.public.customers) t2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSES CÓDIGOS CRIARAM ESSA TABLE,
+
+E INSERIRAM 
+DATA 
+
+NO SEU INTERIOR.. INSERIMOS ROWS...
+
+
+
+
+
+
+
+
+--> COM ESSA DATA,
+
+
+DEMONSTRAREMOS 
+O COMPORTAMENTO DAS TEMPORARY TABLES...
+
+
+
+
+
+
+
+
+
+-_> DEPOIS DISSO, RODAMOS 1 SELECT ASSIM:
+
+
+
+SELECT * FROM TDB.public.customers;
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...  PERCEBEMOS QUE EXISTE 
+
+
+DATA NESSA TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS SE  CRIARMOS 1 TEMPORARY TABLE COM ESSE 
+
+MESMO NOME,
+
+
+
+VEREMOS QUE 
+
+
+ESSA TABLE TEMPORÁRIA VAI BASICAMENTE 
+""ESCONDER""
+
+
+A TABLE DE "CUSTOMERS"....
+
+
+
+
+
+
+
+--> PARA ISSO,
+
+ESCREVEMOS:
+
+
+
+
+
+
+
+-- Create temporary table (with same name as main/permanent table --> will HIDE that permanent table, during current session)
+CREATE OR REPLACE TEMPORARY TABLE TDB.public.customers (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+PARA DEMONSTRAR ISSO,
+
+
+SE RODARMOS 1 SELECT EM CIMA DESSA TABLE 
+
+TEMPORÁRIA DE "CUSTOMERS",
+
+FICAREMOS COM 0 CUSTOMERS....
+
+
+
+
+
+
+
+EX: 
+
+
+
+
+SELECT * FROM TDB.public.customers; -- 0 rows
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE, DURANTE NOSSA SESSION,
+
+
+
+
+A "ACTIVE TABLE", POR ASSIM DIZER,
+
+SERÁ 
+
+ESSA TABLE TEMPORÁRIA...
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+se abrirmos uma outra session,
+
+
+veremos que será possível queriar a data 
+
+da table originária 
+
+(em que tinhamos data)...
+
+
+
+
+
+
+
+
+
+-> eu entao insiro 86
+
+rows
+
+NAQUELA TABLE TEMPORARIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM TDB.public.customers; -- 0  rows
+
+
+
+
+-- INSERT SOME DATA INTO TEMPORARY TABLE.
+INSERT INTO TDB.public.customers
+SELECT t1.* FROM OUR_FIRST_DB.public.customers t1;
+
+
+
+SELECT * FROM TDB.public.customers; -- 86  rows
+
+
+
+-- SE NÓS TROCARMOS DE SESSION/WORKSHEET, VEREMOS QUE ESSA DATA NAO EXISTIRÁ NA TABLE (pq aí estaremos queriando a table original, e nao essa, temporária, que modificamos agora)
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+CERTO....
+
+
+
+
+
+
+QUER DIZER QUE ESSE É UM BEHAVIOR IMPORTANTE (behavior de 
+"HIDE"),
+
+DESSA TEMPORARY TABLE....
+
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+AGORA TEREMOS OUTRO EXEMPLO....
+
+
+
+
+CRIAMOS 1 NOVA TABLE....
+
+
+
+
+
+
+COM ESTE COMANDO:
+
+
+
+
+-- CREATE SECOND TEMPORARY TABLE (With a new name)
+
+
+CREATE OR REPLACE TEMPORARY TABLE TDB.public.temp_table (
+    ID INT,
+    FIRST_NAME STRING,
+    LAST_NAME STRING,
+    EMAIL STRING,
+    GENDER STRING,
+    JOB STRING,
+    PHONE STRING
+);
+
+
+-- insert DATA INTO THE NEW TABLE.
+
+INSERT INTO TDB.public.temp_table
+SELECT * FROM OUR_FIRST_DB.public.customers;
+
+
+
+SELECT * FROM OUR_FIRST_DB.public.temp_table;
+
+
+
+
+
+SHOW TABLES;
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS 1 SÍMBOLO ESPECIAL PARA TEMPORARY TABLES,
+
+NA GUI... é um relógio..
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> na verdade, tiraram esse símbolo... nao sei porque...
+
+
+
+
+
+
+
+--> E SE RECARREGAMOS A PÁGINA, NAO PERDEMOS ESSA TEMPORARY TABLE..
+
+
+
+
+
+
+
+
+--> MAS SE FECHARMOS O WORKSHEET, PROVAVELMENTE 
+
+ESSA TEMPORARY TABLE SERÁ PERDIDA...
+
+
+
+
+
+--> ué, mas nao foi perdida...
+
+
+
+
+
+
+
+
+
+
+
+-_> AS TABLES TEMPORÁRIAS EXISTEM APENAS 
+
+PARA A CURRENT SESSION, E NAO PODEM 
+
+SER VISTAS POR MAIS NINGUÉM...
+
+
+
+
+
+
+
+--> ALÉM DESSA PROPRIEDADE 
+
+
+DE "EXISTIR DURANTE A SESSION",
+
+
+
+
+A TEMPORARY TABLE É BEM PARECIDA 
+
+
+
+COM A TRANSIENT TABLE (
+
+
+
+    NENHUM FAILSAFE,
+
+    MAS TIME TRAVEL MÁXIMO DE 
+
+    1 DIA... OU 0 DIAS, SE VC QUISER...
+)
+
+
+
+
+

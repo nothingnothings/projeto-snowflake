@@ -1,0 +1,30 @@
+ The session in a worksheet
+  is typically closed in the
+   following scenarios:
+
+Idle Timeout: If a user's
+ session remains idle (no activity) 
+ for a specific period, Snowflake's 
+ GUI automatically closes the session to
+  conserve resources. The default idle 
+  timeout for Snowflake is 60 minutes, but it
+   can be customized by the account administrator.
+
+
+Browser Tab Closure: If the user closes the
+ browser tab or navigates away from the 
+ worksheet, the session will be terminated.
+
+Explicit Termination: Users can
+ manually terminate their sessions 
+  logging out or using the "Terminate" 
+  option within the Snowflake web interface.
+
+It's essential to be aware of these
+ automatic session termination mechanisms 
+ to avoid unexpected data loss or disruptions. 
+ Please note that the GUI's features and behavior 
+ might have evolved since my last update, so I
+  recommend checking Snowflake's official 
+  documentation or release notes for the most 
+  up-to-date information.
