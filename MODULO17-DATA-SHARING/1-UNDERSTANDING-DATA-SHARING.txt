@@ -1,0 +1,632 @@
+
+
+
+
+
+AGORA DEVEMOS ESTUDAR 
+
+
+A FEATURE DE 
+
+"DATA SHARING"
+
+
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+--> PQ O DATA SHARING NO 
+
+SNOWFLAKE PODE SER BEM UNIQUE...
+
+
+
+
+
+
+
+
+
+
+-> USUALMENTE, SABEMOS QUE DATA SHARING PODE 
+SER BEM COMPLICATED...
+
+
+
+
+
+
+
+
+--> TIPICAMENTE,
+
+
+NA MAIOR PARTE DOS CASOS EM EMPRESAS,
+
+
+NÓS FISICAMENTE FAZEMOS 1 CÓPIA DE TODA A DATA,
+
+
+
+
+E AÍ SE OCORREM ALGUMAS CHANGES,
+
+
+PRECISAMOS 
+
+NOVAMENTE __ eXTRAIR __ A DATA E UPDATAR 
+
+A DATA...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS GRAÇAS À ARQUITETURA ESPECIAL DO SNOWFLAKE,
+
+
+
+O PROCESSO DE DATA SHARING É SUPER SIMPLES...
+
+
+
+
+
+
+
+
+
+--> EM RAZAO 
+
+DOS COMPUTE RESOURCES E STORAGE SEREM DECOUPLED,
+
+
+
+
+SIMILARMENTE AO CLONING,
+
+
+
+
+
+
+
+
+PODEMOS __ """SHARE""" A NOSSA DATA 
+
+
+___ SEM ACTUALLY __ REALIZAR 
+
+O COPY DE NOSSA DATA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> OU SEJA:
+
+
+
+--> "DATA SHARING WITHOUT ACTUAL COPYING OF THE
+
+DATA, AND UP TO DATE"...
+
+
+
+
+
+
+
+
+
+
+-> ISSO QUER DIZER QUE O "DATA SHARING" 
+
+
+
+VAI SER APENAS 1 ENABLE 
+
+
+DO _ _CONSUMO__ DA DATA,
+
+
+
+
+UMA "CONSUMPTION" DA DATA __ QUE __ SEMPRE VAI 
+
+
+ESTAR 
+
+"UP-TO-DATE",
+
+
+
+E ____iMEDIATAMENTE UP-TO-DATE... (bem interessante)...
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+->_ OK... ISSO É BEM IMPORTANTE....
+
+
+
+
+
+
+
+A SEGUNDA PARTE IMPORTANTE 
+
+
+
+
+É QUE __ SE COMPARTLHARMOS ESSA DATA,
+
+
+
+
+
+
+OS ÚNICOS COMPUTE RESOURCES QUE 
+
+SERAO USADOS 
+
+
+
+SERAO AQUELES 
+
+DA PESSOA QUE VAI ___ CONSUMIR __ A DATA...
+
+
+
+
+
+
+
+
+
+
+
+RESUMO, ATE AGORA:
+
+
+
+
+
+
+1) DATA SHARING GERALMENTE É UM PROCESSO COMPLICADO 
+
+
+
+2) O DATA SHARING DO SNOWFLAKE OCORRE SEM O ACTUAL 
+COPY DE  DATA... NÓS BASICAMENTE COMPARTILHAMOS
+
+UMA "CONSUMPTION" DE NOSSA DATA...
+
+
+
+3) A PESSOA QUE COMPARTILHA A DATA, A SHARED DATA,
+
+NAO GASTA COMPUTE RESOURCES QUANDO SUA DATA É ACESSADA/CONSUMIDA...
+
+
+
+
+4) OS ÚNICOS COMPUTE RESOURCES QUE SAO GASTOS,
+QUANDO 1 SHARED DATA É CONSUMIDA, SAO 
+
+AQUELES COMPUTE RESOURCES POR PARTE 
+
+DA PESSOA QUE ESTÁ CONSUMINDO...
+
+
+
+
+
+
+
+
+
+
+
+--> E ATÉ MESMO É POSSÍVEL _ COMPARTILHAR_ 
+
+
+DATA 
+
+
+__ COM __ ""NON-SNOWFLAKE USERS"",
+
+
+
+tudo por meio 
+
+
+de uma 
+
+"""READER ACCOUNT""",
+
+
+que criamos 
+
+DENTRO DE NOSSA SNOWFLAKE ACCOUNT...
+
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS COMO TUDO ISSO FUNCIONA...
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PERCEBEMOS QUE O DATA SHARING, NO SNOWFLAKE,
+
+É UM PROCESSO MT SIMPLES E MT, MT EFICIENTE....
+
+
+
+
+
+-----------------------------------------------
+
+
+
+
+        DEVEMOS OLHAR ISSO 
+
+        MAIS APROFUNDADAMENTE, COM ESTE EXEMPLO:
+
+
+
+
+
+
+
+
+                DATA SHARING:
+
+
+
+
+    
+            [DB1]   [DB2]    [DB3]       ACCOUNT1 (TEM ESSAS 3 DBS)....
+                      I
+                      I
+                      I
+                      I
+                      I
+                      I
+
+                                            ACCOUNT2 (nao tem nenhuma dessas dbs)
+
+
+
+
+
+
+
+NESSE EXEMPLO, QUEREMOS FAZER 
+
+SHARE 
+
+DE 
+
+DATA 
+
+A ESSA SEGUNDA CONTA SNOWFLAKE (pq a conta 1 tem as 3 
+databases, que queremos compartilhar com a segunda)...
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+USUALMENTE,
+
+
+A PRIMEIRA CONTA,
+
+QUE VAI ESTAR PRODUCING/OWNING 
+
+TODA ESSA DATA,
+
+
+
+
+___ ELA É CHAMADA 
+
+DE ""cONTA PRODUCER""...
+
+
+
+
+
+
+JÁ A CONTA QUE VAI TER COMPARTILHADA CONSIGO 
+
+
+ESSAS DATABASES, ELA É CHAMADA DE "CONTA CONSUMER""....
+
+
+
+
+
+
+
+RECAPITULANDO:
+
+
+
+
+
+
+
+
+           DATA SHARING:
+
+
+
+
+                                          PRODUCER
+            [DB1]   [DB2]    [DB3]       ACCOUNT1 (TEM ESSAS 3 DBS)....
+                      I
+                      I
+                      I
+                      I
+                      I
+                      I
+                                   CONSUMER
+                                 ACCOUNT2 (nao tem nenhuma dessas dbs)
+                 [ READ-ONLY DB]
+
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+MAS É CLARO QUE ESSE DATA-SHARING COMPARTILHA 
+
+
+AS DATABASES/OBJECTS 
+
+
+
+DE __ FORMA__ READ-ONLY --> QUER DIZER QUE 
+
+
+
+O PRODUCER 
+
+TEM CONTROLE COMPLETO 
+
+SOBRE O SHARE DE DATA --> O CONSUMER VAI TER 
+
+APENAS 
+
+
+READ-ACCESS A ESSA DATA....
+
+
+
+
+
+
+
+
+
+
+--> E, SE QUISERMOS __ PARAR__ ESSE DATA SHARING,
+
+
+
+NÓS NOVAMENTE TEMOS CONTROLE COMPLETO SOBRE ESSE PROCESSO..
+
+
+
+
+-- PODEMOS SEMPRE IMEDIATMAENTE PARAR ESSE DATA SHARING...
+
+
+
+
+
+
+
+
+
+
+
+
+------> ÚLTIMO DETALHE:
+
+
+NOVAMENTE,
+
+
+SE ESSA CONTA (CONSUMER) ESTÁ ACESSANDO/TENDO COMPARTILHADA
+
+CONSIGO AS DATABASES DE 1 PRODUCER ACCOUNT,
+
+
+
+É ESSA CONSUMER ACCOUNT __ QUE _ VAI GASTAR 
+
+COMPUTE 
+
+RESOURCES 
+
+PARA ACESSAR ESSES DADOS (
+    que serao atualizados em tempo real....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE ISSO AÍ, DE 
+
+"pRODUCER" E "CONSUMER" ACCOUNTS,
+
+
+
+AQUI ESTAMOS ANALISANDO NA PERSPECTIVA 
+DE 
+
+SNOWFLAKE ACCOUNT VS SNOWFLAKE ACCOUNT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE ESTAMOS FALANDO DO SHARE 
+
+
+
+
+COM ALGUÉM QUE ______NAO É UM SNOWFLAKE USER/ACCOUNT,
+
+
+
+
+
+
+
+AS COISAS SAO DIFERENTES...
+
+
+
+
+
+
+
+
+
+--> SE QUEREMOS COMPARTILHAR ESSA DATA 
+
+COM ALGUÉM QUE NAO É UM SNOWFLAKE USER,
+
+
+
+
+
+DEVEMOS CRIAR 
+
+1 
+
+"""READER ACCOUNT"""
+
+
+LÁ NA NOSSA SNOWFLAKE INSTANCE (
+    acho que 
+    na instance 
+
+    do PRODUCER, PRODUCER ACCOUNT...
+)
+
+
+
+
+
+
+
+
+
+
+
+COMO PODEMOS PERCEBER, É BEM SIMPLES 
+
+
+FAZER O SHARE DESSA DATA...
+
+
+
+
+
+
+
+VEREMOS COMO FAZER ISSO, NO SNOWFLAKE, NAS NOSSAS WORKSHEETS...
+
+
