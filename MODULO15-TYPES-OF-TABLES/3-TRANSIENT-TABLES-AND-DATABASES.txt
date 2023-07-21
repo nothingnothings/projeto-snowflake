@@ -1,0 +1,286 @@
+
+
+
+
+
+
+
+
+AGORA ESTUDAREMOS AS TRANSIENT DATABASES, SCHEMAS E TABLES...
+
+
+
+
+
+
+
+
+
+
+-> O PROFESSOR ESCREVE ASSIM:
+
+
+
+
+
+
+
+//Create permanent database 
+
+CREATE OR REPLACE DATABASE TDB;
+
+
+
+
+
+//Create transient table 
+CREATE OR REPLACE TRANSIENT TABLE TDB.public.customers_transient (
+        ID INT,
+        FIRST_NAME STRING,
+        LAST_NAME STRING,
+        EMAIL STRING,
+        GENDER STRING,
+        JOB STRING,
+        PHONE STRING
+);
+
+
+
+
+INSERT INTO TDB.public.customers_transient
+SELECT t1.* FROM OUR_FIRST_DB.public.customers t1
+CROSS JOIN(SELECT * FROM OUR_FIRST_DB.public.customers) t2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE quisermos criar 1 
+
+transient object,
+
+basta colocar a keyword de ""transient"" antes do object type..
+
+
+
+
+
+
+
+--> RAPIDAMENTE CRIAMOS 1 TRANSIENT TABLE...
+
+
+
+
+
+
+--> mas nao tenho data nessa table de customers...
+
+
+
+
+preciso pegar essa data de algum lugar...
+
+
+
+
+
+
+
+
+
+
+
+
+--> depois disso, executamos 
+
+
+""SHOW TABLES"", 
+
+para visualizar as características dessa table..
+
+
+
+
+
+
+--> O RETENTION TIME DESSA TABLE SERÁ DE 1...
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR ENTAO EXECUTA 
+
+
+
+
+SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS;
+
+
+
+
+
+
+ok... mas essa table NAO ESTÁ MOSTRANDO O NOME DE NOSSA NOVA TABLE, POR ALGUMA RAZAO.. (
+    customers_transient..
+)
+
+
+--> O PROFESSOR DIZ QUE DEMORA UM POUCO PARA ESSA TABLE SER UPDATADA (
+    é por isso que nao enxerguei essa table... (a de transient)
+)
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS O QUE INTERESSA É QUE, EM TRANSIENT TABLES,
+
+OS FAILSAFE BYTES 
+
+
+
+FICAM COMO 0... --> NAO EXISTE FAILSAFE STORAGE AREA PARA ESSAS TRANSIENT TABLES..
+
+
+--> É ISSO QUE PRECISAMOS SABER...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ADICIONALMENTE,
+
+SE RODARMOS ESTE COMANDO:
+
+
+//Set retention time to 0 
+ALTER TABLE TDB.public.customers_transient
+SET DATA_RETENTION_TIME_IN_DAYS = 0;
+
+
+
+
+
+
+DESABILITAMOS O RECURSO DE ""TIME TRAVEL"" 
+
+DESSA TRANSIENT TABLE (
+    fazendo com que a data 
+
+    ALTERADA/APAGADA DESSA TABLE, E A TABLE EM SI,
+
+    SEJAM UNRECOVERABLE EM CASO 
+
+    DE ACIDENTES... --> pq ficamos sem nenhum dia para ""voltar atrás"",
+    e também ficamos sem o failsafe....
+)
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+SEM FAILSAFE, SEM TIMETRAVEL....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OUTRO DETALHE.... --> VOCE NAO TEM A POSSIBILIDADE DE 
+
+
+
+DEFINIR UM VALUE ENTRE 0 e 1, DENTRO DE 
+
+
+
+DATA_RETENTION_TIME_IN_DAYS.... ------> PQ APENAS TEMOS A POSSIBILIDADE 
+
+DE DEFINIR ESSES  VALUES 
+
+
+COMO 1 OU 0... (
+
+    e essa restricao existe em todas as transient tables...
+)
+
+
+
+
+
+-----------------------------------------
+
+
+
+
+
