@@ -484,3 +484,349 @@ DE
 
 
 mudado para mais do que isso...
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+hierarquia:
+
+
+
+
+
+
+
+
+
+permanent > transient > temporary 
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+
+
+-> também perceba que o TEMPO DE RETENCAO PARA 
+
+
+AS TABLES 
+
+
+TRANSIENT E TEMPORARY É APENAS 
+
+
+
+CONFIGURÁVEL ATÉ 1 DIA, NO MÁXIMo (
+    também podemos settar como 0, se quisermos...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ok.. esse é um overview desses table types...
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+AGORA DEVEMOS ESTUDAR O PROPÓSITO DE CADA 1 DESSES TABLE TYPES...
+
+
+
+
+
+
+
+
+1) TRANSIENT TABLE -->  É ÚTIL SE __ TIVERMOS _ DATA ESPECIALMENTE 
+
+LARGA,
+
+MAS 
+
+
+DATA COM QUE NAO QUEREMOS GASTAR MT DINHEIRO.... QUEREMOS MANTER OS 
+
+DATA STORAGE COSTS BAIXOS... NESSE TIPO DE TABLE,
+
+
+NAO TEMOS 
+
+
+TANTA DATA PROTECTION (
+    por isso ___NAO TEMOS __ O FAILSAFE,
+
+    E TEMOS TIME-TRAVEL DE ATÉ NO MAXIMO 1 DIA...
+)
+
+
+
+
+
+
+
+
+RESUMO: TABLE LARGA, DATA QUE NAO PRECISA SER TAO PROTEGIDA, REDUZIR CUSTOS..
+
+
+
+
+
+
+
+
+
+
+
+2) TEMPORARY TABLE --> É USADO PARA ""NON-PERMANENT DATA"" --> É USADO PARA CASOS 
+                                                                EM QUE ESTAMOS TRABALHANDO/DEVELOPING
+                                                                EM UMA TABLE/DATABASE, CASO EM QUE 
+                                                                VAMOS QUERER TER ESSA DATA DISPONÍVEL
+                                                                APENAS DURANTE 1 SESSION... QUEREMOS 
+                                                                QUE ESSA DATA SEJA DELETADA, DEPOIS 
+                                                                DE FECHARMOS A SESSION..
+
+
+
+
+
+
+3) PERMANENT --> É O TIPO COMMON... DEVE SER USADA SE ESTAMOS TRABALHANDO COM PRODUCTION 
+                                                                        DATA, ETC...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSES SAO OS 3 TABLE TYPES...
+
+
+
+
+
+
+
+
+
+
+--> ELES EXISTEM JUSTAMENTE PARA FAZERMOS MELHOR MANAGE DO STORAGE COST....
+
+
+
+
+
+
+
+
+--> ISSO PQ __ AS ""TRANSIENT"" E ""TEMPORARY"" TABLES USAM MENOS STORAGE,
+    JUSTAMENTE PQ __ ELES NAO TEM FAILSAFE, E PQ POSSUEM MENOS TIME TRAVEL,
+
+    E TBM PQ SAO ""DROPPED QUANDO A SESSION ACABA"" (quando falamos de temporary tables)..
+
+
+
+
+
+
+
+--------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA, PARA ACABAR ESTE TÓPICO:
+
+
+
+
+
+
+
+
+
+
+
+TYPES DIFERENTES EXISTEM NAO SÓ PARA TABLES,
+
+
+
+
+
+
+MAS TAMBÉM PARA OUTROS OBJECTS (
+
+    DATABASES, SCHEMAS, ETC...
+)
+
+
+
+
+
+
+
+
+
+
+--> O MAIS COMUM É DEFINIRMOS ESSES TYPES ESPECIAIS EM TABLES 
+(
+    transient, temporary
+),
+
+
+MAS É CLARO QUE TAMBÉM PODEMOS USAR ESSES TYPES COM DATABASES,
+
+
+COM SCHEMA, ETC..
+
+
+
+
+
+
+
+
+--> O DETALHE IMPORTANTE É QUE 
+
+
+
+""""SE CRIAMOS 1 OBJECT COMO DATABASE/SCHEMA, TODOS 
+
+OS OBJECTS NESTEADOS (SCHEMAS/TABLES) TAMBÉM SERÃO DAQUELE 
+TYPE ORIGINÁRIO"""""
+
+
+
+
+EX:
+
+CRIEI 1 TEMPORARY SCHEMA --> TODAS AS TABLES CRIADAS DENTRO DESSE SCHEMA TAMBÉM SERAO 
+                            TEMPORARY...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OUTRO DETALHE IMPORTANTE --> SE CRIAMOS 1 ""TEMPORARY TABLE""  COM MESMO 
+                                    NOME DE OUTRA TABLE PERMANENT QUE JÁ EXISTE,
+                                    NAO EXISTIRÁ CONFLITO ENTRE AS 2 TABLES...
+
+
+                                
+
+
+--> QUER DIZER QUE __ SE CRIAMOS __ 1 TEMPORARY TABLE _ EM CIMA __ 
+
+DE 1 PERMANENT TABLE, QUE JÁ EXISTE, 
+
+O QUE __ VAI ACONTECER É QUE 
+
+
+
+ESSA 
+
+
+""""PERMANENT TABLE"""" VAI SER ___ EFETIVAMENTE """"""HIDDEN""""",
+
+
+DURANTE NOSSA SESSION (
+
+    o que pode ser útil...
+) --------> 
+
+
+
+
+
+
+
+QUER DIZER QUE SE CRIAMOS 1 TEMPORARY TABLE, COM O NOME EMPLOYEE, 
+
+
+APENAS 
+NOSSA TEMPORARY TABLE FICARÁ VISÍVEL, NA NOSSA ACCOUNT, DURANTE AQUELA SESSION...
+
+
+
+
+
+QUER DIZER QUE TODAS AS QUERIES E TRANSFORMATIONS QUE RODARMOS NESSA TABLE
+
+AFETARAO APENAS NOSSA _ TEMPORARY TABLE...
+
+
+
+
+
+
+
+
+
+
+ok... chega da teoria, hora de ter um hands-on....
