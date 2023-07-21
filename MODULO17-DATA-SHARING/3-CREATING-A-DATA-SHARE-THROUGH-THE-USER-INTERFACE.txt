@@ -1,0 +1,223 @@
+NA ULTIMA AULA,
+
+
+
+vimos como 
+
+
+criar 1 data share, 
+
+
+ATRAVÉS DE 
+
+
+COMANDOS SQL..
+
+
+
+
+
+
+
+
+
+
+
+-> MAS TAMBÉM É POSSÍVEL DE CRIAR 
+
+ESSAS SHARES 
+
+COM A USER INTERFACE 
+
+
+DO SNOWFLAKE..
+
+
+
+
+
+
+-> BASTA CLICAR NA OPTION DE SHARES DO SNOWFLAKE...
+
+
+
+
+CLIQUE EM 
+
+'DATA", 
+
+
+E DEPOIS 
+
+
+
+EM 
+
+"pRIVATE SHARING"..
+
+
+
+
+
+
+--> temos as options:
+
+
+
+
+
+SHARED WITH YOU (vc, consumer)
+
+
+SHARED BY YOUR ACCOUNT (vc, como producer)....
+
+
+
+
+
+READER ACCOUNTS --> a última option,
+
+que ainda NAO ESTUDAMOS...
+
+
+
+
+
+
+
+
+
+-> PODEMOS CONFIGURAR AS NOSSAS OUTBOUND SHARES 
+
+(nós, como producers)..
+
+
+
+
+-> E PODEMOS CRIAR NOVAS SHARES...
+
+
+
+
+--> CLICAMOS EM "dIRECT SHARES",
+
+
+E AÍ 
+
+
+SELECIONAMOS A TABLE QUE QUEREMOS FAZER SHARE,
+
+E A QUE USER (com o id, na url)
+
+
+QUEREMOS 
+
+COMPARTILHAR...
+
+
+
+
+
+
+--> podemos adicionar mais consumers 
+
+
+em 1 share..
+
+
+--> TAMBÉM PODEMOS 
+
+DROPPAR A SHARE NA GUI,
+
+COMO PODEMOS FAZER COM SQL COMMANDS...
+
+
+
+
+
+
+
+
+o add de consumers também pode
+
+
+ser feito através 
+
+da gui...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE DESEJAMOS QUE NOSSA 
+
+
+
+TABLE SEJA SHARED COM ALGUÉM QUE 
+
+
+
+__NAO__ É UM
+
+
+__ USER __ SNOWFLAKE,
+
+
+
+
+DEVEMOS ESCOLHER 
+
+
+"READER ACCOUNT TYPE"...
+
+
+
+
+
+ESTUDAREMOS AS READER ACCOUNTS NAS PRÓXIMAS 
+
+AULAS....
+
+
+
+
+
+
+
+
+AGORA VIMOS COMO CRIAR E CONSUMIR 1 SHARE,
+
+
+TANTO COM 
+
+SQL COMO COM A GUI....
+
+
+
+
+
+AGORA QUEREMOS SABER COMO PODEMOS 
+
+
+COMPARTILHAR 1 SHARE PARA 1 
+
+"NON-SNOWFLAKE USER"....
+
+
+
+
+
+
+(READER ACCOUNTS)--> VEREMOS ISSO NA PRÓXIMA AULA...
+
+
+
