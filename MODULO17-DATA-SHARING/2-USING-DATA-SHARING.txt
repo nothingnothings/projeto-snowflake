@@ -1,0 +1,890 @@
+
+
+
+
+
+OK... AGORA VEREMOS COMO PODEMOS CRIAR 
+
+
+1 DATA SHARE, LÁ NAS NOSSAS WORKSHEETS... (de nossa PRODUCER ACCOUNT)
+
+
+
+
+
+
+
+
+
+
+TAMBÉM VEREMOS COMO ESSA DATA SHARE PODE/PODERÁ 
+
+
+SER CONSUMIDA 
+
+
+POR CONSUMER ACCOUNTS, NESTA AULA...
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+TEMOS 2 MANEIRAS DE CRIAR/COMPARTILHAR 1 DATA SHARE,
+
+
+NO 
+
+SNOWFLAKE...
+
+
+
+
+
+1o method --> USANDO SQL COMMANDS 
+
+
+
+2o method --> USANDO A GUI...
+
+
+
+
+
+
+
+
+
+-> VEREMOS AMBOS METHODS... E COMECAREMOS COM 
+
+OS SQL COMMANDS... PQ ISSO VAI NOS AJUDAR 
+
+A ENTENDER O PROCESSO....
+
+
+
+
+
+
+
+
+
+
+COMECAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+CREATE OR REPLACE DATABASE DATA_S;
+
+
+
+
+CREATE OR REPLACE STAGE aws_stage
+    url='s3://bucketsnowflakes3';
+
+
+
+
+-- LIST FILES IN STAGE 
+LIST @aws_stage;
+
+
+-- create table
+CREATE OR REPLACE TABLE DATA_S.PUBLIC.ORDERS (
+    ORDER_ID VARCHAR(30),
+    AMOUNT NUMBER(38,0),
+    PROFIT NUMBER(38,0),
+    QUANTITY NUMBER(38,0),
+    CATEGORY VARCHAR(30),
+    SUBCATEGORY VARCHAR(30)
+);
+
+
+
+
+
+-- Load data, using copy command.
+
+COPY INTO DATA_S.PUBLIC.ORDERS 
+FROM @MANAGE_DB.stages.aws_stage
+FILE_FORMAT=(
+    type=csv,
+    field_delimiter=',',
+    skip_header=1
+)
+pattern='.*OrderDetails.*';
+
+
+
+
+SELECT * FROM ORDERS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo.... isso criou essa table,
+
+e copiou essas rows para dentro dela...
+
+
+
+
+
+
+
+
+
+É ESSA TABLE QUE VAMOS QUERER COMPARTILHAR 
+
+
+COM OUTRAS CONTAS....
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+A PRIMEIRA STEP, SE QUISERMOS 
+
+
+CRIAR 1 SHARE,
+
+É CRIAR 1 SHARE OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, 
+
+
+TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+-- Create a share object (data sharing)
+-- CREATE OR REPLACE SHARE <share_name>;
+CREATE OR REPLACE SHARE ORDERS_SHARE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE RODARMOS ISSO, CRIAREMOS ESSA SHARE...
+
+
+
+
+
+
+
+
+
+AGORA BASTA SETTAR ESSA SHARE...
+
+
+
+
+
+--> PARA SETTAR ESSA SHARE,
+
+PRECISAMOS DEFINIR OS __ "GRANTS" DELA....
+
+
+
+
+
+
+
+-> AS PRIMEIRAS ETAPAS SERAO  
+
+
+DAR __ GRANT __ DE "USAGE"
+
+NA DATABASE E TAMBÉM NO SCHEMA EM SI...
+
+
+
+
+
+
+
+
+
+escrevemos assim:
+
+
+
+
+
+
+
+-- GRANTS NEEDED FOR DATA SHARING --
+
+
+-- Grant usage on DATABASE
+GRANT USAGE ON DATABASE DATA_S TO SHARE ORDERS_SHARE;
+
+
+
+
+-- Grant usage on SCHEMA 
+GRANT USAGE ON SCHEMA DATA_S.PUBLIC TO SHARE ORDERS_SHARE;
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+precisamos dessa etapa se 
+
+quisermos conceder 
+
+acesso a uma table nessa database e schema...
+
+
+
+
+
+
+
+
+depois disso,
+
+
+DEVEMOS CONFERIR O PRIVILEGE 
+
+DE 
+
+
+RODAR "SELECT"
+ 
+
+EM CERTAS TABLES,
+
+NESSA SHARE....
+
+
+
+
+
+--> FAZEMOS ISSO COM ESTE COMANDO:
+
+
+
+
+
+-- Grants SELECT usage on table
+GRANT SELECT ON TABLE DATA_S.PUBLIC.ORDERS TO SHARE ORDERS_SHARE;
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE O GRANT DE PERMISSIONS,
+
+
+EM SHARES,
+
+É EXTREMAMENTE GRANULAR E RESTRITO.... POR RAZOES 
+
+DE SEGURANCA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS VERIFICAR SE OS GRANTS 
+
+FORAM REALMENTE DADOS A ESSE SHARE,
+
+
+
+COM O CÓDIGO 
+
+
+
+
+
+
+
+
+
+SHOW GRANTS TO SHARE ORDERS_SHARE;
+
+
+
+
+
+
+
+
+
+
+-- Check if Grants were given to share object:
+SHOW GRANTS TO SHARE ORDERS_SHARE; -- usage, usage and select (on a single table).
+
+
+
+
+
+
+
+
+
+OK... QUER DIZER QUE ESSE 
+
+
+SHARE ESTÁ COM 3 PRIVILEGES,
+
+
+DOIS DE "USAGE",
+
+
+E UM DE ___SELECT_...
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+
+
+
+-> OK.... MAS AGORA O PRÓXIMO PASSO 
+
+
+É O __ SETUP_ 
+
+DE UMA 
+
+
+
+"""CONSUMER ACCOUNT""",
+
+
+A  ACCOUNT QUE VAI REALMENTE 
+
+FAZER O READ
+DESSA 
+
+TABLE 
+
+COMPARTILHADA...
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+-> QUER DIZER QUE 
+
+PRECISAMOS FAZER "ADD"
+
+
+
+DA __ CONSUMER __ ACCOUNT
+
+
+A ESSE OBJECT DE "SHARE",
+
+
+
+TUDO PARA QUE _ O CONSUMER 
+CONSIGA 
+
+
+SER CAPAZ DE _USAR __ESSE SHARE...
+
+
+
+
+
+
+
+
+
+
+PARA ISSO, RODAMOS:
+
+
+
+
+
+
+
+---- Add Consumer Account to DATA SHARE OBJECT ----
+
+ALTER SHARE ORDERS_SHARE ADD ACCOUNT=kaaa21312;
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS O PROBLEMA É QUE 
+
+PRECISAMOS 
+
+DE 1 
+
+
+ID VÁLIDO, AQUI...
+
+
+
+
+
+
+
+
+-> precisamos do "UNIQUE ACCOUNT NUMBER"...
+
+
+
+
+
+
+
+
+
+
+
+--> ESSE ACCOUNT NUMBER É ENCONTRADO 
+
+NA __ URL__... 
+
+
+--> NO NOSSO CASO, É 
+
+
+znb24252
+
+
+
+
+
+
+
+
+
+
+COLOCAMOS O ACCOUNT NUMBER 
+
+DA CONTA QUE 
+
+
+VAI ACTUALLY 
+
+CONSUMIR 
+
+
+
+NOSSO DATA SHARE/TABLES...
+
+
+
+
+
+
+---------------------
+
+
+PARA ISSO, PRECISAMOS DE OUTRA 
+
+CONTA, 
+
+PARA 
+
+
+VER OS RESULTADOS DESSE DATA SHARE....
+
+
+
+
+
+
+
+
+
+
+NA OUTRA CONTA (PRECISAMOS 
+
+DE OUTRA CONTA, COM WORKSHEETS E ETC)
+
+
+
+
+
+
+
+-> SEPAREI OS CÓDIGOS SQL EM 2 ARQUIVOS,
+
+
+
+1 PRODUCER SIDE E OUTRO CONSUMER SIDE...
+
+
+
+
+
+
+
+
+-- OS CÓDIGOS QUE DEVEM/PODEM SER EXECUTADOS PELO 
+-- CONSUMER ESTAO ESCRITOS EM "3-DATA-SHARING-CONSUMER-ACCOUNT-SIDE"...
+
+
+
+
+
+
+
+
+
+
+OS CÓDIGOS SAO ESTES:
+
+
+
+
+
+-- Show all shares (consumers (you) and PRODUCERS) 
+SHOW SHARES;
+
+-- See details of a share 
+DESC SHARE <producer_account>.ORDERS_SHARE;
+
+-- Create a database in CONSUMER ACCOUNT, USING THE SHARE
+CREATE DATABASE DATA_S FROM SHARE <producer_account>.ORDERS_SHARE;
+
+-- Validate table access 
+SELECT * FROM DATA_S.PUBLIC.ORDERS;
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+
+
+
+--> O PRIMEIRO NOS DÁ 
+
+
+DATA COMO:
+
+
+
+
+
+created_on 
+
+kind -> outbound (estamos conferindo o share a alguém, somos o producer)
+     --> inbound( estamos RECEBENDO O SHARE DE ALGUÉM, SOMOS O CONSUMER)...
+
+
+
+name --> é possível ver o nome/id da account que nos deu esse share (e nosso nome também)
+            EX: WTHZWSC.ZNB24252.ORDERS_SHARE
+
+
+database_name -> NOME DA DATABASE SENDO COMPARTILHADA COM O DATA SHARE...
+
+
+
+
+
+----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ O DESC:
+-- ex: --> shows our grants in database, schema and table
+DESC SHARE WTHZWSC.ZNB24252.ORDERS_SHARE;
+
+
+
+
+
+
+-> NOS DÁ MAIS DETALHES SOBRE ESSE SHARE, SEUS GRANTS...
+
+
+
+
+
+
+---> CERTO... 
+
+
+
+
+MAS PARA USARMOS A DATA CONFERIDA PELO SHARE/DATA SHARE,
+
+
+
+PRIMEIRAMENTE PRECISAMOS __ CRIAR _ 1 DATABASE COM ESSE SHARE...
+
+
+
+
+
+
+
+--> PQ ESSE COMPARTILHAMENTO DE DADOS NAO ACONTECE DE FORMA AUTOMÁTICA,
+
+PRECISAMOS CRIAR 1 TABLE, LÁ NA CONSUMER ACCOUNT,
+
+A PARTIR 
+
+DESSA SHARE...
+
+
+
+
+
+
+
+-- FAZEMOS ISSO COM ESTE COMANDO:
+
+
+
+-- Create a database in CONSUMER ACCOUNT, USING THE SHARE
+CREATE DATABASE DATA_S FROM SHARE <producer_account>.ORDERS_SHARE;
+
+
+-- ex:
+CREATE DATABASE DATA_S FROM SHARE WTHZWSC.ZNB24252.ORDERS_SHARE;
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+
+ok... mas essa será uma SHARED TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+As of my last update in September 2021, when using Snowflake's data sharing feature, tables accessed by data sharing in consumer accounts do not persist if the table in the producer account is dropped. If the producer account drops the table, it will no longer be available for the consumer accounts to access.
+
+When data sharing is set up in Snowflake, the data is shared in real-time through secure external stages. The consumer accounts can access and query the shared data in the producer account as if it were a local table. However, this also means that the data is not physically stored in the consumer accounts; it remains in the producer account.
+
+If the producer account drops the table, it effectively removes the shared data, and the consumer accounts will not be able to access it anymore. To maintain access to the data, the producer account needs to ensure that the table is not dropped while data sharing is ongoing.
+
+It's essential to keep in mind that software features and functionalities can change over time, so it's always a good idea to consult the official Snowflake documentation or the latest resources to confirm the behavior of specific features in the most up-to-date version of Snowflake.
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+As of my last update in September 2021, Snowflake's data sharing feature allows you to query and use shared data in your consumer account, but it does not provide built-in mechanisms to create backups of shared tables directly in the consumer account.
+
+If you want to create a backup of the shared table in your consumer account, you would need to implement a custom solution for that. Here are a few approaches you could consider:
+
+Data Replication: Set up a process in your consumer account that periodically replicates the data from the shared table in the producer account to a table in your consumer account. This can be achieved using Snowflake's COPY INTO command to copy data from the shared table to a new table in the consumer account.
+
+Materialized Views: If the shared data doesn't change frequently, you can use materialized views in your consumer account to create a cached version of the shared data. Materialized views store the results of a query and can be refreshed periodically to keep them up to date.
+
+External Tables: Create an external table in your consumer account that points to the shared data in the producer account. This approach doesn't create a backup in the traditional sense, but it allows you to reference and query the shared data in your consumer account without actually duplicating it.
+
+Remember that any custom solution you implement will depend on your specific use case and requirements. Additionally, it's essential to consider the security and access control implications of replicating or caching shared data in your consumer account to ensure compliance with your organization's data policies and regulations.
+
+As always, I recommend checking the official Snowflake documentation or reaching out to Snowflake support for the latest information and best practices related to data sharing and backup strategies in Snowflake.
+
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS PARECE QUE NAO É POSSÍVEL COPIAR 
+
+DATA/ROWS 
+DESSA SHARED TABLE,
+
+PARA CONSEGUIR 
+
+
+1 
+
+
+
+BACKUP TABLE DESSA MESMA TABLE QUE FOI SHARED 
+
+COM DATA SHARE...
+
+
