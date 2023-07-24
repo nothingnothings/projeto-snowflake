@@ -1,0 +1,245 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Agora é hora de aprender sobre o scheduling 
+
+
+de tasks, no snowflake...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> PODEMOS USAR "TASKS"...
+
+
+
+
+
+
+
+
+
+
+"TASK" --> É UM __ OBJECT __ QUE 
+
+
+ARMAZENA 
+
+1 CERTO 
+
+
+
+SQL STATEMENT,
+
+
+SQL STATEMENT QUE É 
+
+ENTAO 
+
+
+EXECUTADO 
+
+
+EM 1 MOMENTO ESPECÍFICO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+""TASKS CAN BE USED TO SCHEDULE SQL STATEMENTS""...
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS ESPECIIFCAR QUE ELE DEVE 
+
+
+SER EXECUTADO:
+
+
+1) EM 1 HORA ESPECÍFICA...
+
+
+
+
+
+
+
+
+2) EM 1 CERTO INTERVALO, QUE PODEMOS ESPECIFICAR...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OUTRO DETALHE IMPORTANTE, NO SQL SNOWFLAKE,
+
+
+É QUE 
+
+
+
+
+___ PODEMOS __ DEFINIR APENAS 
+
+1 ÚNICO "SQL STATEMENT" POR TASK...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS CRIAR TANTO:
+
+
+
+
+1) STANDALONE TASKS, COM APENAS 
+
+1 ÚNICO SQL STATEMENT 
+
+
+
+
+
+2) TREES OF TASKS,
+
+DEPENDENCIES DE TASKS (
+
+    fazer com que uma task seja executada 
+
+
+
+    APENAS ___ DEPOIS __ DE OUTRA 
+
+    TASK TER ACABADO....
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... NESSA LICAO, VEREMOS:
+
+
+
+
+
+1) O QUE É UMA TASK (
+    understanding tasks...
+)
+
+
+
+2) COMO PODEMOS ___ CRIAR__ UMA TASK__...
+
+
+
+
+3) OS DIFERENTES "SCHEDULING METHODS"....
+
+
+
+
+
+4) COMO CRIAR "TREES OF TASKS",
+
+
+TASKS LIGADAS POR DEPENDENCIES.... (1 TASK 
+É DEPENDENCY DA OUTRA)
+
+
+
+
+5) POR FIM, VEREMOS COMO PODEMOS 
+
+CHECAR A 
+
+"TASK HISTORY",
+
+o histórico de nossas tasks...
+
+
+
+
+
+
+
+
+
+
+OK... DEVEMOS COMECAR...
+
+
+
+
+
+
+
