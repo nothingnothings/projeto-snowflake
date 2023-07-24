@@ -1,0 +1,545 @@
+
+
+
+
+
+--> AGORA VEREMOS COMO PODEMOS 
+
+SHARE DATA COM NON-SNOWFLAKE USERS,
+
+
+
+POR MEIO 
+
+
+DO USO 
+
+
+
+
+DE READER ACCOUNTS... (criadas dentro 
+de nossas producer accounts)...
+
+
+
+
+
+
+
+
+VEREMOS COMO PODEMOS CRIAR 
+
+E 
+
+SETTUPAR 
+
+1 READER ACCOUNT,
+
+
+
+E COMO PODEMOS 
+
+
+
+
+CRIAR 1 DATA SHARE PARA ESSA READER ACCOUNT...
+
+
+
+
+
+
+
+
+
+
+--> NAO É TAO COMPLICADO...
+
+
+
+
+
+
+
+
+
+-- TEMOS ESTE CÓDIGO:
+
+
+
+
+
+-- CREATE READER ACCOUNT -- 
+
+CREATE MANAGED ACCOUNT tech_joy_account 
+ADMIN_NAME=tech_joy_admin,
+ADMIN_PASSWORD='Tech_Account_Joy@456',
+TYPE=READER
+
+
+
+
+-----------------------
+
+
+
+
+--> PARA CRIAR ESSA READER ACCOUNT, CERTIFIQUE-SE 
+
+DE QUE VOCE ESTÁ COMO ACCOUNTADMIN DE SUA CONTA MAIN...
+
+
+
+
+
+
+
+
+--> PODEMOS CRIAR ESSA CONTA COM AQUELE CÓDIGO...
+
+
+
+
+
+
+
+--> certo...
+
+
+
+
+
+
+-> AÍ SETTAMOS 1 ADMIN_NAME 
+
+
+
+E ADMIN_PASSWORD,
+
+
+
+
+QUE SERAO AS CREDENTIALS QUE USAREMOS 
+
+
+PARA LOGGAR, PELA PRIMEIRA VEZ,
+
+
+NESSA NOVA READER ACCOUNT....
+
+
+
+
+
+
+--> É CLARO QUE ESSE 
+
+login será o ACCOUNT ADMIN PARA 
+
+
+ESSA NOVA CONTA...
+
+
+
+
+
+E ESSE ACCOUNTADMIN VAI PODER FAZER O CREATE 
+
+DE USERS 
+E TUDO MAIS,
+
+TODAS AS COISAS QUE NOSSO ACCOUNT ADMIN É CAPAZ,
+
+
+
+MAS LIMITADO À READER ACCOUNT...
+
+
+
+
+
+
+
+
+
+--> DEPOIS DISSO, PODEMOS 
+
+
+FAZER LOGIN NESSA CONTA...
+
+
+
+
+
+
+--> o create dessa reader account 
+
+nos retorna esta json data:
+
+
+
+
+
+{"accountName":"TECH_JOY_ACCOUNT",
+"accountLocator":"RYB24955",
+"url":"https://wthzwsc-tech_joy_account.snowflakecomputing.com",
+"accountLocatorUrl":"https://ryb24955.us-east-1.snowflakecomputing.com"
+
+}
+
+
+
+
+
+
+
+
+--> TEMOS ESSA INFO, COMO O ACCOUNT NAME,
+
+E O LOGINURL...
+
+(que é "url"...)
+
+
+
+
+
+
+
+
+
+
+-> FIZ LOGIN COM ESSA URL,
+
+
+COM AQUELAS CREDENTIALS....
+
+
+
+
+
+
+
+--> SE MAIS TARDE QUISERMOS TER A INFO
+
+SOBRE A LOGIN URL E 
+
+
+
+AS LOGIN CREDENTIALS DESSA READER ACCOUNT,
+
+
+BASTA RODAR:
+
+
+
+
+SHOW MANAGED ACCOUNTS;
+
+
+
+
+
+
+
+
+
+
+
+
+MAIS TARDE PODEREMOS USAR ESSA 
+
+URL para fazer login.
+
+
+
+
+
+
+
+
+--> ENTRETANTO, ANTES DISSO,
+
+
+
+QUEREMOS CRIAR/ALTERAR A "SHARE" QUE VAI COMPARTILHAR 
+
+
+NOSSA DATABASE/SCHEMA 
+
+
+COM ESSA READER ACCOUNT...
+
+
+
+
+
+
+
+
+--> ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+-- SHARING THE DATA -- 
+
+
+
+
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = <consumer_account>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ADICIONAMOS ESSA CONTA NA SHARE QUE CRIAMOS 
+
+
+
+NA AULA PASSADA...
+
+
+
+
+
+
+-> OK... PARA ADICIONAR ESSA READER ACCOUNT A ESSA SHARE,
+
+PRECISAMOS COPIAR O "LOCATOR" DE NOSSA CONTA 
+
+READER,
+
+QUE PODEMOS ENCONTRAR NO JSON OU _NA ROW 
+
+DA CONTA QUE CONSEGUIMOS QUANDO RODAMOS 
+
+"SHOW MANAGED ACCOUNTS"....
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+-- SHARING THE DATA
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = <consumer_account>
+
+
+
+
+SHOW MANAGED ACCOUNTS; --locator: RYB24955
+
+
+-- SHARING THE DATA
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = RYB24955;
+
+
+
+-----------------------------------
+
+
+
+
+
+OK... COM ISSO, SOMOS CAPAZES DE ADICIONAR 
+
+ACCOUNTS AN NOSSA SHARE...
+
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+isso nós já sabíamos...
+
+
+
+
+
+
+
+
+mas aqui podemos ter 1 case especial:
+
+
+
+
+SE TIVERMOS 1 EDITION DE 
+
+"BUSINESS-CRITICAL",
+
+
+
+NAO SOMOS CAPAZES DE FAZER DATA SHARE,
+
+
+
+COM READER ACCOUNTS,
+
+
+
+A ACCOUNTS DE TIPO STANDARD...
+
+
+
+
+
+
+
+
+
+
+
+--> para CONSEGUIR DAR OVERRIDE 
+
+
+NESSA RESTRICAO,
+
+PRECISAMOS COLOCAR 1 OPTION DE 
+
+"SHARE_RESTRICTION=FALSE" 
+
+NESSE COMANDO DE ALTER SHARE, TIPO ASSIM:
+
+
+
+
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = <consumer_account>
+SHARE_RESTRICTION=FALSE;
+-------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... MAS AQUI O PROFESSOR RESSALTA
+
+
+QUE SE VC TIVER DATA BEM SENSITIVE,
+
+
+
+E DE FATO VC ESTÁ USANDO A EDITION BUSINESS CRITICAL
+
+JUSTAMENTE POR CONTA DISSO,
+
+
+A MELHOR PRACTICE POSSÍVEL 
+
+
+SERIA __ CRIAR __ OUTRA __ CONTA, MAIS GERAL, SEM DADOS 
+"SENSITIVE",
+
+QUE PODERIA SER STANDARD,
+
+
+
+
+E AÍ FAZER SHARE DESSA CONTA COM A CONTA QUE 
+
+REALMETNE TEM 
+
+
+DATA BUSINESS CRITICAL/SENSITIVE,
+
+QUE NAO DEVE SER COMPARTILHADA. 
+
+(é por isso que essa setting existe, esse BLOCK de 
+
+share de data das business critical com as standard, 
+para que 
+vc faca justamente esse tipo de coisa, setorizar sua 
+data)
+
+
+------------------------------
+
+
+
+
+
+
+
+
+OK... NO NOSSO CASO,
+
+
+FAZEMOS ISSO PARA DEMONSTRAR QUE 
+
+PODEMOS 
+
+
+COMPARTILHAR NOSSA DATA COM NON-SNOWFLAKE USERS...
+
+
+
+
+
+
+
+
+
+
+
+--> EXECUTADO ESSE COMANDO COM SUCESSO,
+
+
+DE 
+
+ADICAO DESSA "READER ACCOUNT" À NOSSA SHARE,
+
+
+O PRÓXIMO PASSO É FAZER LOGIN NESSA READER ACCOUNT,
+
+
+COM AQUELA URL/ACCESSURL PROVIDENCIADA PELO 
+
+
+JSON/ROW RETORNADO COM "SHOW MANAGED ACCOUNTS"...
+
+
+
+É ISSO QUE VEREMOS NA PROXIMA AULA.

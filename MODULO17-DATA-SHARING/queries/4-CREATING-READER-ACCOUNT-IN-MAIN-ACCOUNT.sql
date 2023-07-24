@@ -1,0 +1,237 @@
+-- CREATE READER ACCOUNT -- 
+
+CREATE MANAGED ACCOUNT tech_joy_account 
+ADMIN_NAME=tech_joy_admin,
+ADMIN_PASSWORD='Tech_Account_Joy@456',
+TYPE=READER;
+
+-- THIS CREATE RETURNS THIS JSON DATA: 
+
+
+-- {"accountName":"TECH_JOY_ACCOUNT",
+-- "accountLocator":"RYB24955",
+-- "url":"https://wthzwsc-tech_joy_account.snowflakecomputing.com",
+-- "accountLocatorUrl":"https://ryb24955.us-east-1.snowflakecomputing.com"
+
+-- }
+
+
+
+--> SE MAIS TARDE QUISERMOS TER A INFO
+
+-- SOBRE A LOGIN URL E 
+
+
+
+-- AS LOGIN CREDENTIALS DESSA READER ACCOUNT,
+
+
+-- BASTA RODAR:
+
+
+
+SHOW MANAGED ACCOUNTS; -- shows created accounts, with login credentials and loginURl
+
+
+
+
+
+
+
+
+
+-- MAIS TARDE PODEREMOS USAR ESSA 
+
+-- URL para fazer login.
+
+
+
+
+
+
+
+
+--> ENTRETANTO, ANTES DISSO,
+
+
+
+-- QUEREMOS CRIAR/ALTERAR A "SHARE" QUE VAI COMPARTILHAR 
+
+
+-- NOSSA DATABASE/SCHEMA 
+
+
+-- COM ESSA READER ACCOUNT...
+
+
+
+
+
+
+
+
+-- SHARING THE DATA -- 
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = <consumer_account>
+
+
+
+
+-- -> OK... PARA ADICIONAR ESSA READER ACCOUNT A ESSA SHARE,
+
+-- PRECISAMOS COPIAR O "LOCATOR" DE NOSSA CONTA 
+
+-- READER,
+
+-- QUE PODEMOS ENCONTRAR NO JSON OU _NA ROW 
+
+-- DA CONTA QUE CONSEGUIMOS QUANDO RODAMOS 
+
+-- "SHOW MANAGED ACCOUNTS"....
+
+
+
+-- ex de locator: RYB24955;
+
+
+
+
+
+
+
+
+
+-- SHARING THE DATA
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = <consumer_account>
+
+
+
+
+SHOW MANAGED ACCOUNTS; --locator: RYB24955
+
+
+-- SHARING THE DATA
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = RYB24955;
+
+
+
+
+
+-- mas aqui podemos ter 1 case especial:
+
+
+
+
+-- SE TIVERMOS 1 EDITION DE 
+
+-- "BUSINESS-CRITICAL",
+
+
+
+-- NAO SOMOS CAPAZES DE FAZER DATA SHARE,
+
+
+
+-- COM READER ACCOUNTS,
+
+
+
+-- A ACCOUNTS DE TIPO STANDARD...
+
+
+
+
+
+
+
+
+
+--> para CONSEGUIR DAR OVERRIDE 
+
+
+-- NESSA RESTRICAO,
+
+-- PRECISAMOS COLOCAR 1 OPTION DE 
+
+-- "SHARE_RESTRICTION=FALSE" 
+
+-- NESSE COMANDO DE ALTER SHARE, TIPO ASSIM:
+
+
+ALTER SHARE ORDERS_SHARE 
+ADD ACCOUNT = <consumer_account>
+SHARE_RESTRICTION=FALSE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- OK.... MAS AQUI O PROFESSOR RESSALTA
+
+
+-- QUE SE VC TIVER DATA BEM SENSITIVE,
+
+
+
+-- E DE FATO VC ESTÁ USANDO A EDITION BUSINESS CRITICAL
+
+-- JUSTAMENTE POR CONTA DISSO,
+
+
+-- A MELHOR PRACTICE POSSÍVEL 
+
+
+-- SERIA __ CRIAR __ OUTRA __ CONTA, MAIS GERAL, SEM DADOS 
+-- "SENSITIVE",
+
+-- QUE PODERIA SER STANDARD,
+
+
+
+
+-- E AÍ FAZER SHARE DESSA CONTA COM A CONTA QUE 
+
+-- REALMETNE TEM 
+
+
+-- DATA BUSINESS CRITICAL/SENSITIVE,
+
+-- QUE NAO DEVE SER COMPARTILHADA. 
+
+-- (é por isso que essa setting existe, esse BLOCK de 
+
+-- share de data das business critical com as standard, 
+-- para que 
+-- vc faca justamente esse tipo de coisa, setorizar sua 
+-- data)
+
+
+
+
+
+
+--> EXECUTADO ESSE COMANDO COM SUCESSO,
+
+
+-- DE 
+
+-- ADICAO DESSA "READER ACCOUNT" À NOSSA SHARE,
+
+
+-- O PRÓXIMO PASSO É FAZER LOGIN NESSA READER ACCOUNT,
+
+
+-- COM AQUELA URL/ACCESSURL PROVIDENCIADA PELO 
+
+
+-- JSON/ROW RETORNADO COM "SHOW MANAGED ACCOUNTS"...
