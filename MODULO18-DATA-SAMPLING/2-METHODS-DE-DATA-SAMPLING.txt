@@ -1,0 +1,458 @@
+
+
+
+
+
+
+
+OK.... SE QUEREMOS FAZER DATA SAMPLING,
+
+
+
+TEMOS__ 2 APPROACHES, NO SNOWFLAKE,
+
+
+2 METHODS POSSÍVEIS...
+
+
+
+
+
+
+
+
+
+
+OS APPROACHES SAO:
+
+
+
+
+
+
+
+
+1) ROW-BASED, OU "BERNOULLI METHOD"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2) BLOCK-BASED _ OU "SYSTEM" METHOD...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUAL É A DIFERENCA ENTRE ESSES 2 METHODS?
+
+
+
+QUANDO USAMOS CADA 1 DELES?
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+1) ROW OU BERNOULLI METHOD....
+
+
+
+
+--> é provavelmente o METHOD MAIS BÁSICO,
+MAIS SIMPLES....
+
+
+
+
+
+
+--> com ele, CADA ROW 
+
+É ESCOLHIDO COM BASE NA "PORCENTAGEM P"...
+
+
+
+
+
+
+-- PARA CADA ROW, GANHAMOS 1 PORCENTAGEM...
+
+
+
+
+
+
+
+--> DIGAMOS QUE CADA ROW GANHA "50%"...
+
+
+
+
+--> COM ISSO, CADA ROW TERÁ UMA PROBABILIDADE 
+DE 50% de ser incluído NA NOSSA SAMPLE....
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------
+
+
+
+
+
+
+
+2) BLOCK __ OU __ SYSTEM __ method...
+
+
+
+
+--> É SIMILAR AO ROW/BERNOULLI, MAS...
+
+
+
+
+
+--> EM VEZ DE DEFINIRMOS 1 PORCENTAGEM 
+PARA CADA SINGLE ROW NA NOSSA TABLE,
+
+
+NÓS DEFINIMOS PORCENTAGENS PARA __ BLOCKS__ 
+OF ROWS (Conjuntos de rows)..
+
+
+
+
+
+
+--> GANHAMOS BLOCKS NA TABLE,
+E ESSE METHOD É APLICADO SOBRE CADA 
+BLOCK (cada block ganha 1 porcentagem x de 
+ser adicionado a nossa sample)
+
+
+
+
+---> OS BLOCKS SAO BASICAMENTE MICRO-PARTITIONS,
+
+E AÍ ESSAS PARTITIONS SAO ESCOLHIDAS POR 1 CERTA 
+PORCENTAGEM,
+QUE PODEMOS ESCOLHER..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NO FINAL DAS CONTAS,
+
+
+
+
+O METHOD DE "BLOCK/SYSTEM"
+
+
+
+
+É UM POUCO MAIS EFICIENTE,
+
+POR ISSO 
+
+O SNOWFLAKE 
+
+
+__rECOMENDA __ ESSE METHOD,
+
+
+SE ESTIVERMOS 
+
+
+
+LIDANDO COM __ TABLES EXTREMAMENTE 
+
+LARGAS E SE QUEREMOS 
+
+TER 
+
+
+1 PROCESSAMENTO MAIS EFICIENTE 
+DESSE SAMPLING...
+
+
+
+
+
+
+--> ou seja, o processamento da 
+
+sample é mais EFETIVO, com o method 
+BLOCK/SYSTEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O METHOD __ BERNOULLI É MAIS RANDOM (
+    more randomness
+),
+
+
+JUSTAMENTE PQ ESTAMOS SAMPLANDO NAO POR BLOCKS,
+E SIM POR __ CADA _ ROW_ _ DE NOSSA TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> RESUMINDO:
+
+
+
+
+
+
+
+
+ROW/BERNOULLI --> RANDOMIZA CADA ROW --> É MAIS RANDOM, MAS DEMORA MAIS (MENOS EFICIENTE)...
+
+
+
+
+
+BLOCK/SYSTEM ---> RANDOMIZA CADA BLOCK DE ROWS --> É MENOS RANDOM, MAS É MAIS RÁPIDO E EFICIENTE.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> O BERNOULLI É MAIS REPRESENTATIVO 
+
+DA REALIDADE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS NA PRÁTICA, O QUE DEVEMOS FAZER,
+
+QUAL DEVEMOS ESCOLHER....
+
+
+
+
+
+
+
+
+
+
+
+--> BEM,
+
+
+É ASSIM:
+
+
+
+
+
+
+
+BERNOULLI/ROWS --> DEVEMOS OPTAR POR 
+
+
+ELE _ QUANDO __ TIVERMOS __ TABLES MENORES..
+
+
+
+
+
+
+
+
+
+
+BLOCK/SYSTEM METHOD --> DEVEMOS OPTAR POR ELE 
+                            QUANDO TIVERMOS 
+                            TABLES __ MAIORES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ROW/BERNOULLI --> RANDOMIZA CADA ROW --> É MAIS RANDOM, MAS DEMORA MAIS (MENOS EFICIENTE)...
+                --> tables MENORES.
+
+
+
+
+BLOCK/SYSTEM ---> RANDOMIZA CADA BLOCK DE ROWS --> É MENOS RANDOM, MAS É MAIS RÁPIDO E EFICIENTE.
+            --> tables maiores
+
+
+
+
+
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+
+SE TIVERMOS TABLES EXTREMAMENTE MAIORES,
+
+
+
+E SE O DATA SAMPLING PRECISA SER EFICIENTE,
+
+
+DEVEMOS 
+
+
+
+USAR O METHOD DE BLOCK/SYSTEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA QUE OUVIMOS FALAR DA TEORIA,
+
+
+DEVEMOS COLOCAR TUDO ISSO EM PRÁTICA....
