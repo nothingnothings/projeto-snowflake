@@ -1,0 +1,569 @@
+
+
+
+
+
+
+
+
+AGORA QUE TIVEMOS ESSE PEQUENO OVERVIEW 
+
+DE TASKS E DO QUE SAO,
+
+
+
+
+DEVEMOS ESTUDAR COMO ELAS REALMENTE
+
+FUNCIONAM, NA PRÁTICA...
+
+
+
+
+
+
+
+
+
+--> PARA ISSO, COMECAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TRANSIENT DATABASE TASK_DB;
+
+
+USE SCHEMA TASK_DB.PUBLIC;
+
+-- Prepare a table --
+CREATE OR REPLACE TABLE CUSTOMERS (
+    CUSTOMER_ID INT AUTOINCREMENT START = 1 INCREMENT = 1,
+    FIRST_NAME VARCHAR(40) DEFAULT 'Jennifer',
+    CREATE_DATE DATE
+);
+
+
+
+
+-- CREATE TASK -- 
+CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
+    WAREHOUSE = COMPUTE_WH
+    SCHEDULE = '1 MINUTE'
+    AS 
+    INSERT INTO CUSTOMERS(CREATE_DATE) VALUES (CURRENT_TIMESTAMP);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK...
+
+
+
+
+
+
+CRIAMOS ESSA TABLE DE CUSTOMERS,
+
+COM 3 COLUMN,
+
+E ENTAO 
+
+
+
+CRIAMOS ESSA TASK...
+
+
+
+
+
+
+
+
+-->
+
+
+
+O COMANDO DE TASK É SUPER SIMPLES:
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TASK...
+
+
+
+
+
+
+
+--> CERTO...
+
+
+
+
+
+--> DEPOIS DISSO, COLOCAMOS O NOME DA TASK (
+    CUSTOMER_INSERT_TASK
+)
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO, PRECISAMOS TAMBÉM 
+
+
+SELECIONAR A WAREHOUSE QUE USAREMOS....
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+
+
+TEMOS MAIS ALGUNS PARAMETERS...
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEPOIS DISSO, TEMOS 1 PARAMETER SUPER 
+
+IMPORTANTE, QUE É 
+
+
+
+"SCHEDULE"...
+
+
+
+
+
+
+
+
+
+
+
+
+-> EM SCHEDULE, TEMOS 2 OPCOES...
+
+
+
+
+
+
+
+
+
+nesta aula, veremos 
+
+a PRIMEIRA OPTION....
+
+
+
+
+
+
+A PRIMEIRA OPTION É 
+
+ESPECIFICAR 
+
+""" O INTERVALO EM MINUTOS"""..
+
+
+
+
+
+
+--> E FAZEMOS ISSO EXATAMENTE DESSA FORMA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> nao podemos especificar horas, dias, nada disso,
+
+APENAS __ MINUTEs....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SE QUEREMOS QUE ESSE JOB RODE DE 
+
+1 EM 1 HORA,
+
+DEVEMOS 
+
+ESPECIFICAR "60 MINUTES"...
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+
+DEPOIS DO DEFINE DO TIMER,
+
+
+COLOCAMOS 
+
+
+
+A ACTUAL TASK,
+
+
+
+O ACTUAL SQL STATEMENT QUE 
+
+SERÁ EXECUTADO....
+
+
+
+
+
+
+
+
+
+--> NO CASO, ESCREVEMOS O SQL 
+
+STATEMENT 
+
+
+DE 
+
+
+-- INSERT INTO CUSTOMERS(CREATE_DATE) VALUES(CURRENT_TIMESTAMP);
+
+
+-- O QUE QUER DIZER QUE VAMOS INSERIR 1 ROW COM APENAS ESSE VALUE PREENCHIDO, A CADA MINUTO...
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+OK... MAS É CLARO QUE 
+
+
+ESSA 
+
+
+TASK NAO VAI COMECAR 
+
+
+A SER EXECUTADA 
+
+"" DO NADA""...
+
+
+
+
+
+
+
+
+
+
+
+
+nao, pq nós precisamos DIZER 
+
+PARA O SNOWFLAKE SQL QUE 
+
+QUEREMOS 
+
+""STARTAR ESSA TASK""...
+
+
+
+
+
+
+
+
+PODEMOS VISUALIZAR QUE 
+
+
+ELA NAO ESTÁ ATUALMENTE RODANDO,
+
+
+BASTA EXECUTAR 
+
+
+O COMANDO 
+
+
+
+
+""SHOW TASKS"",
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+SHOW TASKS;
+
+
+
+
+
+
+
+
+
+
+
+--> NA ROW RETORNADA PARA A NOSSA TASK,
+
+
+Ẽ POSSÍVEL ENXERGAR 
+
+A COLUMN DE "state",
+
+que atualmente está com 1 value 
+
+de 
+
+"SUSPENDED"...
+
+
+
+
+
+
+
+
+
+
+
+--> TEMOS APENAS ESSA TASK, E ELA ESTÁ SUSPENSA...
+
+
+
+
+
+--> PODEMOS VISUALIZAR AS OUTRAS PROPERTIES:
+
+
+
+
+WAREHOUSE --> a warehouse usada com essa task (que executa essa task)
+
+
+
+
+SCHEDULE --> settamos como 1 minute....
+
+
+
+definition -> O QUE USAMOS PARA CRIAR ESSA TASK...
+                (sql statement)...
+
+
+
+
+
+
+
+state --> que sempre comeca como "suspended"...
+
+
+
+
+
+
+
+
+
+
+
+--> A PRIMEIRA COISA QUE PRECISAMOS FAZER,
+
+PARA TRABALHAR COM ESSA TASK,
+
+É A STARTAR...
+
+
+
+
+
+
+
+
+-- PODEMOS STARTAR NOSSA TASK 
+
+
+COM ESTE COMANDO:
+
+
+
+
+
+
+-- Task Starting and Suspending --
+ALTER TASK CUSTOMER_INSERT_TASK RESUME;
+ALTER TASK CUSTOMER_INSERT_TASK SUSPEND;
+
+
+
+
+
+
+
+
+ESPERAMOS 1 MINUTE, PARA 
+
+VER 
+
+
+
+SE REALMENTE FOI INSERIDO ALGO NESSA TABLE....
+
+
+
+
+
+
+
+
+
+
+
+DEU CERTO, FOI INSERIDO ALGO NESSA TABLE,
+E AGORA 
+
+ALGO SEMPRE É INSERIDO, A CADA 1 MINUTO...
+
+
+
+
+
+
+
+
+
+
+SUSPENDEMOS ESSA TASK,
+ 
+ PQ NAO QUEREMOS MAIS NADA INSERIDO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É CLARO QUE " X MINUTES" 
+
+É APENAS UMA DAS MANEIRAS DE DEFINIR
+SCHEDULES PARA NOSSAS TASKS...
+
+
+
+
+
+
+
+HÁ OUTRO JEITO DE DEFINIR INTERVALOS,
+
+
+E É ISSO QUE VEREMOS, NA PRÓXIMA AULA...
+
+
+
+
+
