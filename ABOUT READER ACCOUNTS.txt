@@ -1,0 +1,15 @@
+In Snowflake, you can create different roles with different levels of permissions and assign them to users. Some common roles include SYSADMIN, SECURITYADMIN, ACCOUNTADMIN, PUBLIC, and more. Each role has specific privileges that control what actions users assigned to those roles can perform within the Snowflake environment.
+
+It's possible that 
+the term "Snowflake reader accounts" may 
+refer to a specific use case where you create
+ a separate role with read-only permissions. 
+ These reader accounts are typically given 
+ to users or applications that only require 
+ access to read data without the
+  ability to modify or write data in
+   the Snowflake database. This
+    approach is useful for scenarios
+     where you want to provide data access
+      to a broader audience without the risk of
+       accidental data modifications.
