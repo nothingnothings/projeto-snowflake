@@ -1,0 +1,905 @@
+AGORA DEVEMOS ESTUDAR 
+
+E DEMONSTRAR OS BENEFÍCIOS 
+
+
+DE SAMPLING  DE DATABASES LARGAS...
+
+
+
+AGORA DEVEMOS ESTUDAR 
+
+E DEMONSTRAR OS BENEFÍCIOS 
+
+
+DE SAMPLING  DE DATABASES LARGAS...
+
+
+
+
+
+
+
+--> O PROFESSOR COMECA COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TRANSIENT DATABASE SAMPLING_DB;
+
+CREATE OR REPLACE VIEW ADDRESS_SAMPLE
+AS 
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER_ADDRESS
+SAMPLE ROW (1) SEED(26);
+
+
+
+
+
+
+
+
+
+
+
+
+-
+
+
+
+
+
+
+
+
+ok.... criamos 1 transient database, de nome sampling_db..
+
+
+
+
+-> AÍ O PROFESSOR VAI UTILIZAR 
+
+ESSA TABLE DE "CUSTOMER_ADDRESS",
+
+
+
+DENTRO 
+
+
+
+DA SAMPLE DATABASE 
+
+DO SNOWFLAKE...
+
+
+
+
+
+
+
+TEMOS ESSA TABLE AÍ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA TABLE TEM 
+
+32.5 MILHOES DE ROWS...
+
+
+
+
+NAO É UMA TABLE SUPER LARGA,
+
+
+
+
+
+
+
+
+
+MAS É UMA TABLE LARGA..
+
+
+
+
+
+
+
+
+
+-> TEM POUCO MENOS DE 600 MEGABYTES....
+
+
+
+
+
+
+
+NAO É TAO GRANDE,
+
+MAS PODEMOS NOS BENEFICIAR 
+
+
+DE SAMPLING..
+
+
+
+
+
+
+
+
+
+-> PARA SAMPLEAR, O PROFESSOR 
+
+
+
+RODA ESTE STATEMENT:
+
+
+
+
+
+
+
+CREATE OR REPLACE VIEW ADDRESS_SAMPLE
+AS 
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER_ADDRESS
+SAMPLE ROW (1) SEED(26);
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+RODANDO ISSO AÍ,
+
+
+
+o processo 
+
+
+dura + ou - 26 segundos..
+
+
+
+
+
+
+
+
+
+ENTAO O PROFESSOR SELECIONA APENAS A PARTE 
+
+DO SAMPLE,
+
+SEM A PARTE DA CRIACAO DA VIEW,
+
+
+PARA VER QUANTO TEMPO ISSO DEMORA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NO MEU CASO, DEMOROU UNS 11 SEGUNDOS.
+
+
+
+
+
+
+
+
+
+
+
+A ESTRUTURA DO COMANDO É ASSIM:
+
+
+
+
+
+
+
+1) RODAMOS 1 SELECT SIMPLES, COMO:
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER_ADDRESS;
+
+
+
+
+
+
+
+2) DEPOIS, COLOCAMOS O MODIFICADOR DE SAMPLE, QUE
+
+É 
+
+"SAMPLE ROW(1) SEED(27);"
+
+
+
+
+
+
+
+POR ISSO FICA 
+
+
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER_ADDRESS
+SAMPLE ROW(1) SEED(27);
+
+
+
+
+
+
+
+
+
+
+
+isso samplou 328.8k rows da nossa table...
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+NESSES PARENTESES,
+
+
+
+ESPECIFICAMOS 
+
+
+
+A __ PORCENTAGEM QUE __ CADA _ ROW 
+
+
+TERÁ PARA _ TALVEZ SER INCLUIDO NESSE SAMPLE (
+    no caso, 1% de chance...
+)
+
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+
+QUER DIZER QUE, NO TOTAL, TEREMOS 
+
++ OU - 1% 
+
+
+DE TODA A DATA 
+
+
+DE NOSSA TABLE... 1% de 32 milhoes...
+
+
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM TEMOS O PARAMETER DE "SEED(X)",
+
+
+
+
+
+QUE PODEMOS USAR ___ PARA __ REPRODUZIR 
+
+
+ESSE RESULT....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO QUER DIZER QUE, SE ENTREGÁSSEMOS ESSA QUERY 
+
+PARA __OUTRO __DEVELOPER,
+
+ELE __ CONSEGUIRIA/CONSEGUE -_ EXATAMENTE 
+
+
+O MESMO RESULT SET QUE 
+
+ESTAMOS CONSEGUINDO AGORA (SUPER ÚTIL, ISSO AÍ)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+
+
+AÍ O PROFESSOR ARMAZENA O RESULTADO 
+
+DESSE SELECT STATEMENT SAMPLEADO
+
+
+EM 1 VIEW,
+
+A VIEW DE "ADDRESS_SAMPLE"...
+
+
+
+
+
+
+
+
+
+
+
+-> isso feito, o professor demonstra que,
+
+
+MESMO COM NOSSA SAMPLE,
+
+
+CONSEGUIMOS 
+
+OBTER RESULTADOS MT ACCURATE 
+
+E BEM MAIS RÁPIDOS...
+
+
+
+
+
+
+
+
+
+
+EM MTOS CASOS, MESMO ESSA SAMPLE 
+
+SERÁ SUFICIENTE,
+
+
+E COM ISSO SEREMOS CAPAZES DE ECONOMIZAR 1 MONTE 
+
+
+DE TEMPO E COMPUTE RESOURCES...
+
+
+
+
+
+
+
+
+
+
+PARA DEMONSTRAR ISSO, RODAMOS ESTES SELECTS:
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM ADDRESS_SAMPLE;
+
+
+SELECT CA_LOCATION_TYPE, COUNT(*)/3248622 * 100
+FROM ADDRESS_SAMPLE
+GROUP BY CA_LOCATION_TYPE;
+
+
+
+
+
+
+
+
+
+
+ISSO NOS DEU ESTES RESULTS:
+
+
+
+
+
+
+single family	32.3282
+null        	2.9673
+apartment	32.2901
+condo	32.4143
+
+
+
+
+
+
+
+--> 
+
+isso nos mostra a porcentagem de pessoas que 
+
+
+mora em cada tipo de coisa....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> esses values, sim....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA O PROFESSOR QUER RODAR A MESMA QUERY,
+
+
+MAS COM  
+
+1 SAMPLE SIZE DIFERENTE,
+
+PARA VER 
+SE REALMENTE 
+
+
+
+
+
+ESSE SAMPLE É CONFIÁVEL (
+    se os values 
+
+    desse result set nao mudam tanto assim 
+     a depender 
+
+
+    do sample que pegamos
+)
+
+
+
+
+
+
+
+---> POR ISSO USAMOS 10% EM VEZ DE 1%, NA NOSSA 
+
+SAMPLE...
+
+
+
+
+
+
+
+
+
+
+
+TIPO:
+
+
+
+
+
+
+CREATE OR REPLACE VIEW ADDRESS_SAMPLE 
+AS
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER_ADDRESS 
+SAMPLE ROW(10) SEED (27);
+
+
+
+SELECT * FROM ADDRESS_SAMPLE;
+
+
+SELECT CA_LOCATION_TYPE, COUNT(*)/3249476 * 100
+FROM ADDRESS_SAMPLE
+GROUP BY CA_LOCATION_TYPE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e, realmente, ficamos com results bem 
+
+parecidos com os de antes:
+
+
+
+
+
+
+
+single family	32.3385
+null        	3
+apartment	32.3139
+condo	32.3476
+
+
+
+
+
+
+
+
+
+OK... JÁ CONSEGUIMOS UMA BOA ESTIMATIVA...
+
+
+
+
+
+
+TUDO 
+
+
+ISSO FOI FEITO COM ESSE METHOD DE "SAMPLE ROW"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS SE TIVERMOS TABLES __ EXTREMAMENTE 
+LARGAS,
+
+
+
+MUITO MAIS DO QUE ESSES 32 MILHOES,
+
+
+
+
+
+E SE QUISERMOS 
+
+TAMBÉM ___ MELHORAR -_ A VELOCIDADE/PROCESSING 
+
+TIME 
+
+DA SAMPLING EM SI,
+
+
+
+
+
+
+
+
+
+
+PODEMOS USAR 1 COMANDO DIFERENTE 
+
+
+DE SAMPLE,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER_ADDRESS
+SAMPLE SYSTEM(1) SEED(23); -- esse é o system/block method (ou approach) DE CRIAR SAMPLES.... É MAIS RÁPIDO E EFICIENTE DO QUE O METHOD COMUM (bernoulli, row-based, ROW(x) SEED(y)), MAS É __ MENOS RANDOM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> SE RODAMOS ESSE SAMPLE, ELE 
+
+
+
+TERMINA BEM MAIS RÁPIDO DO QUE O OUTRO TIPO 
+DE SAMPLE..
+
+
+
+
+
+
+
+
+-> AO FINAL, FICAMOS COM 300.000 ROWS.... --> 
+
+
+
+FICAMOS COM 300 ROWS 
+
+
+
+pq __ ele 
+
+LEVA EM CONSIDERACAO "BLOCKS"
+
+DE ROWS,
+
+
+
+E CADA ROW TERÁ AQUELA PORCENTAGEM (1%, nesse caso)
+
+DE SER 
+
+
+INCLUÍDO NA SAMPLE OU NAO....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> É POR ISSO QUE NAO FICAMOS COM EXATAMENTE 
+
+1% DE NOSSA TABLE (ficamos com MAIS), COM O SYSTEM-BASED SAMPLE,
+
+
+
+
+PQ __ ESTAMOS LIDANDO COM BLOCKS DE ROWS,
+
+E NAO ROWS (que sao menores)....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OK... ISSO NOS DEMONSTRA 
+
+A DIFERENCA ENTRE OS 2 
+
+
+SAMPLING METHODS...
+
+
+
+
+
+
+
+
+
+
+
+
+-_> SE VC ESTÁ DEVELOPING EM CIMA DE 
+
+LARGE
+
+
+
+TABLES,
+
+CRIANDO QUERIES PARA TABLES QUE DEMORAM MT TEMPO 
+
+PARA SEREM PROCESSADAS,
+
+
+FAZ SENTIDO 
+
+
+CRIAR SAMPLES DE SUAS DATA...
+
+
+
+
+
+
+
+
+
+
+-> SE SUA DATA NAO FOR EXTREMAMENTE 
+
+
+LARGA,
+
+VC PODE USAR O BERNOULLI METHOD....
+
+
+
+
+
+
+
+CASO CONTRÁRIO, USE O SYSTEM/BLOCK METHOD,
+
+
+
+QUE É MAIS EFICIENTE/RÁPIDO...
+
+
+
+
+
+
+
