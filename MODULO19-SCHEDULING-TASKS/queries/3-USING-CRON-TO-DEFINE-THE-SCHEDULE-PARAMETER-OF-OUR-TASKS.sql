@@ -187,291 +187,7 @@ CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
 
 
 
-
-
-
-
-
-
-
-ESSE É UM EXEMPLO DE UTILIZACAO 
-
-DE CRONJOB...
-
-
-
-
-
-
-
-PODE PARECER COMPLICADO...
-
-
-
-
-
-
-
-
-
-
---> NO FINAL DESSA EXPRESSAO,
-
-ESPECIFICAMOS A "TIMEZONE"...
-
-
-
-
-
-
-
-
--> NO CASO, O PROFESSOR COLOCOU "UTC"...
-
-
-
-COORDINATED UNIVERSAL TIME...
-
-
-
-
-
-
-
-
-
-
-
--> O PROFESSOR USOU UTC 
-
-
-PQ É UMA TIMEZONE FACIL...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-entendi mais ou menos como funcionam 
-
-cron jobs....
-
-
-
-
-M H D M D 
-
-
-
-
-
-
-
-
---> mas o professor aponta que 
-
-poderíamos ter especificado 
-
-uma timezone diferente,
-
-se quiséssemos...
-
-
-
-
-
-
-
-
-
-
-
--> OK...
-
-
-
-
-
-
-CONTINUANDO, TEMOS ESTE CÓDIGO:
-
-
-
-
-
-
-
-CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
-    WAREHOUSE = COMPUTE_WH
-    SCHEDULE = 'USING CRON * * * * * UTC'
-    AS 
-    INSERT INTO CUSTOMERS(CREATE_DATE) VALUES (
-        CURRENT_TIMESTAMP
-    );
-
-
-
-
-
-
-
-
-
-
-
-
-    -> TEMOS AS 5 ESTRELAS 
-
-    DO CRON, REFERENTES 
-
-    A 
-
-
-
-
-    M H D M D 
-
-
-
-
-    MINUTE 
-
-
-    HOUR 
-
-    DAY OF THE MONTH 
-    
-    MONTH 
-
-    DAY OF THE WEEK....
-
-
-
-
-
-
-
-
--> O PROFESSOR EXPLICA O MEANING 
-
-
-DELAS....
-
-
-
-
--> mas agora eu já sei...
-
-
-
-
-
-
-
-O PROFESSOR ESCREVE UM CRON 
-
-QUE EXECUTA TODO DIA,
-
-AS 7 DA MANHA:
-
-
-
-
-
-
-
-
-CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
-    WAREHOUSE = COMPUTE_WH
-    SCHEDULE = 'USING CRON 0 7 * * * UTC'
-    AS 
-    INSERT INTO CUSTOMERS(CREATE_DATE) VALUES (
-        CURRENT_TIMESTAMP
-    );
-
-
-
-
-
-
-
-
-
-
-OK.... AGORA ENTENDI ESSAS EXPRESSOES...
-
-
-
-
-
-
--_> PODEMOS USAR "SUN" (em vez de 0 ou 7)....
-
-
-
-
-
-O PROFESSOR TAMBÉM FALA 
-
-SOBRE O SPECIFY DE RANGES 
-
-DE VALUES 
-
-PARA 
-
-
-OS SLOTS....
-
-
-
-
-(
-    TIPO 1-5 (monday to friday)...
-
-)
-
-
-
-
-
-
-
-
-
-
-
---> OK, PODEMOS ESPECIFICAR RANGES e tal...
-
-
-
-
-
-
-
-
-
-
-
-OK... REVISANDO A SINTAXE:
-
-
-
-
-
-
-
+OUTRO EXEMPLO:
 
 
 
@@ -489,26 +205,35 @@ CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
 
 
 
-MAS TEMOS MAIS 1 DETALHE, SOBRE O CRON...
-
-
-
-
-
-
-
-
-
-
-
-
-
---> SE ESCREVEMOS "L" NO SLOT DE "DAY OF THE MONTH",
+-> SE ESCREVEMOS "L" NO SLOT DE "DAY OF THE MONTH",
 
 
 
 FICAMOS COM O VALUE DE "ÚLTIMO DIA DO MES" (pq 
 pode ser 29, 30, 31, etc)...
+
+
+
+
+
+EX:
+
+
+
+CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
+    WAREHOUSE=COMPUTE_WH
+    SCHEDULE = 'USING CRON 0 7-10 L * 1-5 UTC' -- L = last day of month
+    AS
+    INSERT INTO CUSTOMERS(CREATE_DATE) VALUES (CURRENT_TIMESTAMP);
+
+
+
+
+
+------------------------
+
+
+
 
 
 
@@ -559,6 +284,15 @@ EX:
 
 
 
+
+
+EX:
+
+
+
+
+
+
 EX:
 
 
@@ -578,18 +312,11 @@ CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
 
 
 
+EX:
 
 
 
 
-
-
-
-
-
-
-
-OK...
 
 
 
@@ -622,26 +349,3 @@ CREATE OR REPLACE TASK CUSTOMER_INSERT_TASK
     INSERT INTO CUSTOMERS(CREATE_DATE) VALUES (CURRENT_TIMESTAMP);
 
 
-
-
----------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ok... nessa lecture, vimos 
-
-
-esse method alternativo de scheduling (
-    que é bem melhor do que o outro...
-)
