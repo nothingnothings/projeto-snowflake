@@ -1,0 +1,672 @@
+
+ATÉ AGORA, APRENDEMOS SOBRE 
+
+COMO STREAMS FUNCIONAM,
+
+E SOBRE COMO 
+
+
+ELES CAPTURAM 
+
+TODO TIPO DE CHANGE (INSERT, UPDATE, DELETE)...
+
+
+
+
+
+
+
+
+
+
+
+
+VIMOS COMO ELES CAPTURAM 
+
+INSERTS,
+
+E COMO PODEMOS USÁ-LOS, OS "STREAM OBJECTS",
+
+
+COMO PODEMOS OS CONSUMIR PARA ATUALIZAR
+
+
+
+DATA EM "TARGET TABLES",
+
+
+
+TABLES QUE TALVEZ QUEIRAMOS ATUALIZAR NO FUTURO,
+
+
+
+COM ESSAS CHANGES (CAPTURADAS LÁ DA TABLE ORIGINÁRIA, TABLE
+QUE INTERESSA "KEEP TABS ON"...)
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+PODEMOS USAR ESSA STREAM PARA UPDATA/INSERT 
+
+ESSAS CHANGES NA NOSSA TARGET TABLE...
+
+
+
+
+-----------------------
+
+
+
+
+
+
+
+
+
+NESTA LESSON, VEREMOS O QUE ACONTECE 
+
+
+
+E COMO AS COISAS FUNCIONAM 
+
+SE 
+
+
+TEMOS __ UPDATES__ EM VEZ DE INSERTS, lá 
+
+
+na nossa TABLE ORIGINÁRIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----> COMECAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+-- ******* UPDATE 1 ************
+
+USE STREAMS_DB;
+
+SELECT * FROM SALES_RAW_STAGING; 
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE; -- estará VAZIO, pq nao tivemos mais nenhuma change naquela table de "sales_raw_staging"...
+
+
+-- Basic update.
+UPDATE SALES_RAW_STAGING
+SET PRODUCT = 'Potato' WHERE PRODUCT = 'Banana';
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+CERTO, MAS AÍ FICAMOS 
+
+
+
+COM ALGO ESTRANHO....
+
+
+
+
+
+
+
+AO RODAR O SELECT NA STREAM,
+
+
+
+FICAMOS COM 2 ROWS,
+EM VEZ DE 1 (pq só ocorreu 1 único update,
+
+
+mas ficamos com 2 rows)...
+
+
+
+
+
+
+
+
+E A DATA DAS ROWS FICOU ASSIM:
+
+
+
+
+
+ID PRODUCT  PRICE AMOUNT        METADATA$ACTION   METADATA$ISUPDATE METADATA$ROW_ID
+                       STORE_iD
+1	Potato	1.99	1	1	        INSERT	        TRUE    	    80c6fb48cad017304c36d6aa5f32a9c256528f47
+1	Banana	1.99	1	1	        DELETE	        TRUE        	80c6fb48cad017304c36d6aa5f32a9c256528f47
+
+
+
+
+
+
+
+
+
+
+
+
+
+quer dizer QUE FICAMOS COM 2 OPERATIONS,
+
+1 DE INSERT, OUTRA DE DELETE...
+
+
+
+
+
+--> PQ É ISSO QUE ACONTECE, QUANDO OCORRE 1 UPDATE:
+
+
+
+1) ANTES, OCORRE 1 DELETE.
+
+
+
+2) DEPOIS, OCORRE 1 INSERT INTO...
+
+
+
+
+
+
+
+E ESSA É A UTILIDADE DO 
+
+FIELD DE 
+
+"METADATA$ISUPDATE",
+
+
+
+PQ ELE NOS INDICA SE ESSES ROWS FORAM 
+
+PARTE 
+
+
+DE 1 
+
+
+OPERATION DE UPDATE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PROFESSOR FALA 1 POUCO SOBRE ISSO...
+
+
+
+
+
+
+
+
+SE TIVÉSSEMOS 1 INSERT COMUM, BÁSICO,
+
+TERÍAMOS APENAS 1 ÚNICO ROW NESSE STREAM....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS OS UPDATES GERAM 2 ROWS,
+
+PQ VIRAM 1 DELETE E 1 INSERT...
+
+
+
+
+
+
+
+
+
+
+
+-> QUER DIZER QUE O ROW DE "BANANA" 
+
+FOI DELETADO, SIM,
+
+
+MAS ESSE NAO FOI 1 DELETE NORMAL,
+
+
+
+
+
+E É JUSTAMENTE POR ISSO QUE 
+
+TEMOS 
+O VALUE DE 
+"METADATA$ISUPDATE" COMO "TRUE"...
+
+
+
+
+
+
+
+SE A OPERATION FOSSE UM DELETE PURO/COMUM/NORMAL,
+
+
+
+ESSE FIELD DE "METADATA$ISUPDATE"
+
+
+
+FICARIA COMO FALSE...
+
+
+
+
+
+
+
+
+-----> OK... TAMBÉM TEMOS ESSE INSERT,
+
+
+
+
+QUE TAMBÉM TEM RELACAO COM NOSSO UPDATE...
+
+
+
+
+
+
+
+
+
+
+--> E, AGORA,
+ 
+
+
+ TEMOS UM MONTE DE INFO,
+
+
+ E PODEMOS 
+
+
+ FAZER 1 PUNHADO DE COISAS COM ELA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O QUE QUEREMOS FAZER COM ESSA DATA DO "UPDATE"
+
+
+
+
+DEPENDE DE NÓS, É CLARO...
+
+
+
+
+
+
+
+
+
+
+
+no nosso caso,
+
+
+
+O QUE QUEREMOS FAZER COM ESSA STREAM 
+
+
+É A MESMA COISA QUE FIZEMOS 
+
+NA AULA PASSADA, COM O INSERT 
+
+DAS CHANGES NA "SALES_FINAL_TABLE"...
+
+
+
+
+
+
+
+QUEREMOS PROCESSAR ESSAS CHANGES E UPDATAR 
+
+NOSSA 
+
+FINAL TABLE...
+
+
+
+
+
+
+
+
+
+
+
+
+OBS::: O MERGE STATEMENT/COMMAND 
+
+NAO EXISTE NO SQL PADRAO, MAS EXISTE EM ALGUNS 
+
+SISTEMAS SQL, COMO ORACLE SQL...
+
+
+
+
+
+
+
+
+PARA CONSEGUIRMOS APLICAR ESSAS CHANGES 
+
+NA FINAL TABLE,
+
+
+RODAMOS ASSIM:
+
+
+
+
+
+
+
+
+-- target table to MERGE CHANGES made in source table --
+MERGE INTO SALES_FINAL_TABLE F
+USING SALES_STREAM_EXAMPLE S -- stream that has captured the changes in the SALES_RAW_TABLE
+    ON F.id = S.id 
+WHEN matched 
+    AND S.METADATA$ACTION = 'INSERT'
+    AND S.METADATA$ISUPDATE = TRUE  -- indicates that the record/change has been created due to an update operation
+THEN UPDATE 
+        SET F.PRODUCT = S.PRODUCT,
+            F.PRICE = S.PRICE,
+            F.AMOUNT = S.AMOUNT,
+            F.STORE_ID = S.STORE_ID;
+
+
+
+
+
+SELECT * FROM SALES_FINAL_TABLE;
+
+SELECT * FROM SALES_RAW_STAGING;
+
+SELECT * FROM SALES_STREAM_EXAMPLE; -- now will be empty; the stream's content was consumed during the previous MERGE Statement (1-time-use only)...
+
+
+
+             
+
+
+
+
+
+
+
+
+
+
+
+
+
+CÓDIGO BEM CLUNKY, mas funciona..
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+o update foi aplicado 
+
+
+na nossa final table....
+
+
+
+
+
+
+
+NA NOSSA STREAM, FICAMOS SEM DATA, É CLARO,
+
+
+
+
+
+
+PQ ELA FOI __ CONSUMIDA__ 
+
+
+ -- nesse statement de 'merge"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------ agora devemos ver outro exemplo ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- *********** UPDATE 2 *********** 
+
+
+
+UPDATE SALES_RAW_STAGING
+SET PRODUCT = 'Green Apple'
+WHERE PRODUCT = 'Apple';
+
+
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE; -- 2 rows will appear, delete and insert.
+
+
+
+MERGE INTO SALES_FINAL_TABLE F
+USING SALES_STREAM_EXAMPLE S
+    ON F.ID = S.ID
+WHEN MATCHED 
+    AND S.METADATA$ACTION = 'INSERT'
+    AND S.METADATA$ISUPDATE = TRUE 
+THEN UPDATE
+    SET F.PRODUCT = S.PRODUCT, 
+        F.PRICE = S.PRICE,
+        F.STORE_ID = S.STORE_ID;
+
+
+
+
+SELECT * FROM SALES_FINAL_TABLE;
+
+SELECT * FROM SALES_RAW_STAGING;
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... AGORA VIMOS COMO OS 
+
+STREAMS FUNCIONAM COM 
+
+UPDATES,
+
+
+
+
+
+
+E TAMBÉM 
+
+
+
+TIVEMOS 2 EXEMPLOS DE COMO PODEMOS 
+
+PROCESSAR __ ESSES UPDATES,
+
+
+PARA ENTAO 
+
+
+IMPLEMENTAR 
+
+ISSO 
+
+
+EM 1 TARGET TABLE...
+
+
+
+
+
+
+
+
+
+NA PRÓXIMA AULA,
+
+
+VEREMOS O DELETE STATEMENT/COMMANDS,
+
+
+
+E COMO 
+
+PODEMOS OS CAPTURAR 
+
+E PROCESSAR... (
+    para atualizar 1 target table com essa change,
+    com esse delete...
+)
