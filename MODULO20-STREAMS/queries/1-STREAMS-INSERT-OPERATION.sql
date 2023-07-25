@@ -1,0 +1,1304 @@
+
+
+
+
+
+
+AGORA DEVEMOS ESTUDAR A MANEIRA PELA QUAL 
+
+
+PODEMOS COLOCAR ESSES STREAMS EM ACAO,
+
+NO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+COMECAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+--------------------- Stream Example: INSERT ------------------------------
+
+
+CREATE OR REPLACE TRANSIENT DATABASE STREAMS_DB;
+
+
+-- Create example table 
+CREATE OR REPLACE TABLE sales_raw_staging (
+    ID VARCHAR,
+    PRODUCT VARCHAR,
+    PRICE VARCHAR,
+    AMOUNT VARCHAR,
+    STORE_ID VARCHAR
+);
+
+
+
+
+-- Insert values 
+INSERT INTO SALES_RAW_STAGING VALUES 
+('1', 'Banana', '1.99', '1', '1'),
+('2', 'Lemon', '0.99', '1', '1'),
+('3', 'Apple', '1.79', '1', '1'),
+('4', 'Orange', '1.89', '1', '2'),
+('5', 'Cereals', '5.99', '2', '1');
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO.... CRIAMOS ESSA DATABASE, AÍ CRIAMOS 
+ESSA 
+
+
+TABLE E INSERIMOS 
+
+ESSA DATA....
+
+
+
+
+
+
+
+
+
+--> VAMOS CAPTURAR 
+
+AS DATA CHANGES NA TABLE DE "sales_raw_staging"..
+
+
+
+
+
+
+--> QUER DIZER QUE ESSA TABLE VAI SERVIR COMO EXEMPLO DE 
+
+-- """"SOURCE TABLE""""" --> como ela é a SOURCE TABLE,
+
+
+-- COLOCAMOS NOSSO OBJECT "STREAM" em cima dela...
+
+
+
+
+
+
+
+-- É CLARO QUE QUEREMOS INSERIR ALGUNS VALUES NESSA TABLE,
+
+
+-- PARA QUE TENHAMOS 1 POUCO DE SAMPLE DATA RESIDINDO NELA...
+
+
+
+
+
+
+
+
+
+
+
+-- -> PARA CRIARMOS UMA STREAM,
+
+
+-- TEMOS ESTA SINTAXE:
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE STREAM ON TABLE STREAMS_DB.PUBLIC.SALES_RAW_STAGING;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MAS ANTES DISSO, O PROFESSOR FALA DA TABLE DE "SALES_RAW_STAGING"...
+
+
+
+
+
+
+
+
+
+
+
+--> essa table TEM 1 FIELD DE "STORE_ID",
+
+
+
+que no caso SE REFERE A OUTRA TABLE,
+
+
+A TABLE
+
+
+DE "STORE_TABLE"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+A STORE_tABLE TEM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE STORE_TABLE (
+    STORE_ID NUMBER,
+    LOCATION VARCHAR,
+    EMPLOYEES NUMBER
+);
+
+
+
+
+INSERT INTO STORE_TABLE VALUES(1, 'Chicago', 33);
+INSERT INTO STORE_TABLE VALUES(2, 'London', 12);
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR FIM, QUEREMOS CRIAR TAMBÉM 
+
+
+
+
+
+
+A __ FINAL TABLE...
+
+
+
+
+
+
+
+
+
+
+NESSA TABLE FINAL,
+
+
+COMBINAMOS A INFO 
+
+
+
+
+
+DA "STORE_TABLE" 
+
+
+
+COM A ___ TABLE DE "SALES_RAW_STAGING"...
+
+
+
+
+
+
+
+É POR ISSO QUE TEMOS TODAS AS COLUMNS, DAS 2 TABLES, NESSA FINAL TABLE:
+
+
+
+
+
+
+
+CREATE OR REPLACE TABLE SALES_FINAL_TABLE (
+    ID INT,
+    PRODUCT VARCHAR,
+    PRICE NUMBER,
+    AMOUNT INT,
+    STORE_ID INT,
+    LOCATION VARCHAR,
+    EMPLOYEES INT
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ESSA TABLE,
+
+-- "SALES_FINAL_TABLE",
+
+
+
+-- SERÁ NOSSA 
+
+
+
+
+-- """"TARGET TABLE"""""
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE, MAIS TARDE,
+
+
+VAMOS QUERER __ CAPTURAR __ 
+
+AS CHANGES 
+
+
+OCORRIDAS 
+
+
+__ NA TABLE 
+
+
+DE "SALES_RAW_STAGING",
+
+COM 1 STREAM OBJECT,
+
+
+
+E ENTAO 
+
+
+
+AUTOMATICAMENTE USAR 
+
+
+ESSAS CHANGES PARA UPDATAR 
+
+
+
+A TABLE DE "SALES_FINAL_TABLE"...
+
+
+
+
+
+
+
+
+
+
+
+MAS VEREMOS ISSO POR ETAPAS...
+
+
+
+
+
+
+
+
+
+
+
+
+ANTES DISSO, QUEREMOS INSERIR ESSES VALUES,
+
+
+PARA DEIXAR 
+
+
+ESSA TABLE COM 1 POUCO DE SAMPLE DATA:
+
+
+
+
+
+-- basic INNER JOIN (same as JOIN)
+INSERT INTO SALES_FINAL_TABLE 
+SELECT 
+ S_RAW.id,
+ S_RAW.PRODUCT,
+ S_RAW.PRICE,
+ S_RAW.AMOUNT,
+ S.STORE_ID,
+ S.LOCATION,
+ S.EMPLOYEES
+ FROM SALES_RAW_STAGING S_RAW
+ JOIN STORE_TABLE S ON S.STORE_ID=S_RAW.STORE_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+
+
+
+CERTO, SUCESSO, ESSA DATA FOI ADICIONADA...
+
+
+
+
+
+
+
+
+
+
+
+
+--> JÁ PREPARAMOS ESSAS 3 TABLES..
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA VAMOS CRIAR ESSE STREAM OBJECT,
+
+
+E COLOCÁ-LO EM CIMA 
+
+
+DA 
+
+TABLE 
+
+DE SALES_RAW_STAGING...
+
+
+
+
+
+
+
+--> TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+-- Create a Stream Object -- 
+CREATE OR REPLACE STREAM SALES_STREAM_EXAMPLE ON TABLE
+SALES_RAW_STAGING;
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+create or replace stream <stream_name> ON TABLE 
+<table_name>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> AGORA TODAS AS CHANGES NESSA TABLE 
+
+SERAO CAPTURADAS, E COLOCADAS
+
+DENTRO DESSE STREAM OBJECT...
+
+
+
+
+
+
+
+
+--> PARA VISUALIZAR NOSSAS STREAMS,
+
+
+PODEMOS RODAR 
+
+
+
+
+
+SHOW STREAMS;
+
+
+
+
+
+
+
+
+
+--> ISSO NOS DÁ UMA LIST DE TODAS 
+
+NOSSAS EXISTING STREAMS...
+
+
+
+
+
+
+
+
+AS INFOS SAO:
+
+
+1) QUANDO A STREAM FOI CRIADA 
+
+
+2) O NOME DA STREAM 
+
+
+3) TYPE ---> TEMOS O TYPE DA STREAM,
+                QUE MAIS TARDE APRENDEREMOS QUAIS SAO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+o type está como "DELTA"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+POR ENQUANTO, ESTAMOS INTERESSADOS 
+
+
+
+EM 
+
+
+
+-- ""QUE DATA ESTÁ ARMAZENADA, NO MOMENTO,
+
+-- NESSE STREAM OBJECT"""...
+
+
+
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE O PROFESSOR 
+
+
+RODA ESTES COMANDOS:
+
+
+
+DESC STREAM SALES_STREAM_EXAMPLE;
+
+SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RODANDO ESTE COMANDO,
+
+
+
+
+
+
+
+OBSERVAMOS QUE 
+
+
+NOSSA STREAM ESTÁ COMPLETAMENTE 
+
+EMPTY...
+
+
+
+
+
+
+
+QUER DIZER QUE A STREAM 
+
+
+
+NAO "COPIOU" 
+
+
+OS VALUES 
+
+
+
+
+QUE TÍNHAMOS JÁ ARMAZENADOS 
+
+
+
+NA TABLE DE SALES_RAW_STAGING...
+
+
+
+
+
+
+
+
+
+
+
+ELE SÓ VAI CAPTURAR 
+
+
+
+AS NOSSAS CHANGES NESSA TABLE,
+
+E NADA MAIS DO QUE ISSO....
+
+
+
+
+
+
+
+
+escrevemos assim:
+
+
+
+
+
+-- Insert values in SALES_RAW_STAGING table, to check out SALES_STREAM_EXAMPLE stream "change capturing" behavior --
+INSERT INTO SALES_RAW_STAGING
+    VALUES 
+        (6, 'Mango', '2.99', 3, 1),
+        (7, 'Garlic', '5.99', 1, 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... ISSO FEITO,
+
+
+
+RODAMOS OUTRO SELECT 
+
+
+NA NOSSA STREAM,
+
+PARA AVALIAR 
+
+SE 
+
+
+NOSSAS CHANGES REALMENTE FORAM 
+
+CAPTURADAS...
+
+
+
+
+
+
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DE FATO, 2 ROWS FORAM INSERIDOS, E ELE 
+CAPTUROU ESSAS CHANGES...
+
+
+
+
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE SE ALTERAMOS A DATA DESSA TABLE,
+
+
+NOSSO STREAM OBJECT 
+
+VAI CAPTURAR
+
+
+ESSAS MUDANCAS...
+
+
+
+
+
+
+
+
+-------------------------
+
+
+
+
+
+
+
+RECAPITULANDO: ESSA "STREAM OBJECT" TABLE,
+
+
+CRIADA EM CIMA DE SALES_RAW_STAGING,
+
+
+
+
+
+
+VAI TER AS MESMAS COLUMNS 
+
+DESSA TABLE (iid, product, price, amount, store_id),
+
+
+
+MAS TAMBÉM TERÁ 
+
+
+
+3 COLUMNS ADICIONAIS,
+
+
+QUE SAO 
+
+
+
+METADATA$ACTION 
+
+
+METADATA$ISUPDATE 
+
+
+
+METADATA$ROW_ID 
+
+
+
+
+
+
+--------------------------
+
+
+
+
+
+PQ ESSAS META COLUMNS SEMPRE EXISTIRAO,
+
+
+
+
+EM 
+
+
+
+
+
+STREAM OBJECTS...
+
+
+
+
+
+
+
+
+
+
+
+--> AGORA ANALISAREMOS ESSAS 3 COLUMNS...
+
+
+
+
+
+
+
+
+
+
+METADATA$ACTION -->  ISSO NOS
+
+DIZ SE 
+
+A CHANGE 
+
+
+FOI 1 INSERT, UPDATE OU DELETE...
+
+
+
+
+
+
+
+
+
+
+METADATA$ISUPDATE -->  ISSO NOS 
+
+
+DIZ 
+
+
+__ SE FOI 1 UPDATE,
+
+
+
+OU SE FOI APENAS 1 BASIC INSERT....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO, MAS O QUE ACONTECE 
+
+
+
+
+
+SE VISUALIZARMOS NOSSA FINAL TABLE,
+
+COM ESTE CÓDIGO:
+
+
+
+
+SELECT * FROM SALES_FINAL_TABLE;
+
+
+
+
+
+
+
+
+
+
+
+--> NESSA TABLE, TEREMOS, NOVAMENTE,
+
+
+5 RECORDS, SEM TER OS 2 RECORDS QUE ADICIONAMOS 
+
+A 
+
+"SALES_RAW_STAGING" HÁ POUCO... ->  É CLARO,
+
+
+NAO TEREMOS ESSES 2 ROWS PQ AINDA NAO UPDATAMOS 
+
+ESSA TABLE,
+
+E ELA AINDA ESTÁ COM AQUELA DATA ANTIGA,
+
+DAQUELE JOIN STATEMENT ANTIGO (entre store_table e sales_raw_staging)..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS É PRECISAMENTE ISSO QUE QUEREMOS FAZER,
+
+COM NOSSO STREAM OBJECT .... ---> QUEREMOS 
+
+_ ATUALIZAR ESSA FINAL TABLE
+
+
+___ AUTOMATICAMENTE,
+
+SEMPRE QUE 
+
+ACONTECER ALGUMA ___ aLTERACAO__ 
+
+
+NA __ DATA DA TABLE 
+
+
+DE 
+
+"SALES_RAW_STAGING"...
+
+
+
+
+
+
+
+
+
+
+
+-> PQ SABEMOS QUE NESSE STREAM OBJECT 
+
+TEMOS ESSES 2 "MISSING ROWS",
+
+QUE QUEREMOS USAR 
+
+
+JUSTAMENTE PARA UPDATAR A FINAL TABLE...
+
+
+
+
+
+--> E QUEREMOS FAZER ISSO __ DE FORMA 
+
+AUTOMÁTICA...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS ANTES DE USARMOS ESSE 
+
+STREAM OBJECT DE 
+
+
+FORMA __ AUTOMÁTICA,
+
+
+
+DEVEMOS 
+
+
+VER __ COMO PODEMOS 
+
+
+
+"""CONSUME THIS STREAM OBJECT""" 
+
+
+
+
+DE MANEIRA MANUAL, SEM TASKS NEM NADA 
+
+
+DO GÊNERO...
+
+
+
+
+
+
+
+
+
+
+
+ESCREVEMOS ESTES STATEMENTS:
+
+
+
+
+
+
+-- Get/Check changes on data using STREAM (INSERTS):
+SELECT * FROM SALES_STREAM_EXAMPLE; -- capturou os 2 rows que foram addados à table.
+
+SELECT * FROM SALES_RAW_STAGING; -- 2 rows addados, agora sao 7.
+
+SELECT * FROM SALES_FINAL_TABLE; -- AINDA NAO FOI ATUALIZADA COM OS 2 ROWS QUE FORAM ADDADOS à table de "sales_raw_staging"...
+
+
+
+
+
+-- queremos atualizar a table de SALES_FINAL_TABLE com a data/rows (2 rows) que foram adicionados na table de sales_raw_staging...
+
+
+
+-- para isso, devemos CONSUMIR o STREAM OBJECT que criamos em cima da table de sales_raw_staging...
+-- (e que capturou as mudançcas/rows que foram adicionados)
+
+
+
+-- MANUAL Consume of Stream object (created on top of SALES_RAW_STAGING TABLE)
+INSERT INTO SALES_FINAL_TABLE 
+SELECT 
+ S_RAW.id,
+ S_RAW.PRODUCT,
+ S_RAW.PRICE,
+ S_RAW.AMOUNT,
+ S.STORE_ID,
+ S.LOCATION,
+ S.EMPLOYEES
+ FROM SALES_STREAM_EXAMPLE S_RAW   ---- USAMOS O STREAM OBJECT AQUI.
+ JOIN STORE_TABLE S ON S.STORE_ID=S_RAW.STORE_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE É O MESMO COMANDO 
+
+
+DE "INSERT INTO COM JOIN"
+
+
+de antes,
+
+
+MAS AGORA 
+
+
+USANDO 
+
+
+1 STREAM EM VEZ DA TABLE EM SI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ASSIM QUE ESSE INSERT FOR EXECUTADO,
+
+
+A DATA/TABLE EXISTENTE NA NOSSA STREAM 
+
+
+SERÁ __ AUTOMATICAMENTE __ APAGADA...
+
+
+
+
+
+
+
+-- Check result of consumption of stream object:
+SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+CERTO... FAZ SENTIDO.
+
+
+
+
+
+todos os rows dessa table do stream 
+
+
+NAO EXISTIRAO MAIS...
+
+
+
+
+
+
+
+
+NOSSAS STREAMS APENAS PODEM SER 
+
+CONSUMIDAS 1 ÚNICA VEZ....
+
+
+
+
+
+
+
+
+NOSSA STREAM SÓ FICARÁ COM NOVOS VALUES 
+
+
+NO SEU INTERIOR __ SE 
+
+FIZERMOS NOVOS INSERTS NA TABLE DE SALES_RAW_STAGING:
+
+
+
+
+
+
+
+
+-- Stream, after being consumed by the INSERT INTO with JOIN statement, will BE EMPTY --
+SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+
+
+
+-- Insert values into sales_raw_staging, again --
+INSERT INTO SALES_RAW_STAGING
+    VALUES 
+    (8, 'dummy', '9.99', 3, 2)
+    (9, 'more_dummy', '7.50', 2, 1);
+
+
+
+-- The stream object now will be filled again, filled with the insert changes. --
+SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
