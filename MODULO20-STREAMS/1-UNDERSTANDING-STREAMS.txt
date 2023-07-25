@@ -1,0 +1,1103 @@
+
+
+
+
+
+
+
+AGORA FALAREMOS SOBRE STREAMS...
+
+
+
+
+
+
+
+
+
+
+--> STREAMS ---> SAO MAIS DIFÍCEIS DE COMPREENDER 1 POUCO,
+
+NO INÍCIO,
+
+MAS VAMOS 
+
+
+ENTENDER TUDO, ETAPA-POR-ETAPA...
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+--> NO FINAL, VC ENTENDERÁ O QUE SAO STREAMS, COMO FUNCIONAM,
+
+
+
+E COMO EXATAMENTE PODEMOS AS UTILIZAR...
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+BEM, SE ESTAMOS CONSTRUINDO DATA WAREHOUSES,
+
+
+
+GERALMENTE FAZEMOS ISSO 
+
+POR MEIO DE UM PROCESSO ETL ( extract, transform, load)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEMOS ISTO:
+
+
+
+
+
+
+DATA SOURCES 
+ 
+
+[DATA]  ============== ETL ===================> data warehouses...
+(TABLES)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NESSE PROCESSO ETL-EXEMPLO,
+
+QUEREMOS __ EXTRAIR A DATA DA SOURCE TABLE,
+
+TRANSFORMÁ-LA 
+
+E ENTAO 
+
+__ A ESCREVER _ NAQUELA __ DATA WAREHOUSE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E GERALMENTE FAZEMOS ESSA EXTRACAO/TRANSFORM/LOAD 
+
+
+
+
+
+POR MEIO 
+
+
+
+DE UM 
+
+
+""DELTA LOAD""....
+
+
+
+
+
+
+
+
+
+
+DELTA LOAD ----> SIGNIFICA QUE 
+                    SE TEMOS ADDITIONAL ROWS,
+                    CHANGES EXTRAS 
+                    NO NOSSO DATA SOURCE,
+
+                    COMO POR EXEMPLO MAIS 3 RECORDS NA TABLE,
+
+
+                    ___VAMOS ___ QUERER ___ 
+
+                    FAZER 
+
+
+                    __lOAD___ DE APENAS__ ESSES 
+
+                    3 RECORDS ADICIONAIS/QUE AINDA NAO ESTAO NA DATA WAREHOUSE,
+
+                    E AÍ FAZER _ APPEND__ DESSES RECORDS 
+
+                    NA NOSSA TABLE FINAL/DATA WAREHOUSE...
+
+
+
+
+
+
+
+OUTRA POSSIBILIDADE É ""REMOVEMOS 3 ROWS"",
+
+
+ou "UPDATAMOS 3 ROWS",
+
+
+
+e aí queremos que apenas essas mini-mudancas sejam aplicadas...
+
+
+
+
+
+
+
+
+
+
+--> QUEREMOS "CAPTURAR" 
+
+O QUE MUDOU NA NOSSA SOURCE TABLE,
+
+E AÍ 
+
+APLICAR ESSAS CHANGES 
+
+
+NA NOSSA TARGET TABLE, 
+
+
+
+NA NOSSA WAREHOUSE...
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+E ESSE É JUSTAMENTE O OBJETIVO DE "STREAMS"... SAO USADAS PARA RESOLVER ESSE 
+PROBLEMA...
+
+
+
+
+
+
+
+
+
+
+
+
+STREAMS:
+
+
+
+A) SAO __ OBJECTS QUE __ GRAVAM (DML-)  __MUDANCAS 
+FEITAS _A  1 TABLE..
+
+
+
+
+
+B) GRAVAM/RECORD __ SE __ EXISTIRAM CHANGES,
+
+E, SE SIM, QUAIS CHANGES FORAM FEITAS A 1 TABLE ESPECÍFICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE ESTAMOS FALANDO SOBRE CHANGES,
+
+
+
+TEMOS QUE MENCIONAR/FALAR SOBRE 
+
+
+A "DML", 
+
+
+
+A "DATA MANIPULATION LANGUAGE",
+
+
+
+
+
+
+
+E AS DML CHANGES,
+
+
+QUE SAO COISAS COMO INSERTS, UPDATES E DELETES...
+
+
+
+
+
+
+
+
+
+--> E o processo de "CAPTURAR"
+
+ESSAS 
+
+CHANGES É 
+
+CHAMADO 
+
+
+DE 
+
+
+"""CHANGE DATA CAPTURE""" (CDC)
+
+
+
+
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS DEVEMOS ESTUDAR A MANEIRA PELA QUAL FUNCIONAM, EM MAIORES DETALHES:
+
+
+
+
+
+
+
+
+
+
+
+
+conforme mencionamos,
+
+
+
+1 stream ------> É APENAS UM OBJECT EM QUE __CRIAMOS __ 
+
+
+EM __ CIMA __ DE 1 TABLE QUE JÁ EXISTE,
+
+1 TABLE ESPECÍFICA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[STREAM OBJECT] ---->  TABLE 
+       👁️                🏗️
+
+
+
+
+
+
+
+
+
+--> esse object CAPTURA 
+
+
+
+TODAS AS CHANGES EM 1 TABLE...
+
+
+
+
+
+E ESSAS CHANGES INCLUEM AS OPERATIONS DE:
+
+
+1) DELETE 
+
+
+2) INSERT 
+
+
+3) UPDATE...
+
+
+
+
+
+
+
+
+
+
+OK...
+
+
+
+
+SEMPRE QUE 1 DESSAS OPERATIONS ACONTECER NESSA TABLE QUE 
+
+ESTÁ SENDO "WATCHED"
+
+POR ESSA STREAM,
+
+
+
+
+
+ESSES ROWS ALTERADOS, DENTRO DESSA TABLE,
+
+
+
+
+FICARÃO ENFIADOS ____dENTRO _ DAQUELE STREAM 
+
+OBJECT,
+
+
+
+COMO "DATA QUE FOI ALTERADA"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+NO STREAM OBJECT PODEMOS VER OS 
+
+ROWS QUE FORAM UPDATADOS OU INSERIDOS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> o stream object SOMENTE CONTÉM ISSO...
+
+
+
+
+
+
+
+
+-> O QUE QUER DIZER QUE O STREAM OBJECT 
+
+
+TERÁ ___ A MESMA __ QUANTIDADE __ DE COLUMNS 
+
+QUE EXISTE 
+
+NA TABLE DE VERDADE...
+
+
+
+
+
+
+
+
+
+
+
+--> SE TEMOS AS COLUMNS ID, FIRST_NAME E AGE 
+
+
+NA TABLE ORIGINÁRIA,
+
+
+
+
+
+
+TEREMOS 
+
+
+ESSAS 3 COLUMNS 
+
+
+
+NO STREAM OBJECT, TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+
+--> ALÉM DISSO, NO STREAM OBJECT,
+
+
+
+TEREMOS 
+
+
+
+
+___________3 COLUMNS ___ ADICIONAIS...
+
+
+
+
+
+
+
+
+
+o chatgpt nos explica assim:
+
+
+
+
+
+
+
+
+
+As of my last update in September 2021, Snowflake SQL does not have a built-in concept of a "stream object" with specific columns. However, it seems like you might be referring to Snowflake's concept of a "STREAM" in the context of data replication and change data capture (CDC).
+
+In Snowflake, a STREAM is an internal object used for capturing changes made to a table. When a table is enabled for CDC (change data capture), a corresponding STREAM is automatically created. The purpose of a STREAM is to track the changes (inserts, updates, and deletes) that occur on the associated table.
+
+If you were referring to the columns of a STREAM in the context of CDC, they are typically as follows:
+
+METADATA$ACTION: This column indicates the type of change that occurred on the source table. It can have three possible values: 'INSERT', 'UPDATE', or 'DELETE', representing the type of operation performed on the source table.
+
+METADATA$ISUPDATE: This column contains a boolean value (true/false) indicating whether the change captured in the stream is an update or not. It is useful for scenarios where you need to identify whether a row was inserted or updated.
+
+METADATA$ROW_ID: This column contains a unique identifier for the row in the source table that was changed. This identifier is typically generated by Snowflake and allows you to track changes to individual rows.
+
+It's essential to keep in mind that the specific names and structure of the columns in the stream might vary depending on the configuration of CDC and the version of Snowflake. Since Snowflake is continuously evolving, it's always a good idea to refer to the official Snowflake documentation for the latest information on streams and CDC features.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> essas 3 columns adicionais sao METADATA,
+
+
+E NOS DIZEM 
+
+
+SE ESSA DATA FOI UPDATADA,
+
+
+SE ELA FOI INSERIDA, 
+
+
+
+SE ELA FOI DELETADA...
+
+
+
+
+
+
+
+
+--> TAMBÉM NOS INDICA QUAL ROW FOI AFETADO...
+
+
+
+
+
+
+
+AS COLUMNS SAO:
+
+
+
+
+METADATA$ACTION     -- UPDATE, INSERT, DELETE. 
+METADATA$UPDATE  - BOOLEAN - TRUE/FALSE
+METADATA$ROW_ID  - INT 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... MAS A PARTE IMPORTANTE, AQUI,
+É QUE 
+
+
+OS VALUES QUE 
+
+
+SAO ""VISÍVEIS""
+
+
+
+NO OBJETO "STREAM"
+
+NAO SAO ACTUALLY 
+
+
+
+ARMAZENADOS 
+
+
+
+NO STREAM OBJECT,
+
+
+
+
+
+E SIM __ SAO RETRIEVADOS _ DA TABLE ORIGINAL...
+
+
+
+
+
+
+
+
+O QUE ISSO SIGNIFICA, EM OUTROS TERMOS,
+
+
+
+É QUE __ NAO HÁ NENHUM CUSTO ADICIONAL 
+
+
+PARA AS COLUMNS ""VISÍVEIS"" DO STREAM OBJECT.
+
+
+
+
+
+
+
+
+
+
+
+
+O ÚNICO PEQUENO CUSTO EXTRA QUE 
+
+
+RECEBEMOS É POR CONTA 
+
+DAQUELAS ADDITIONAL COLUMNS,
+
+AS 3 COLUMNS DE "META"
+
+QUE FICAM AO FINAL DE NOSSO STREAM OBJECT....
+
+
+(é um pequeno custo de STORAGE)...
+
+
+
+
+
+
+
+
+-------> ISSO GARANTE QUE NOSSOS COSTS/CONSUMPTION 
+
+NAO AUMENTE MT....
+
+
+
+
+
+OS CUSTOS SAO REALMENTE MÍNIMOS...
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+A SINTAXE DE CRIACAO DE STREAMS É ESTA:
+
+
+
+
+
+
+
+
+CREATE OR REPLACE STREAM <stream_name>
+ON TABLE <table_name>;
+
+
+
+
+
+
+
+
+DEPOIS, PODEMOS RODAR QUERIES EM CIMA DESSE STREAM,
+
+TIPO ASSIM:
+
+
+
+
+
+SELECT * FROM <stream_name>;
+
+
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+CERTO... PRECISAMOS ESPECIFICAR A TABLE 
+
+
+DE QUE QUEREMOS "CAPTURE"
+
+
+CHANGES...
+
+
+
+
+
+
+--> certo....
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+
+
+CREATE STREAM EXAMPLE_STREAM 
+ON TABLE OUR_FIRST_DB.PUBLIC.CUSTOMERS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---_> O QUE É INTERESSANTE DESSA STREAM,
+
+
+
+CONFORME MENCIONADO,
+
+
+
+
+
+É QUE PODEMOS QUERIAR DIRETAMENTE DELA,
+
+
+
+
+COM COMANDOS COMO ESTE:
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT * FROM EXAMPLE_STREAM;
+
+
+
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+E AGORA TEMOS A PARTE INTERESSANTE 
+
+
+DE STREAMS...
+
+
+
+
+
+
+--> PQ O PROFESSOR HAVIA MENCIONADO QUE 
+
+
+
+
+
+
+
+"""TODAS AS ROWS QUE FORAM ALTERADAS, NA TABLE ORIGINAL,
+FICAM 
+
+INCLUSAS NO STREAM OBJECT""..
+
+
+
+
+
+
+----------------------------------------
+
+
+
+
+
+
+
+
+
+CASO CONCRETO::
+
+
+
+
+
+
+
+
+DIGAMOS QUE NA TABLE ORIGINAL OCORRERAM 3 INSERTS...
+
+
+
+
+
+
+--> NÓS HAVÍAMOS CRIADO 1 STREAM OBJECT,
+
+PORTANTO ESSE STREAM OBJECT VAI __ CAPTURAR__ 
+
+ESSES 3 INSERTS...
+
+
+
+
+
+
+--> POR FIM, QUEREMOS __ FAZER INSERT DESSES 3 
+
+NOVOS ROWS LÁ NA NOSSA "TARGET TABLE" (a original ou outra, isso nao 
+entendi)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> BEM, MAS A PARTE INTERESSANTE VEM AGORA:
+
+
+ASSIM QUE O INSERT DESSES ROWS, LÁ DO STREAM 
+OBJECT NA DIRECAO DA TARGET TABLE, TIVER ACABADO,
+
+
+A TABLE QUE EXISTIA 
+
+
+NO STREAM OBJECT __ SERÁ _ REMOVIDA....
+
+
+
+
+
+
+
+
+
+
+
+
+---> MAS PQ ACONTECE ESSA REMOCAO DA TABLE 
+    DENTRO DO STREAM OBJECT? -------> É PQ, NO CONTEXTO 
+                                        DOS PROCESSOS DE
+                                        ETL, É EXATAMENTE 
+                                        ISSO QUE QUEREMOS QUE 
+                                        ACONTEÇA 
+                                        (
+                                    PQ ASSIM QUE OCORREREM
+                                    OS INSERTS 
+
+                                    DESSA ADDITIONAL DATA/CHANGES,
+
+                                    NÓS NAO PRECISAMOS MAIS 
+                                    TER ESSA DATA 
+
+                                    NO STREAM OBJECT,
+
+                                    ISSO PQ TODAS 
+
+                                    ESSAS CHANGES JÁ ESTARAO 
+
+                                    IMPLEMENTADAS NA TARGET TABLE,
+                                    A ESSE PONTO...
+
+                                        )
+
+
+
+
+
+
+ISSO AÍ JÁ EXPLICA UM POUCO O __PROPÓSITO__ DO STREAM 
+OBJECT,
+
+
+
+E É POR ISSO QUE A DATA DESAPARECE DO 
+
+STREAM OBJECT,
+QUANDO 
+
+FIZEMOS O INSERT DA DATA EM 1 TARGET TABLE....
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS PENSAR 
+
+
+NA STREAM 
+
+
+
+COMO UMA "QUEUE", UMA 
+
+FILA COM 
+
+
+"TRABALHO A SER FEITO",
+
+
+
+changes que foram aplicadas/devem ser aplicadas.... e, assim que 
+
+essas changes 
+
+sao aplicadas 
+
+na TARGET TABLE,
+sua data se torna desnecessária,
+
+e por isso é APAGADA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+ESSE CONCEITO PODE SER CONFUSO, NO INÍCIO....
+
+
+
+AGORA DEVEMOS VER ISSO NA PRÁTICA...
+
+
+
+
