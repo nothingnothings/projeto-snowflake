@@ -1,0 +1,542 @@
+
+
+
+
+
+
+
+
+
+
+
+QUANDO DEVEMOS USAR MATERIALIZED VIEWS,
+
+
+EIS A QUESTAO...
+
+
+
+
+
+
+
+
+
+
+
+AGORA QUE VIMOS QUE EXISTEM MAINTENANCE COSTS,
+
+
+JUNTO COM OS BENEFÍCIOS DAS MATERIALIZED VIEWS,
+
+
+
+
+
+QUEREMOS DAR 1 OLHADA NAS CONSIDERACOES QUE DEVEMOS TER,
+
+
+ANTES DE CRIARMOS 1 MATERIALIZED VIEW....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> NESSA LECTURE, VEREMOS:
+
+
+
+
+
+1) OS USE-CASES EM QUE 
+
+CRIAR 1 MATERIALIZED VIEW FAZ SENTIDO...
+
+
+
+2) QUAIS SAO ALGUMAS ALTERNATIVAS 
+ÀS MATERIALIZED VIEWS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE-CASES (quando deve ser usada 1 materialized view):
+
+
+
+
+
+
+
+
+1) SABEMOS QUE 1 VIEW MUITAS VEZES 
+
+DEMORA MT TEMPO PARA SER PROCESSADA... --> E ESSA É UMA SITUACAO/USE-CASE 
+POSSÍVEL,
+
+ISSO SE ESSA QUERY/VIEW  FOR/É USADA COM MT FREQUENCIA NO SEU APP...
+
+
+
+
+NESSES CASOS, USARÍAMOS UMA MATERIALIZED VIEW, criaríamos uma...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUANDO NAO DEVEMOS USAR:
+
+
+
+
+
+1) QUANDO __sABEMOS_ QUE A UNDERLYING DATA __ VAI 
+
+MUDAR COM MT FREQUENCIA, E EM UMA REGULAR-BASIS....
+
+(
+    aí nao vale a pena, nem um pouco...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE DEVEMOS CRIAR 1 MV SE:
+
+
+
+
+
+
+1) temos uma view/query que é processada muitas e muitas vezes 
+no nosso app, e que demora bastante para ser processada 
+
+
+
+
+2) SE TEMOS DATA QUE NAO É UPDATADA FREQUENTEMENTE,
+
+POUQUÍSSIMAS CHANGES AO LONGO DO MES/ANO... (bem menos do que 1 vez 
+por semana)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OUTRO DETALHE --> SE A TABLE FOR MUITO LARGA,
+
+
+
+ISSO SE TORNA OUTRO PROBLEMA...
+
+
+PQ SE A DATA MUDAR CONSTANTEMENTE,
+ TEREMOS AINDA MAIS CUSTOS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ IDEAL USE-CASE:
+
+
+
+
+
+
+
+ 1) A UNDERLYING DATA NAO É MUDADA COM FREQUENCIA...
+
+
+ 2) A UNDERLYING DATA É _ GRANDE 
+
+
+
+ 3) A UNDERLYING DATA DEMORA _PARA SER QUERIADA (TANTO 1 TABLE COMO VIEW)...
+
+
+
+
+
+-----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE A DATA __ É ALTERADA__ EM 1 VERY REGULAR BASIS, COM FREQUENCIA,
+
+TEMOS OUTRAS ALTERNATIVAS BOAS PARA ELA, PARA DIMINUIR O QUERY TIME..
+
+
+
+
+TEMOS:
+
+
+
+
+
+
+
+
+1) TASKS E STREAMS... -> ESSA PODE SER UMA ALTERNATIVA
+___bEM MELHOR...
+
+
+** PODEMOS ACTUALLY __ rEBUILD__ ALGO __ PARECIDO __ 
+COM A MATERIALIZED VIEW... ---------_> OU SEJA,
+
+PODEMOS 
+
+CRIAR 
+
+1 
+
+TABLE QUE CONTENHA __ APENAS __ A DATA DAQUELE SELECT STATEMENT
+NECESSÁRIO (daquela ""materialized view""),
+
+
+
+
+MAS 1 TABLE QUE SERIA ATUALIZADA COM EMPREGO 
+
+DE _ _tASKS__ E STREAMS___...
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+POR EXEMPLO, SE TIVERMOS 1 UNDERLYING TABLE,
+
+
+
+e se o statement (Select/view) FOR RODADO A PARTIR 
+
+
+DESSA TABLE,
+
+
+em vez de armazenarmos essa query em 1 materialized view,
+
+
+
+
+
+
+
+PODEMOS CRIAR 1 __ TASK__ COM 1 COMANDO SQL DE MERGE,
+
+
+
+EXATAMENTE COMO VIMOS NOS MÓDULOS ANTERIORES,
+
+
+
+
+
+um comando de MERGE QUE SERIA EXECUTADO "ON A REGULAR BASIS",
+
+
+
+
+TALVEZ 1 VEZ POR SEMANA, POR EXEMPLO,
+
+
+colocaríamos 1 schedule 
+
+
+nessa task,
+
+
+
+
+
+QUE ENTAO FARIA O MERGE DESSAS CHANGES NA NOSSA TABLE...
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+E É CLARO QUE PODERÍAMOS COMBINAR ESSA TASK DE MERGE 
+
+
+COM __ 1 STREAM OBJECT,
+
+
+
+COLOCAR 1 STREAM OBJECT EM CIMA 
+
+__ DA ORIGINAL TABLE/SOURCE TABLE,
+
+
+
+
+E AÍ __ MONITORAR ___ SE EXISTEM QUAISQUER CHANGES....
+
+
+
+
+
+
+
+SE OCORREREM QUAISQUER CHANGES,
+
+EXECUTAMOS 1 COMANDO SQL NA TASK DE MERGE QUE CRIAMOS,
+
+PARA FAZER
+
+MERGE 
+
+DAS CHANGES 
+
+
+DO STREAM OBJECT DIRETAMENTE NA "FINAL TABLE" (que 
+será praticamente uma ""materialized view"" de camelô)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> com isso, podemos REALMENTE CONSTRUIR UMA 
+
+ALTERNATIVA QUE 
+
+
+
+ESSENCIALMENTE FARÁ A MESMA COISA QUE 
+
+UMA MATERIALIZED VIEW,
+
+
+
+MAS COM BEM MENOS CUSTOS, E COM UM FUNCIONAMENTO DIFERENTE.
+
+
+
+
+
+
+
+
+
+-> PODE SER MAIS BARATO, E PODEMOS TER MAIS CONTROLE 
+
+SOBRE TODA A OPERACAO (colocar diferentes schedules, etc)...
+
+
+
+
+
+-------------------------------------------------------
+
+
+ok, mas e quanto à velocidade?
+
+
+
+ela ainda será lenta,
+
+
+com esse esquema de tasks com stream objects...
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK, MAS QUAIS SAO OS USE-CASES PARA 1 MATERIALIZED VIEW:
+
+
+
+
+
+
+
+1) NAO USE MATERIALIZED VIEWS SE SUAS DATA CHANGES 
+SAO MT FREQUENTES, E SE A UNDERLYING TABLE TEM UMA QUANTIDADE 
+MT GRANDE DE DATA...
+
+
+
+
+
+
+
+2) SEMPRE DEVEMOS TER O MAINTENANCE COST NA MENTE....
+
+
+
+
+3) SE TIVERMOS OUTRAS ALTERNATIVAS,
+
+PODEMOS 
+
+LEVERAGE OUTRAS FEATURES BUILT-IN DO SNOWFLAKE,
+
+COMO STREAMS E TASKS,
+
+PARA 
+
+CONSTRUIR 1 SOLUCAO NÓS MESMOS...
+
+
+
+
+
+
+
+
+SOBRE ISSO, O CHATGPT NOS EXPLICA:
+
+
+
+
+
+
+
+https://chat.openai.com/share/947d376a-0546-409f-8bf9-79686444f98b
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
