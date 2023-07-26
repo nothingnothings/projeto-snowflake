@@ -1,0 +1,749 @@
+
+
+
+
+
+
+
+
+agora veremos COMO __ IMPLEMENTAR 
+
+
+TODO TIPO DE DATA CHANGE (
+    INSERT INTO, UPDATE, DELETE...
+) AO MESMO TEMPO,
+
+A PARTIR DE "STREAM OBJECTS"...
+
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS COMO FAZER ISSO TUDO __ 
+
+
+
+EM 1 ___ ÚNICO STATEMENT...___
+
+
+
+
+
+
+
+
+
+
+--> esse statement PODE SER MUITO ÚTIL,
+PQ É 
+
+
+CLARO QUE PODEMOS TER MÚLTIPLOS UPDATES,
+
+MÚLTIPLOS INSERTS,
+
+MÚLTIPLOS DELETES,
+
+DURANTE O TEMPO DE VIDA DE 1 TABLE...
+
+
+
+
+
+
+
+GERALMENTE 
+
+
+
+SEMPRE AS CHANGES SERAO "MIXED",
+
+
+
+POR ISSO É MT ÚTIL TER 1 STATEMENT 
+
+DESSES,
+
+
+
+
+
+1 STATEMENT PARA PODERMOS 
+
+IMPLEMENTAR TODAS ESSAS DATA CHANGES...
+
+
+
+
+
+--------------------------
+
+
+
+
+MAS ANTES DISSO, DEVEMOS RECAPITULAR 
+
+AS COISAS 
+
+QUE 
+
+TEMOS 
+
+NAS NOSSAS TABLES...
+
+
+
+
+
+
+
+
+
+RODAMOS ISTO:
+
+
+
+
+
+
+
+SELECT * FROM SALES_RAW_STAGING; -- 5-6 rows
+
+SELECT * FROM SALES_STREAM_EXAMPLE; -- will be empty, no changes captured.
+
+SELECT * FROM SALES_FINAL_TABLE; -- 6 rows
+
+
+
+
+-- Insert 
+INSERT INTO SALES_RAW_STAGING VALUES (
+    2, 'Lemon', '0.99', 1, 1
+);
+
+-- Update
+UPDATE SALES_RAW_STAGING
+    SET PRODUCT = 'Lemonade'
+    WHERE PRODUCT = 'Cereals';
+
+
+
+-- Delete 
+DELETE FROM SALES_RAW_STAGING
+    WHERE PRODUCT = 'Orange';
+
+
+
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE; -- now will be filled.
+
+
+
+
+
+
+---------------------------------
+
+
+
+
+
+
+
+
+OK, MAS QUAL É O STATEMENT 
+"SUPER-TRUNFO",
+
+QUE VAI 
+
+
+ATUALIZAR TODO O TIPO DE CHANGE?
+
+
+
+
+
+
+
+
+
+
+é um MERGE STATEMENT,
+
+E É ESTE AQUI:
+
+
+
+
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE; --4 rows = has id, product, price, amount, store_id 
+SELECT * FROM STORE_TABLE; -- 2 rows - has locations, employees.
+
+
+
+MERGE INTO SALES_FINAL_TABLE F  -- "SALES_FINAL_TABLE" --> TARGET TABLE to merge changes from source table.
+USING (
+    SELECT S_STREAM.*, ST.LOCATION, ST.employees
+    FROM SALES_STREAM_EXAMPLE S_STREAM -- OUR STREAM and an alias for it (S_STREAM)
+    JOIN STORE_TABLE ST
+    ON S_STREAM.STORE_ID = ST.STORE_ID -- we get also "location" and "employees" fields.
+) S 
+ON F.ID = S.ID
+WHEN MATCHED -- DELETE CONDITION
+    AND S.METADATA$ACTION = 'DELETE'
+    AND S.METADATA$ISUPDATE = 'FALSE'
+THEN DELETE 
+WHEN MATCHED -- UPDATE CONDITION
+    AND S.METADATA$ACTION = 'INSERT'
+    AND S.METADATA$ISUPDATE = 'TRUE'
+THEN UPDATE 
+        SET F.PRODUCT = S.PRODUCT,
+            F.PRICE = S.PRICE,
+            F.AMOUNT = S.AMOUNT, 
+            F.STORE_ID = S.STORE_ID
+WHEN NOT MATCHED -- INSERT CONDITION
+    AND S.METADATA$ACTION = 'INSERT'
+THEN INSERT (id, product, price, store_id, amount, employees, location)
+    VALUES (S.ID, S.product, S.price, S.store_id, S.amount, s.employees, s.location);
+
+
+
+------------------------------
+
+
+
+
+
+
+
+AGORA DISSECAREMOS ESSE MERGE STATEMENT:
+
+
+
+
+
+
+
+
+1) ANTES DE MAIS NADA, 
+
+O QUE QUEREMOS FAZER 
+
+É ___ MATCHEAR __ TODOS 
+
+OS IDS 
+
+
+QUE __ EXISTEM __NA __ STREAM __ 
+
+COM OS __ IDS __ DA 
+
+FINAL TABLE (
+
+
+
+)
+
+
+
+
+
+melhor usar o chatgpt para explicar...
+
+
+
+
+
+
+
+
+This Snowflake SQL code 
+is performing a MERGE 
+(also known as an UPSERT) operation,
+ which combines data from two tables: 
+ the target table called "SALES_FINAL_TABLE" (abbreviated as "F") 
+ and a source table created as a
+  subquery (abbreviated as "S"). The goal
+   is to synchronize the data between the target 
+   table and the source table based on 
+   certain conditions.
+
+
+
+
+
+
+
+This Snowflake SQL code is performing a MERGE (also known as an UPSERT) operation, which combines data from two tables: the target table called "SALES_FINAL_TABLE" (abbreviated as "F") and a source table created as a subquery (abbreviated as "S"). The goal is to synchronize the data between the target table and the source table based on certain conditions.
+
+Let's break down the code step by step:
+
+Merge Statement: The query starts with the MERGE INTO statement, indicating that data will be merged into the target table "SALES_FINAL_TABLE" (aliased as "F").
+
+Source Data (USING Clause): The source data is provided using a subquery aliased as "S". This subquery selects data from two tables: "SALES_STREAM_EXAMPLE" (aliased as "S_STREAM") and "STORE_TABLE" (aliased as "ST"). The data is selected by joining the "SALES_STREAM_EXAMPLE" table with the "STORE_TABLE" based on their "STORE_ID" column, resulting in a combined dataset from both tables.
+
+Merge Condition (ON Clause): The ON clause specifies the condition for matching rows between the target table and the source subquery. It uses the "ID" column from both tables as the matching key.
+
+When Matched (DELETE and UPDATE Conditions): The WHEN MATCHED clause defines what actions to take when a match is found between the target table and the source subquery.
+
+DELETE Condition: If a row exists in the target table and its corresponding row in the source subquery has a metadata action of 'DELETE' and is not an update (METADATA$ISUPDATE = 'FALSE'), then the row in the target table will be deleted.
+
+UPDATE Condition: If a row exists in the target table and its corresponding row in the source subquery has a metadata action of 'INSERT' and is an update (METADATA$ISUPDATE = 'TRUE'), then the row in the target table will be updated. The columns "PRODUCT," "PRICE," "AMOUNT," and "STORE_ID" will be updated with the values from the source subquery.
+
+When Not Matched (INSERT Condition): The WHEN NOT MATCHED clause defines what action to take when a matching row is not found between the target table and the source subquery.
+
+INSERT Condition: If a row exists in the source subquery but not in the target table and its metadata action is 'INSERT', then a new row will be inserted into the target table with the columns "ID," "PRODUCT," "PRICE," "STORE_ID," "AMOUNT," "EMPLOYEES," and "LOCATION" populated with the corresponding values from the source subquery.
+In summary, this MERGE statement is used to synchronize the "SALES_FINAL_TABLE" with the data from the "SALES_STREAM_EXAMPLE" and "STORE_TABLE" based on specific conditions for insertion, deletion, and updating of rows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O OBJETIVO DO MERGE 
+É 
+
+COMPARAR TODOS OS IDS,
+
+E VER QUAIS 
+
+
+
+VALUES FORAM INCLUÍDOS 
+
+
+NA NOSSA 
+
+
+STREAM...
+
+
+
+
+
+
+
+
+
+---> ESSE É UM STATEMENT BEM COMUM,
+
+
+1 MERGE,
+
+
+PARA COMPARAR ESSES VALUES E IMPLEMENTAR 
+
+ESSAS CHANGES 
+
+NAS NOSSAS TARGET TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS COMO A TARGET TABLE (SALES_FINAL_TABLE)
+
+
+
+INCLUI VALUES 
+
+
+TANTO 
+
+
+
+DAS TABLES 
+
+
+DE "SALES_RAW_STAGING" (que tem um monte de fields,
+mas nao contém nem location nem employees)
+
+
+
+
+
+
+E 
+
+
+DE 
+
+"STORE_TABLE",
+
+
+
+
+PRECISAMOS FAZER 1 JOIN DESSAS 
+
+2 TABLES ANTERIORMENTE,
+
+
+
+COM ESTE STATEMENT:
+
+
+
+
+
+
+
+   SELECT S_STREAM.*, ST.LOCATION, ST.employees
+    FROM SALES_STREAM_EXAMPLE S_STREAM -- OUR STREAM and an alias for it (S_STREAM)
+    JOIN STORE_TABLE ST
+    ON S_STREAM.STORE_ID = ST.STORE_ID -- we get also "location" and "employees" fields.
+
+
+
+
+
+
+
+É CLARO QUE AQUI FAZEMOS JOIN (da table de STORE_TABLE) COM A STREAM EM 
+
+SI (Que tem a mesma estrutura 
+
+da table de SALES_RAW_STAGING),
+
+PQ É 
+
+APENAS AS CHANGES/DATA ALTERADA,
+
+
+
+MOSTRADA NESSE STREAM OBJECT,
+
+QUE QUEREMOS APLICAR 
+
+
+NA NOSSA FINAL TABLE.....
+
+
+
+
+
+OK...
+
+
+
+
+
+
+
+
+É POR ISSO QUE USAMOS ISSO, ESSE SUBSET INTEIRO,
+
+
+
+para depois rodar 
+
+
+
+"ON F.ID = S.ID"...
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+RODAMOS TODAS AQUELAS CONDITIONS...
+
+
+
+
+
+
+
+
+WHEN MATCHED...
+
+
+
+
+
+---------------
+
+
+
+
+
+
+
+
+
+
+
+--> ESSAS SAO AS CONDITIONS QUE USAMOS 
+
+
+NAS NOSSAS SINGLE OPERATIONS, ANTERIORMENTE...
+
+
+
+
+
+
+
+--> TEMOS O CASE DO "WHEN MATCHED" (
+
+
+
+SE TIVERMOS 1 ID QUE EXISTE TANTO 
+
+NA STREAM E NA FINAL TABLE, 
+
+
+E SE _ EXISTE NA STREAM 
+
+COM 1 VALUE NA COLUMN DE METADATA$ACTION 
+
+COMO DELETE E 
+
+O METADATA$ISUPDATE 
+
+COMO FALSE,
+
+
+VAMOS QUERER DELETAR ESSE ROW....
+
+)
+
+
+
+
+
+
+
+QUANDO METADATA$ISUPDATE ESTÁ COMO TRUE 
+
+E O METADATA$ACTION É DE INSERT,
+
+VAMOS QUERER 
+
+UPDATAR OS VALUES DESSA ROW 
+
+COM OS VALUES DA ROW CONTIDA NA STREAM...
+
+
+
+
+
+
+
+
+
+
+--> POR FIM, TEMOS O CASE DE INSERT,
+
+
+
+EM QUE VAMOS QUERER INSERIR VALUES COMPLETAMENTE 
+
+NOVOS NA NOSSA FINAL TABLE...
+
+(
+    por isso rodamos 
+
+    WHEN NOT MATCHED -- INSERT CONDITION
+    AND S.METADATA$ACTION = 'INSERT'
+THEN INSERT (id, product, price, store_id, amount, employees, location)
+    VALUES (S.ID, S.product, S.store_id, S.amount, s.employees, s.location);
+
+
+)
+
+
+
+
+
+
+E COMO VAMOS INSERIR ESSES VALUES JÁ 
+
+COM AS INFO 
+
+DE "employees" 
+
+e "location",
+
+
+
+É JUSTAMENTE POR ISSO
+
+
+
+QUE USAMOS AQUELE JOIN NO SUBSET,
+
+
+ANTERIORMENTE...
+
+
+
+
+
+
+
+
+
+PODE PARECER COMPLICADO, MAS É UMA COMBINACAO 
+
+
+
+DOS 3 STATEMENTS,
+
+DELETE UPDATE E INSERT...
+
+
+
+
+
+
+
+
+
+--> agora devemos dar 1 olhada no que acontece 
+
+
+
+
+
+
+QUANDO RODAMOS ESSE STATEMENT...
+
+
+
+
+
+
+
+-> VAMOS VER SE A FINAL TABLE REALMENTE 
+
+É ATUALIZADA 
+
+
+CORRETAMENTE...
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+
+RODANDO ISTO:
+
+
+
+
+
+
+
+MERGE INTO SALES_FINAL_TABLE F  -- "SALES_FINAL_TABLE" --> TARGET TABLE to merge changes from source table.
+USING (
+    SELECT S_STREAM.*, ST.LOCATION, ST.employees
+    FROM SALES_STREAM_EXAMPLE S_STREAM -- OUR STREAM and an alias for it (S_STREAM)
+    JOIN STORE_TABLE ST
+    ON S_STREAM.STORE_ID = ST.STORE_ID -- we get also "location" and "employees" fields.
+) S 
+ON F.ID = S.ID
+WHEN MATCHED -- DELETE CONDITION
+    AND S.METADATA$ACTION = 'DELETE'
+    AND S.METADATA$ISUPDATE = 'FALSE'
+THEN DELETE 
+WHEN MATCHED -- UPDATE CONDITION
+    AND S.METADATA$ACTION = 'INSERT'
+    AND S.METADATA$ISUPDATE = 'TRUE'
+THEN UPDATE 
+        SET F.PRODUCT = S.PRODUCT,
+            F.PRICE = S.PRICE,
+            F.AMOUNT = S.AMOUNT, 
+            F.STORE_ID = S.STORE_ID
+WHEN NOT MATCHED -- INSERT CONDITION
+    AND S.METADATA$ACTION = 'INSERT'
+THEN INSERT (id, product, price, store_id, amount, employees, location)
+    VALUES (S.ID, S.product, S.price, S.store_id, S.amount, s.employees, s.location);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FUNCIONOU...
+
+
+
+
+
+
+
+
+
+
+TODAS AS CHANGES 
+
+
+
+
+APLICADAS NAQUELA TABLE DE SALES_RAW_STAGING
+
+
+
+
+
+FORAM, AGORA, 
+
+REFLETIDAS 
+
+
+NA FINAL TABLE... (TABLE DE SALES_FINAL_TABLE)
+
+
+
