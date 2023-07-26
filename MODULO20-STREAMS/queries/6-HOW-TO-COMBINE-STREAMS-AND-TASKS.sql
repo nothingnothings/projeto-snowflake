@@ -629,6 +629,7 @@ TAMBÉM DELETES...
 
 
 
+
 SELECT * FROM SALES_RAW_STAGING;
 
 
@@ -640,13 +641,105 @@ WHERE Product = 'Tea';
 
 
 
-
-
-
 -- basic row delete 
 DELETE FROM SALES_RAW_STAGING
 WHERE Product = 'Milk';
 
 
+
 -- check STREAM OBJECT data capture
 SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+
+
+
+-- check FINAL TABLE (check if changes were applied):
+SELECT * FROM SALES_FINAL_TABLE;
+
+
+
+
+
+
+
+
+
+
+
+OK... FUNCIONOU.
+
+
+
+
+
+
+E nossa stream também ficou empty, como resultado 
+disso...
+
+
+
+
+
+
+
+PODEMOS VERIFICAR NA HISTORY:
+
+
+
+
+-- See results for a SPECIFIC TASK, IN A GIVEN TIME.
+SELECT * 
+FROM TABLE (information_schema.task_history(
+
+    scheduled_time_range_start => dateadd('hour', -4, CURRENT_TIMESTAMP()),
+    result_limit => 5,
+    task_name => 'CUSTOMER_INSERT_TASK_2'
+
+))
+
+
+
+
+
+
+
+
+O ÚLTIMO RUN DA TASK FOI SKIPPED,
+
+
+
+
+
+PQ PASSAMOS A TER NENHUMA DATA DENTRO 
+
+DA STREAM....
+
+
+
+
+
+
+
+
+
+--> NAS VEZES ANTERIORES, FICAMOS COM "SUCCEEDED",
+
+
+PQ NESSAS OCASIOES 
+
+
+
+O SYSTEM$STREAM_HAS_DATA() FICOU COMO TRUE, O QUE 
+FEZ A TASK SER 
+
+EXECUTADA.
+
+
+
+
+
+
+
+
+OK... ACABAMOS COM ESTA AULA.
