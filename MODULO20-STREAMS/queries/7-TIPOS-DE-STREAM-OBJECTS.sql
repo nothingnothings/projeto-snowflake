@@ -1,0 +1,759 @@
+
+
+
+
+
+
+
+NAS AULAS ANTERIORES, APRENDEMOS TUDO 
+
+
+SOBRE STREAMS;
+
+
+
+
+SOBRE COMO FUNCIONAM, E SOBRE COMO PODEMOS 
+
+TRABALHAR COM ELAS...
+
+
+
+
+
+
+
+MAS HÁ 1 PEQUENO DETALHE QUE 
+
+
+NAO ESTUDAMOS AINDA....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> O DETALHE É QUE __ ACTUALLY -_ EXISTEM 
+
+
+2 TIPOS DE STREAMS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+O PRIMEIRO TIPO DE STREAMS JÁ CONHECEMOS,
+
+
+É O DEFAULT (do tipo DELTA, mas ambos sao delta,
+
+o segundo tipo de streams também é do tipo DELTA.)
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+JÁ APRENDEMOS SOBRE O STANDARD/DEFAULT TYPE..
+
+
+
+
+
+
+
+
+
+
+
+
+MAS VEREMOS O SEGUNDO TYPE, AGORA...
+
+
+
+
+ESCREVEMOS ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+--------- STREAM TYPES --> APPEND-ONLY TYPE -------
+
+
+
+USE STREAMS_DB;
+
+
+
+SHOW STREAMS;
+
+
+
+
+SELECT * FROM SALES_RAW_STAGING;
+
+
+
+-- Create stream with default stream type 
+CREATE OR REPLACE STREAM SALES_STREAM_EXAMPLE -- DELTA TYPE --- mode: DEFAULT
+ON TABLE SALES_RAW_STAGING;
+
+
+
+
+
+-- THe other stream type --> append-only type --
+CREATE OR REPLACE STREAM SALES_STREAM_APPEND_EXAMPLE
+ON TABLE SALES_RAW_STAGING 
+APPEND_ONLY=TRUE; -- com essa option, optamos pelo type de "append-only".. -- type: DELTA,  MODE: APPEND-ONLY....
+
+
+
+-- View streams 
+SHOW STREAMS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---> QUER DIZER QUE AMBOS TYPES SAO 
+
+
+"DELTA",
+
+
+MAS OS __MODES__ SAO DIFERENTES...
+
+
+
+
+
+
+
+
+
+
+"DEFAULT MODE" --> É O PRIMEIRO TYPE DE STREAM....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS QUAL É O SEGUNDO TYPE DE STREAM?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> é o type "APPEND-ONLY"....
+
+
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+QUAL É A DIFERENCA ENTRE OS 2 TYPES?
+
+
+
+
+
+
+
+
+
+É A QUANTIDADE DE __ COISAS_ _ QUE ELES CAPTURAM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+STANDARD/DEFAULT MODE CAPTURA:
+
+
+1) INSERT 
+
+
+
+2) UPDATE 
+
+
+3) DELETE 
+
+
+
+
+
+
+
+
+
+
+
+
+
+APPEND-ONLY MODE CAPTURA:
+
+
+1) INSERT (Apenas insert operations)...
+
+
+
+
+
+
+
+
+-------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE UPDATES E DELETES 
+
+
+NAO SAO CAPTURADOS PELAS STREAMS 
+
+
+DE TYPE APPEND-ONLY...
+
+
+
+
+
+
+
+-------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+A SINTAXE É AQUELA DE ANTES,
+
+
+
+
+
+CREATE OR REPLACE STREAM <stream_name>
+    ON TABLE <table_name>
+    APPEND-ONLY=TRUE;
+
+
+
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+
+
+É POR ISSO QUE CRIAMOS 2 STREAMS,
+
+1 DE CADA TIPO..
+
+
+
+
+
+
+
+AS 2 STREAMS FORAM CRIADAS EM CIMA DA MESMA TABLE,
+
+SALES_RAW_STAGING...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> aGORA TEMOS ESSAS 2 STREAMS....
+
+
+
+
+
+
+
+
+
+--> PARA TESTAR ESSES 2 ROWS,
+
+O PROFESSOR FAZ 3 INSERTS,
+
+TIPO ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Insert values 
+
+INSERT INTO SALES_RAW_STAGING VALUES (14, 'Honey', 4.99, 1, 1);
+INSERT INTO SALES_RAW_STAGING VALUES (15, 'Coffee', 4.99, 2, 1);
+INSERT INTO SALES_RAW_STAGING VALUES (16, 'Melon', 4.99, 1, 2);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEPOIS NÓS VISUALIZAMOS ESSAS STREAMS,
+
+
+COM ISTO:
+
+
+
+SELECT * FROM SALES_STREAM_EXAMPLE;
+SELECT * FROM SALES_STREAM_APPEND_EXAMPLE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+certo... MAS O QUE ACONTECE, COM ESSAS STREAMS,
+
+
+SE DELETAMOS VALUES? (
+
+    ganharemos mais rows APENAS 
+
+    NA STREAM DE TYPE DEFAULT... A OUTRA 
+
+    STREAM FICARÁ SEM GANHAR NOVOS ROWS,
+
+    PQ NAO CONSEGUE CAPTURAR 
+
+    OPERATIONS DE TIPO DELETE...
+)
+
+
+
+
+
+
+
+
+
+
+
+-- basic delete 
+DELETE FROM SALES_RAW_STAGING
+WHERE Product = 'Coffee';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+FAZ SENTIDO...
+
+
+
+
+
+
+
+foi capturado APENAS NA STREAM DEFAULT..
+
+
+
+
+
+A STREAM DE "APPEND-ONLY" NAO CONSEGUIU 
+
+CAPTURAR ESSE DELETE...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... 
+
+
+
+
+
+
+
+AGORA VEREMOS A MESMA COISA, MAS COM UPDATES...
+
+
+
+
+
+
+
+
+
+TEMOS ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+-- Consume stream __vIA__ "Create table ... AS"
+CREATE OR REPLACE TEMPORARY TABLE PRODUCT_TABLE 
+AS SELECT * FROM SALES_STREAM_EXAMPLE;
+
+
+CREATE OR REPLACE TEMPORARY_TABLE PRODUCT_TABLE 
+AS SELECT * FROM SALES_STREAM_APPEND_EXAMPLE;
+
+
+
+
+
+
+
+
+
+
+
+--> O PROFESSOR FINALMENTE FALA 
+
+
+DAS 
+
+"oPTIONS DE CONSUME DE 1 STREAM"...
+
+
+
+
+("consumir" significa "deixar a stream vazia, depois")
+
+
+
+
+
+
+--> PARECE QUE TEMOS 2 OPTIONS PARA 
+
+CONSUMIR STREAMS:
+
+
+
+
+
+
+1a option) 
+
+
+USANDO/USAMOS UM 
+
+INSERT STATEMENT,
+
+
+COMO POR EXEMPLO 
+
+
+
+
+INSERT INTO example_table
+SELECT * FROM <example_stream>;
+
+
+
+
+
+
+ESSE INSERT VAI REALMENTE CONSUMIR A NOSSA STREAM...
+
+
+
+
+
+
+
+
+
+
+
+mas temos uma segunda option, que é:
+
+
+
+
+
+
+
+
+2a option) USAR O STATEMENT DE 
+
+
+
+
+
+CREATE OR REPLACE <table_name>
+    AS SELECT * FROM <stream_name>
+
+
+
+
+
+
+
+OU SEJA,
+
+
+
+SE USAMOS ESSE STATEMENT AÍ,
+
+
+A STREAM ORIGINAL REALMENTE FICARÁ EMPTY...
+
+
+
+
+
+
+
+
+
+-> E ISSO ACONTECE PARA AMBOS TIPOS DE STREAM...
+
+
+
+
+
+
+
+
+
+--> AMBOS TIPOS DE STREAM SAO CONSUMIDOS 
+
+
+POR MEIO DESSAS 2 OPERATIONS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... AGORA CONTINUANDO COM O TÓPICO 
+
+
+
+DO UPDATE SENDO GRAVADO PELA DEFAULT STREAM (
+    e nao sendo gravado pela append-only stream...
+)
+
+
+
+
+
+UPDATE SALES_RAW_STAGING
+SET PRODUCT = 'Toffee Max'
+WHERE PRODUCT = 'Melon';
+
+
+
+
+
+
+-- update será capturado pelo default stream, mas nao pelo append-only stream.
+SELECT * FROM SALES_STREAM_EXAMPLE;
+SELECT * FROM SALES_STREAM_APPEND_EXAMPLE;
