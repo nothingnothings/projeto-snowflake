@@ -1,0 +1,8 @@
+In snowflake SQL, can you apply only part of the rows stored in a stream object into a final table?
+
+
+
+
+
+
+
