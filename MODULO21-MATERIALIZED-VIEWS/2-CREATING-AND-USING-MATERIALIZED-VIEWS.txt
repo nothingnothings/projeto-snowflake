@@ -1,0 +1,779 @@
+
+
+
+
+
+OK... NESSA AULA,
+
+QUEREMOS VER COMO ESSAS MATERIALIZED VIEWS FUNCIONAM, NA PRÁTICA....
+
+
+
+
+
+
+
+
+
+TAMBÉM QUEREMOS COMPARAR A VELOCIDADE DAS MATERIALIZED VIEWS (mais rápidas)
+
+COM  VIEWS E SELECT STATEMENTS COMUNS...
+
+
+
+
+
+------------------------------
+
+
+
+PARA TERMOS 1 TEST JUSTO,
+
+O PROFESSOR PRIMEIRAMENTE REMOVE 
+
+A OPTION DE "CACHING" DA NOSSA SESSION PRESENTE,
+
+
+COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Remove caching just to have a fair test --
+ALTER SESSION 
+    SET USE_CACHED_RESULT = FALSE -- disable global caching.
+
+ALTER WAREHOUSE COMPUTE_WH SUSPEND;
+ALTER WAREHOUSE COMPUTE_WH RESUME;
+
+
+
+
+
+
+
+
+
+
+
+certo, mas, por alguma razao, fiquei com 1 error 
+
+"compute_wh cannot be suspended" --> talvez pq 
+
+
+seja necessário trocar para outra wh, para suspender essa aí...
+
+
+
+
+
+
+
+--> nao, era pq ela já estava suspensa...
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO,
+
+QUEREMOS MOSTRAR OS BENEFÍCIOS DAS MATERIALIZED VIEWS, 
+POR ISSO 
+RODAMOS ISTO:
+
+
+
+
+
+
+
+-- Prepare table 
+CREATE OR REPLACE TRANSIENT DATABASE ORDERS;
+
+
+CREATE OR REPLACE SCHEMA TPCH_SF100;
+
+
+CREATE OR REPLACE TABLE TPCH_SF100.ORDERS AS 
+SELECT * FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF100.ORDERS;
+
+
+-- queremos checar a velocidade de nossos select statements comuns.
+SELECT * FROM ORDERS LIMIT 100;
+
+
+
+
+
+essa última query demorou 0.4 segundos (
+    pq retrievei apenas 100 rows....
+)
+
+
+
+
+
+
+
+
+
+
+MAS SE FOSSEMOS RETRIEVAR TODOS OS ROWS,
+
+DEMORARIA BEEEEEM MAIS.....
+
+
+
+
+
+--> na table completa, 
+
+temos 150 milhoes de rows...
+
+
+
+
+
+
+
+
+
+isso dá 4gb de data....
+
+
+
+
+
+
+
+
+
+--> SE FIZERMOS ALGUMAS AGGREGATIONS 
+E QUERIES EM CIMA DESSA TABLE,
+
+
+
+PODE DEMORAR 1 POUCO ATÉ 
+
+SEREM COMPLETADAS...
+
+
+
+
+
+
+
+
+
+
+
+CERTO.... MAS AGORA QUE 
+
+
+CONSEGUIMOS "UPDATE" 
+
+
+E PLAY COM ESSA DATA 1 POUCO MAIS,
+
+
+
+
+
+COPIAMOS ESSA TABLE INTEIRA PARA DENTRO 
+
+
+DA TABLE
+
+
+
+DE "ORDERS"...
+
+
+
+
+
+
+
+
+
+ISSO DEMOROU 1 MINUTO...
+
+
+
+
+
+--> QUERIAMOS OS TOP 100 RESULTS...
+
+
+
+
+
+
+
+
+
+-----> MAS AGORA DIGAMOS QUE 
+
+TEMOS A SEGUINTE QUERY:
+
+
+
+
+
+
+SELECT YEAR(O_ORDERDATE) AS YEAR,
+        MAX(O_COMMENT) AS MAX_COMMENT,
+        MIN(O_COMMENT) AS MIN_COMMENT,
+        MAX(O_CLERK) AS MAX_CLERK,
+        MIN(O_CLERK) AS MIN_CLERK
+        FROM ORDERS TPCH_SF100.ORDERS 
+        GROUP BY YEAR(O_ORDERDATE)
+        ORDER BY YEAR(O_ORDERDATE);
+
+
+
+
+
+
+
+
+
+
+
+--> RODAMOS ESSA QUERY...
+
+
+
+
+ELA DEMORA BEM MAIS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> DIGAMOS QUE 
+
+
+
+ESSA É UMA QUERY QUE, NO FUTURO, VAMOS QUERER 
+
+RODAR COM BASTANTE FREQUENCIA....
+
+
+
+
+
+
+
+
+
+
+--> ELA VAI DEMORAR MAIS, É CLARO,
+
+PQ __ TEMOS VÁRIAS FUNCTIONS COMO 
+
+"MAX()" 
+
+
+E "MIN()"...
+
+
+
+
+
+
+
+
+
+
+--> algumas coisas nao fazem sentido, 
+
+
+tipo o run de "max()" e "min()"
+
+
+
+
+em cima de strings..
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA QUERY DEMOROU 10 SEGUNDOS...
+
+
+
+
+
+
+
+
+
+
+--> A DEPENDER DO APP, ISSO PODE LEVAR 
+
+A UMA USER EXPERIENCE BEM RUIM,
+
+PQ O USER TERÁ DE ESPERAR MAIS DE 10 SEGUNDOS 
+
+PARA RECEBER A DATA...
+
+
+
+
+
+
+
+
+--> ISSO TAMBÉM PODE AUMENTAR NOSSO CUSTO....
+
+
+
+
+
+
+
+
+--> É POR ISSO QUE __ VAMOS QUERER __ 
+
+CRIAR __ 1 MATERIALIZED 
+
+VIEW, A PARTIR DESSE STATEMENT...
+
+
+
+
+
+
+
+
+
+--> ISSO PQ 
+
+ESSA QUERY TEM APENAS 7 ROWS,
+
+
+E ISSO NAO DEVE DEMORAR 
+1
+ TEMPO TAO LONGO, 
+
+
+
+
+ A EXPERIENCIA DO USER NAO PODE SER AFETADA 
+ POR 1 LOAD LENTO CAUSADO 
+
+PELA FALTA DE MATERIALIZED VIEWS...
+
+
+
+
+
+
+
+
+
+
+
+--> A MATERIALIZED VIEW TAMBÉM 
+
+É BOA __ PQ _ ELA VAI REFLETIR QUAISQUER 
+
+CHANGES QUE VENHAM A OCORRER 
+
+NESSA TABLE ORIGINÁRIA DE "ORDERS"...
+
+
+
+
+
+
+--> para CRIAR UMA MATERIALIZED VIEW,
+
+
+PRECISAMOS ESCREVER ASSIM:
+
+
+
+
+
+
+
+-- Create MATERIALIZED view: --
+
+CREATE OR REPLACE MATERIALIZED VIEW ORDERS_MATERIALIZED_VIEW 
+AS
+SELECT 
+YEAR(O_ORDERDATE) AS YEAR,
+MAX(O_COMMENT) AS MAX_COMMENT,
+MIN(O_COMMENT) AS MIN_COMMENT,
+MAX(O_CLERK) AS MAX_CLERK,
+MIN(O_CLERK) AS MIN_CLERK
+FROM ORDERS TPCH_SF100.ORDERS 
+GROUP BY YEAR(O_ORDERDATE);
+
+
+
+
+
+
+
+
+
+--> OK... CREATE OR REPLACE + MATERIALIZED VIEW AS 
+<SELECT_STATEMENT>....
+
+
+
+
+
+
+
+
+
+--> VAI DEMORAR 1 MINUTO PARA RODAR 
+
+ESSE STATEMENT....
+
+
+
+
+
+
+
+
+
+
+-- Create MATERIALIZED view: --
+
+CREATE OR REPLACE MATERIALIZED VIEW ORDERS_MATERIALIZED_VIEW AS
+SELECT 
+    YEAR(O_ORDERDATE) AS ORDER_YEAR,
+    MAX(O_COMMENT) AS MAX_COMMENT,
+    MIN(O_COMMENT) AS MIN_COMMENT,
+    MAX(O_CLERK) AS MAX_CLERK,
+    MIN(O_CLERK) AS MIN_CLERK
+FROM 
+    TPCH_SF100.ORDERS 
+GROUP BY 
+    YEAR(O_ORDERDATE);
+
+
+
+
+
+
+
+
+
+
+
+OK... É POSSÍVEL VER ESSA VIEW 
+
+NOS NOSSOS SCHEMAS, NA GUI...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS RODAR 
+
+
+
+SHOW MATERIALIZED VIEWS;
+
+
+
+
+
+para ter mais detalhes sobre essa view...
+
+
+
+
+
+
+
+
+A INFO IMPORTANTE É 
+
+"REFRESHED_ON",
+
+
+QUE NOS DIZ 
+
+
+
+"" O MOMENTO EM QUE ESSA MATERIALIZED VIEW 
+FOI REFRESHADA PELA ÚLTIMA VEZ""....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> tAMBÉM TEMOS A PROPERTY/COLUMN DE 
+
+
+"behind_by" --> em segundos -> ISSO 
+
+
+NOS DIZ SE 
+
+
+ESSA MATERIALIZED VIEW
+
+
+
+
+ESTÁ DIFERENTE DE NOSSA 
+
+
+TABLE ORIGINÁRIA,
+
+
+OU SE 
+
+AS CHANGES 
+
+
+DA TABLE ORIGINÁRIA 
+
+
+JA FORAM TODAS INCORPORADAS 
+
+
+NESSA VIEW (
+
+
+    se temos 0s,
+
+    SIGNIFICA QUE TUDO NESSA VIEW 
+
+    ESTÁ __ IDENTICO _  COM A 
+
+    DATA DA TABLE ORIGINAL...
+)
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+MAS AQUI TEMOS OUTRO DETALHE IMPORTANTE -->
+
+
+AS "MATERIALIZED VIEWS"
+
+
+
+
+NAO _ SAO _ SECURE VIEWS, POR DEFAULT...
+
+
+
+
+
+
+
+QUER DIZER QUE NAO PODEM SER COMPARTILHADAS 
+COM DATA SHARES, 
+POR DEFAULT....
+
+
+
+
+
+
+
+
+--> E É EXATAMENTE POR ISSO QUE 
+
+
+TEMOS A COLUMN DE "TEXT" PREENCHIDA 
+
+COM A SQL QUERY QUE FOI USADA 
+
+PARA CRIAR ESSA MATERIALIZED VIEW...
+
+
+
+
+
+
+
+
+
+
+
+
+BEM, AGORA DEVEMOS TESTAR ESSA VIEW,
+
+
+COM ESTE COMANDO:
+
+
+
+
+
+-- Query materialized view -- 
+SELECT * FROM ORDERS_MATERIALIZED_VIEW
+ORDER BY ORDER_YEAR;
+
+
+
+
+
+
+
+
+ISSO FOI _______-MUITO___ MAIS 
+
+RÁPIDO DO QUE 
+
+O QUERY 
+
+
+
+NA TABLE NORMAL, VIEW NORMAL....
+
+
+
+
+
+
+
+GASTAMOS APENAS 0.4 SEGUNDOS...
+
+
+
+
+
+
+
+
+
+
+
+
+--> na table normal,
+
+o query time é de 1 freakin minuto...
+
+
+
+
+
+
+
+
+
+
+
+AGORA, É CLARO, 
+
+
+É BOM EXPECT QUE 
+
+
+_ SE ALGO __MUDAR NA UNDERLYING 
+
+TABLE,
+
+NOSSA VIEW TAMBÉM 
+
+SEJA ATUALIZADA AUTOMATICAMENTE...
+
+
+
+
+
+
+
+
+
+
+
+PORTANTO, AGORA DEVEMOS DEMONSTRAR 
+
+
+COMO ISSO FUNCIONA (o update automático 
+da materialized view,
+sempre que 
+
+alterarmos algo na underlying table)
+
+
+
+
+
+
+
+
+
+
+
+VEREMOS ISSO NA PRÓXIMA AULA...
+
