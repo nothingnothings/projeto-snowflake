@@ -1,0 +1,17 @@
+In SQL, views are not automatically updated. Instead, they are virtual tables that are based on the result of a SELECT query. A view acts as a stored query and does not contain any data of its own. When you query a view, it executes the underlying query and presents the result as if it were an actual table.
+
+The underlying tables that the view references may change over time due to data updates, inserts, or deletions, but the view itself doesn't reflect these changes automatically. If you query the view after the underlying data has changed, the view will present the updated data because it executes the underlying query every time you use it.
+
+However, it's essential to note that there are certain scenarios where the view might not reflect the most recent changes immediately:
+
+If you're using certain databases or configurations, they might cache the view results for performance reasons. In such cases, you might need to explicitly refresh the view or wait for the cache to update.
+
+If the view is defined with a query that has hardcoded conditions or values, it might not dynamically adapt to changes in the underlying data.
+
+To ensure that you're always getting the latest data from the underlying tables when querying a view, you can use the following approaches:
+
+Recreate or refresh the view: Drop and recreate the view or use the appropriate SQL statement to refresh the view's data based on the latest changes in the underlying tables.
+
+Use indexed or materialized views: Some database systems support indexed or materialized views, which store the result of the view's query as a physical table. These views can be periodically updated to reflect changes in the underlying data.
+
+Remember that the behavior of views can vary based on the database management system (DBMS) you are using, so always refer to the documentation of your specific DBMS to understand how views are handled in that environment.
