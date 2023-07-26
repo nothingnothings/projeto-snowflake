@@ -1,0 +1,338 @@
+
+
+
+
+
+
+
+
+AGORA DEVEMOS ESTUDAR 1 MANEIRA 
+
+ALTERNATIVA 
+
+DE FAZER TRACK 
+
+DE CHANGES EM 1 GIVEN TABLE... (ou seja,
+
+algo alternativo aos streams)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+
+NAO VAMOS CRIAR 1 STREAM OBJECT...
+
+
+
+
+
+
+
+
+
+
+--> EM VEZ DE USAR 1 STREAM OBJECT,
+
+
+
+
+
+VAMOS USAR UM "CHANGE STATEMENT"...
+
+
+
+
+
+
+
+
+
+
+VEREMOS:
+
+
+
+1) QUAIS AS DIFERENCAS DA CHANGE CLAUSE 
+
+EM RELACAO A NORMAL STREAMS...
+
+
+
+
+
+2) COMO USAR CHANGE CLAUSES...
+
+
+
+
+
+
+
+
+
+VAMOS TRACKAR AS CHANGES FEITAS 
+
+
+NA TABLE DE "SALES_RAW"....
+
+
+
+
+
+
+COMECAMOS COM ESTE CÓDIGO:
+
+
+
+
+
+
+
+
+-------------------- Change Clause ----------------
+
+
+
+CREATE OR REPLACE DATABASE SALES_DB;
+
+
+CREATE OR REPLACE TABLE SALES_RAW (
+    ID VARCHAR,
+    PRODUCT VARCHAR,
+    PRICE VARCHAR,
+    AMOUNT VARCHAR,
+    STORE_ID VARCHAR
+);
+
+
+
+
+--- Insert values 
+INSERT INTO SALES_RAW 
+    VALUES 
+        (1, 'Eggs', 1.39, 1, 1),
+		(2, 'Baking powder', 0.99, 1, 1),
+		(3, 'Eggplants', 1.79, 1, 2),
+		(4, 'Ice cream', 1.89, 1, 2),
+		(5, 'Oats', 1.98, 2, 1);
+
+
+
+-- TO USE THE CHANGE CLAUSE, TO TRACK CHANGES, WE NEED TO SET THIS PROPERTY:
+ALTER TABLE sales_raw
+    SET CHANGE_TRACKING=TRUE;
+
+
+
+
+
+
+
+
+--> SE QUEREMOS TRACKAR CHANGES NA NOSSA 
+
+TABLE,
+
+DEVEMOS SETTAR ESSA PROPERTY DE "CHANGE_TRACKING"
+
+
+como sendo true....
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+PODEMOS ACTUALLY USAR __ O STATEMENT DE 
+
+"CHANGES"...
+
+
+
+
+
+
+tipo assim:
+
+
+
+
+
+
+SELECT * FROM SALES_RAW 
+CHANGES(information => default)
+AT (offset => -0.5*60);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> OU SEJA, USAMOS ESSE CHANGES STATEMENT....
+
+
+
+
+
+--> USAMOS ESSE VALUE DE "information => default"...
+
+QUANDO DEFINIMOS O VALUE COMO "default",
+
+queremos dizer que 
+
+QUEREMOS VISUALIZAR 
+
+
+TODOS OS TIPOS DE CHANGES (delete, update, insert)...
+
+
+
+
+--> A ALTERNATIVA SERIA ESCREVER 
+
+
+"information => append-only"...
+
+
+
+
+
+
+-> VEREMOS ISSO NO PRÓXIMO EXEMPLO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------->
+
+
+
+MAS AQUI JÁ É POSSÍVEL CONSTATAR QUE 
+
+
+
+A FEATURE DE 
+
+
+"TIME TRAVEL" FOI UTILIZADA,
+
+
+
+JUSTAMENTE PQ 
+
+O PROFESSOR ESCREVEU 
+
+
+
+"AT(offset => -0.5*60)"
+
+
+
+
+
+
+
+
+
+
+--> SIGNIFICA QUE VAMOS VOLTAR 30 SEGUNDOS NO PASSADO...
+
+
+
+
+
+
+
+
+--> ALÉM DISSO, COMO JÁ SABEMOS,
+
+
+PARA USAR ESSA FEATURE (do CHANGE CLAUSE),
+
+
+
+PRECISAMOS DO TIME TRAVEL... --> E O TIME TRAVEL 
+
+PRECISA ESTAR HABILITADO, PARA QUE ISSO FUNCIONE....
+
+
+
+
+
+
+
+
+---> e sabemos que O TIME TRAVEL 
+
+
+NAO FUNCIONA COM TEMPORARY TABLES,
+
+FUNCIONA APENAS COM 
+
+TRANSIENT (1 dia) E PERMANENT TABLES (90 dias, default)..
+
+
+
+
+
+
+
+
+
+
+
+OK... TENTAREMOS USAR ESSE STATEMENT,
+
+
+
+ESTE AQUI:
+
+
+
+
+
+SELECT * FROM SALES_RAW 
+CHANGES(information => default)
+AT (offset => -0.5*60);
+
+
+
