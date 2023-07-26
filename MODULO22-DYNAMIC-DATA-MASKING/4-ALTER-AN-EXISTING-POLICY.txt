@@ -1,0 +1,115 @@
+
+
+
+
+
+
+na ÚLTIMA LICAO,
+
+
+
+VIMOS QUE PODEMOS DROPPAR/REPLACE 1 
+
+GIVEN POLICY  __ APENAS___ SE JÁ
+
+
+FIZEMOS "uNSET" (ou seja, desvincular) 
+
+
+
+ESSA POLICY DE TODAS AS OUTRAS COLUMNS A QUE 
+
+A VINCULAMOS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+ENTRETANTO, NESTA AULA O PROFESSOR NOS EXPLICA QUE 
+
+O PROCESSO 
+
+
+
+DE 
+
+
+DROP/REPLACE/RECREATE DE UMA POLICY 
+
+
+___NEM SEMPRE__ É IDEAL --------> ISSO PQ _ SE NOSSO 
+
+OBJETIVO 
+
+
+
+É APENAS MODIFICAR ALGO NESSA POLICY (sEM A REMOVER),
+
+
+
+GERALMENTE É MELHOR APENAS FAZER O __ALTER ___DESSA POLICY,
+
+
+
+
+SEM TER DE recriar essa policy...
+
+
+
+
+
+
+
+
+
+
+
+
+
+PQ SE RECRIÁSSEMOS ESSA POLICY, 
+
+
+
+SERÍAMOS FORÇADOS A REAPLICÁ-LA EM TODAS 
+
+NOSSAS COLUMNS, NOVAMENTE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ok... se quisermos apenas alterar 
+
+
+a definition da policy, PODEMOS 
+
+
+
+FACILMENTE FAZER ISSO COM O COMANDO DE "ALTER"...
+
+
+
+
+
+ESCREVEMOS ASSIM:
+
+
+
