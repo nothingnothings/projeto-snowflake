@@ -1,0 +1,305 @@
+
+
+
+
+
+
+
+
+
+
+
+
+NA ÚLTIMA AULA,
+
+VIMOS QUE SE 
+
+ALTERARMOS A DATA 
+
+
+DE UMA UNDERLYING TABLE 
+
+DE 
+
+
+UMA 
+
+MATERIALIZED VIEW,
+
+
+ESSA VIEW 
+
+
+VAI SER AUTOMATICAMENTE UPDATADA 
+
+TAMBÉM...
+
+
+
+
+
+
+
+
+
+
+
+E ESSE UPDATE AUTOMÁTICO É 
+
+"""MANAGEADO PELO SNOWFLAKE"",
+
+
+
+
+
+é manageado pelo próprio snowflake,
+
+e nao precisamos usar 
+
+uma virtual warehouse 
+
+
+
+
+para handlar esse update da 
+
+
+materialized view...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O PROBLEMA É QUE 
+
+__tEMOS QUE PAGAR CŔEDITOS SEPARADAMENTE 
+
+
+AO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+--> ESSE É UM SERVICE ADICIONAL,
+
+
+OBVIAMENTE PAGO...
+
+
+
+
+
+
+
+
+
+
+MAS COMO PODEMOS CHECAR 
+
+ESSES CUSTOS?
+
+
+
+
+
+
+
+
+
+DEVEMOS IR ATÉ OS COSTS 
+
+
+DA WAREHOUSE....
+
+
+
+
+
+
+--> OS COSTS FICAM EM 
+
+
+
+"MATERIALIZED_VIEW_MAINTENANCE"....
+
+
+
+
+
+
+
+ACCOUNT > USAGE.
+
+
+
+
+
+
+
+
+
+
+
+temos que levar isso em consideracao, também....
+
+
+
+
+
+
+MAS TAMBÉM HÁ OUTRO COMANDO QUE PODEMOS 
+
+RODAR,
+
+
+
+
+PARA VER A "REFRESH HISTORY",
+
+
+
+
+
+E __ O CUSTO ASSOCIADO A ESSA REFRESH HISTORY,
+
+DE NOSSAS MATERIALIZED 
+VIEWS...
+
+
+
+
+
+
+
+
+É ESTE STATEMENT:
+
+
+
+
+
+
+SELECT * FROM TABLE(SNOWFLAKE.INFORMATION_SCHEMA.MATERIALIZED_VIEW_REFRESH_HISTORY())
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+START_TIME	END_TIME	CREDITS_USED
+2023-07-26 10:24:06.000 -0700	2023-07-26 11:24:06.000 -0700	0.000034722
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SE ALGUMA UNDERLYING DATA MUDAR,
+
+
+ESSES SERAO OS CUSTOS...
+
+
+
+
+
+
+
+
+
+
+
+ISSO TUDO NOS LEVA A ALGUMAS 
+
+SÉRIAS CONSIDERACOES....
+
+
+
+
+
+
+
+
+CONSIDERACOES:
+
+
+
+
+1) SE A UNDERLYING DATA DE NOSSA VIEW 
+
+ESTÁ MUDANDO COM FREQUENCIA... OU, ENTAO,
+
+EM 1 VERY REGULAR-BASIS, BEM REGULAR (
+
+    COMO 1 VEZ POR SEMANA,
+    EM 1 HORA BEM ESPECÍFICA
+),
+
+
+AÍ __TEMOS _ ALTERNATIVAS,
+
+
+E AÍ TALVEZ NAO SEJA A MELHOR 
+
+IDEIA USAR __UMA MATERIALIZED VIEW...
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA VEREMOS OS USE-CASES 
+
+ESPECÍFICOS,
+
+
+
+E AS CONSIDERATIONS, E TAMBÉM 
+
+__ALTERNATIVAS__ 
+
+
+A MATERIALIZED VIEWS...
+
+
+
+
+TUDO ISSO NA PRÓXIMA AULA....
