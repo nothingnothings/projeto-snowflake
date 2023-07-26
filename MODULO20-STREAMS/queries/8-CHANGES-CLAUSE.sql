@@ -336,3 +336,289 @@ AT (offset => -0.5*60);
 
 
 
+
+
+
+
+
+
+
+OK....
+
+
+
+
+
+
+
+
+COM ISSO CONSEGUIMOS VISUALIZAR 
+
+
+NOSSAS CHANGES...
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE NAO SOMOS OBRIGADOS A USAR 
+
+
+"AT (offset => xxx)"....
+
+
+
+
+
+
+
+
+
+
+-- PODEMOS TAMBÉM USAR 
+
+__UM TIMESTAMP,
+
+
+
+OU ENTAO 
+
+UM __ QUERY ID,
+TIPO ASSIM:
+
+
+
+
+
+
+
+SELECT CURRENT_TIMESTAMP;
+
+-- Insert values
+INSERT INTO SALES_RAW VALUES (6, 'Bread', 2.99, 1, 2);
+INSERT INTO SALES_RAW VALUES (7, 'Onions', 2.89, 1, 2);
+
+
+SELECT * FROM SALES_RAW
+CHANGES(information  => default)
+AT (timestamp => 'your-timestamp'::timestamp_tz);
+
+
+
+
+
+
+
+
+
+
+UPDATES TAMBÉM SAO CAPTURADOS:
+
+
+
+
+
+
+UPDATE SALES_RAW
+SET PRODUCT = 'Toast2' WHERE ID=6;
+
+
+
+
+
+
+
+
+
+
+
+
+--> O "DEFAULT" TAMBÉM 
+
+CAPTURA 
+
+UPDATES,
+
+
+
+
+
+
+APENAS O "APPEND-ONLY" 
+
+NAO CAPTURA 
+
+UPDATES...
+
+
+
+
+
+
+
+--> MAS TEMOS 1 DETALHE:
+
+
+
+
+POR ROW,
+
+NO CHANGES CLAUSE,
+
+
+
+
+SEMPRE TEREMOS A "LATEST CHANGE"
+
+
+
+
+
+EM RELACAO AOS UPDATES (o último value que 
+foi settado)...
+
+
+
+
+
+
+
+PARA COMUNICAR QUE VC QUER 
+
+APENAS 
+
+
+VER CHANGES DE TIPO "INSERT",
+
+
+
+VOCE DEVE ESCREVER ASSIM:
+
+
+
+
+
+
+
+
+SELECT * FROM SALES_RAW 
+CHANGES(information => append_only)
+AT(timestamp => 'your-timestamp'::timestamp_tz');
+
+
+
+
+
+
+
+
+
+
+SE FAZEMOS ISSO, APENAS OS INSERTS 
+
+SERAO TRACKADOS...
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+QUAL É A DIFERENCA ENTRE CHANGE CLAUSES 
+
+
+E 
+
+
+__ STREAM OBJECTS?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> STREAM OBJECTS SAO "cONSUMIDOS",
+
+QUER DIZER QUE SUA DATA/ROWS PODEM SER USADOS 
+
+APENAS 1 ÚNICA VEZ (ou com 1 comando insert into,
+
+ou com 1 comando CREATE OR REPLACE <table_name> AS SELECT * FROM <stream_name>)
+
+
+
+
+
+
+
+
+--> JÁ COM A CHANGE CLAUSE, 
+
+PODEMOS USAR A DATA DAS ROWS INDEFINIDAMENTE,
+
+
+
+NADA VAI ACONTECER SE UTILIZARMOS ESSA DATA (
+
+
+
+    quer dizer que PODEMOS CRIAR 1 TABLE A PARTIR 
+    DESSA 
+
+    CHANGE CLAUSE,
+
+    E MESMO ASSIM A DATA 
+
+
+    DA CHANGE CLAUSE, RELATIVA A ESSE PERÍODO/CHANGES
+     NAO TERÁ SIDO CONSUMIDA...
+)
+
+
+
+
+
+
+
+
+
+
+
+com isso, podemos managear dinamicamente 
+
+as changes feitas em 1 given table...
+
+
+
+
+
+
+
+acabamos com este módulo...
+
+
+
+
