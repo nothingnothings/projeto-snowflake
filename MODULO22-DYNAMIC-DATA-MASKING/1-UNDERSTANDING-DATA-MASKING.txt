@@ -1,0 +1,240 @@
+
+
+AGORA DEVEMOS DAR 1 OLHADA EM OUTRA ADVANCED FEATURE,
+
+QUE PODEMOS USAR 
+
+PARA PROPÓSITOS DE SEGURANCA...
+
+
+
+
+
+
+
+
+
+A ADVANCED FEATURE É 
+
+
+
+
+"""DATA MASKING"""...
+
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, SE TEMOS 1 TABLE
+
+
+e temos alguma INFORMACAO PESSOAL NESSA TABLE,
+
+QUE QUEREMOS OU PRECISAMOS PROTEGER,
+
+
+
+
+
+PODEMOS USAR 
+
+
+"DATA MASKING"
+
+
+
+
+
+
+
+
+
+
+PARA OCULTAR ESSA DATA....
+
+
+
+
+
+
+
+
+
+
+
+
+--------> COM ISSO, ANTES MESMO DA QUERY SER 
+
+EXECUTADA,
+
+
+
+
+PODERÍAMOS RETORNAR APENAS ESSES "MASKED RESULTS"...
+
+
+
+
+
+
+TIPO ASSIM:
+
+
+
+
+FULL_NAME     EMAIL        PHONE 
+exemplo        e@e.com      123-213-23123
+
+
+
+
+
+
+
+MASKED:
+
+
+
+
+FULL_NAME     EMAIL        PHONE 
+e*****        ***.com      ###-###-####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> COM ISSO, RETORNAMOS APENAS ESSES MASKED RESULTS....
+
+
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO A DATA NAO FICARIA VISÍVEL,
+
+E FICARÍAMOS COM CONTROLE COMPLETO 
+
+
+
+ACERCA DE 
+
+""QUAL COLUMN MOSTRARÁ QUAL DATA"""...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. É UMA FEATURE EM QUE PODEMOS APLICAR MASKS/SECURITY 
+
+
+EM 1 "COLUMN-LEVEL"....
+
+
+
+
+
+
+
+
+
+
+
+--> OU SEJA,
+
+
+PODEMOS CRIAR CUSTOM MASKS PARA DETERMINADAS COLUMNS....
+
+
+
+
+
+
+
+
+
+
+
+--> EX: PODEMOS VER APENAS A PRIMEIRA LETRA 
+
+
+
+DOS EMAILS, E NADA MAIS DO QUE ISSO...
+
+
+
+
+
+
+
+
+
+
+--> OUTRO EX: TODOS OS PHONES DEVEM FICAR COMO "##-###-###"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ALÉM DISSO, PODEMOS ASSIGNAR MASKS A CADA ROLE 
+DO SNOWFLAKE,
+
+PARA QUE 
+
+
+APENAS ALGUNS ROLES CONSIGAM 
+
+
+VISUALIZAR A DATA DE VERDADE...
+
+
+
+
+
+
+
+AGORA VEREMOS COMO PODEMOS IMPLEMENTAR
+
+ESSAS POLICIES DE DATA-MASKING....
+
