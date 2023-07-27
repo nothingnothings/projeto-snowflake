@@ -1,0 +1,341 @@
+
+
+
+ANTES DE MERGULHARMOS NOS ROLES,
+
+
+
+DEVEMOS RECAPITULAR O QUE JÁ SABEMOS SOBRE ELES....
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, TEMOS 5 
+
+SYSTEM-DEFINED ROLES...
+
+
+
+
+
+
+1) ACCOUNTADMIN 
+
+
+
+2) SECURITYADMIN 
+
+
+3) SYSADMIN 
+
+
+4) USERADMIN 
+
+
+5) PUBLIC...
+
+
+
+
+
+
+
+
+
+
+
+TAMBÉM PODEMOS CRIAR CUSTOM ROLES,
+
+E APRENDEREMOS MAIS SOBRE ISSO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+É IMPORTANTE ENTENDER QUE ESSES 
+
+5
+ 
+
+ROLES POSSUEM 
+
+
+
+1 CERTA HIERARQUIA...
+
+
+
+
+
+
+
+
+
+
+ALÉM DISSO, OS ROLES 
+
+
+
+QUE __ CRIAMOS _PODEM SER ANEXADOS 
+
+A OUTROS ROLES..
+
+
+
+
+
+
+
+
+--> A MELHOR PRACTICE, NO CASO,
+
+
+É CRIAR ROLES E OS ANEXAR AO SYSADMIN,
+
+PARA QUE 
+
+ELE "hERDE" TODOS OS PRIVILEGES 
+
+
+DOS ROLES EMBAIXO DE SI... (Dos custom roles)..
+
+
+
+
+
+
+
+
+O ROLE MAIS PODEROSO É O ACCOUNTADMIN,
+
+QUE TEM TODOS OS PRIVILEGES..
+
+
+
+
+
+
+
+
+
+
+TEMOS TAMBÉM O ROLE DE "PUBLIC",
+
+QUE TODO USER GANHA POR DEFAULT...
+
+
+
+
+
+
+
+
+
+
+QUER DIZER QUE __ 
+
+PODEMOS CRIAR MÚLTIPLOS CUSTOM ROLES,
+
+
+
+E PODEMOS CRIAR
+
+
+ELES TAMBÉM EM HIERARQUIAS...
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA DEVEMOS RECAPITULAR O QUE SABEMOS SOBRE 
+
+ESSES SYSTEM DEFINED ROLES...
+
+
+
+
+
+
+
+
+
+1) ACCOUNTADMIN 
+
+
+--> SYSADMIN E SECURITYADMIN (tem os privileges dos 2)...
+
+
+
+
+
+--> TOP-LEVEL ROLE NO SISTEMA..
+
+
+
+
+--> DEVE SER CONFERIDO A APENAS 1 QUANTIDADE LIMITADA DE USERS....
+
+
+
+
+
+
+
+2) SECURITY ADMIN...
+
+
+
+
+
+--> o security ADMIN HERDA O 
+
+ROLE DO USERADMIN....
+
+
+
+
+--> O SECURITY ADMIN PODE MANAGEAR 
+
+USERS E ROLES....
+
+
+
+
+
+--> O SEC ADMIN PODE MANAGEAR _qUALQUER _ 
+
+"oBJECT GRANT" GLOBALMENTE...
+
+
+
+
+
+
+
+
+
+
+
+3) SYS ADMIN...
+
+
+
+
+
+---> ELE PODE CRIAR _WAREHOUSES E DATABASES (
+    e mais objects
+)
+
+
+
+
+
+--> RECOMENDA-SE QUE TODOS OS CUSTOM ROLES
+SEJAM ASSIGNADOS A ELE...
+ (best practice)...
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 4) USERADMIN 
+
+
+
+
+ --> USER DEDICADO A _ USER E ROLE MANAGEMENT.... (
+    SOMENTE PARA ISSO...
+ ) 
+
+
+
+
+ --> PODE CRIAR ROLES  E USERS....
+
+
+
+
+
+
+
+
+ 5) PUBLIC 
+
+
+
+
+ -> AUTOMATICAMENTE ASSIGNADO A TODOS USERS...
+
+
+
+
+
+ --> PODE CRIAR SEUS PRÓPRIOS OBJECTS,
+
+ COMO TODOS OUTROS ROLES PODEM...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSE É  O BASIC OVERVIEW 
+
+DESSES ROLES...
+
+
+
+
+
+DEVEMOS APRENDER A PARTE PRÁTICA 
+
+
+DESSES ROLES...
+
+
+
