@@ -1,0 +1,75 @@
+
+
+
+
+
+
+
+
+
+
+
+AGORA VEREMOS COMO PODEMOS INSTALAR E CONECTAR O TABLEAU 
+
+AO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK....
+
+
+
+
+
+
+--> É PAGO...
+
+
+
+
+
+
+
+
+ABRIMOS A FILE, INSTALAMOS..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> colocamos a info de nossa conta..
+
+
+
+
+-> TEMOS 1 FREE TRIAL....
+
+
+
+
+--> COMO PODEMOS CONECTAR O TABLEAU COM A DATABASE EM SNOWFLAKE
+
+VEREMOS NA PRÓXIMA AULA.
+
+
+
