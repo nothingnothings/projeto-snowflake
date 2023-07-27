@@ -1,0 +1,194 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... CONECTAMOS O 
+
+
+POWER BI COM O 
+
+
+SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA TEMOS 2 TABLES...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> CUSTOMERS E ORDERS...
+
+
+
+
+
+
+
+
+
+
+--> EM AMBAS TABLES,
+
+TEMOS 1 COLUMN CHAMADA DE "CUSTOMER_KEY"... (
+
+    é uma relation entre os 2....
+)
+
+
+
+
+
+
+
+
+
+-> QUER DIZER QUE PODEMOS CONECTAR 
+
+ESSAS 2 TABLES...
+
+
+
+
+
+
+
+
+
+--> PODEMOS FAZER ISSO RAPIDAMAENTE NO POWER BI..
+
+
+
+
+
+
+
+
+--> CLIQUE EM "MODELS" --> AÍ PODEMOS __ CONECTAR _ ESSAS 
+
+2 TABLES...
+
+
+
+
+
+
+
+
+-> BASTA SELECIONAR A CUSTOMER_KEY DE 1 TABLE 
+
+E A LARGAR 
+
+
+NO SLOT DE CUSTOMER_KEY DA OUTRA TABLE...
+
+
+
+
+
+
+
+
+
+
+
+COM ISSO, PODEMOS CRIAR 1 RELATIONSHIP... --> 
+
+
+
+ISSO VAI SETTAR ESSA RELATIONSHIP ENTRE ESSAS 2 TABLES...
+
+
+
+
+
+
+
+
+
+E AGORA PODEMOS 
+
+USAR 
+
+ESSAS 2 TABLES EM CONJUNTO,
+
+
+
+
+BASTA ARRASTAR 
+
+
+AS COISAS 1 EM CIMA DAS OUTRAS...
+
+
+
+
+
+
+
+
+
+
+--> É UM AGGREGATION METHOD...
+
+
+
+
+
+
+
+--> podemos rodar diferentes aggregation methods 
+
+entre as tables...
+
+
+
+
+
+-- É CLARO QUE TUDO ISSO ESTÁ GASTANDO 
+
+COMPUTE RESOURCES DO SNOWFLAKE...
+
+
+
+
+
+-. SE OS CÁLCULOS FICAREM MT LENTOS E PESADOS,
+
+PODEMOS 
+
+AUMENTAR O TAMANHO DE NOSSAS WAREHOUSES,
+LÁ NO APP SNOWFLAKE...
+
+
+
+
+
