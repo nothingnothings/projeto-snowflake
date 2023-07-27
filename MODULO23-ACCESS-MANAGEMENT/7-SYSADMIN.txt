@@ -1,0 +1,112 @@
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS ESTUDAR O "SYSADMIN"...
+
+
+
+
+
+
+
+
+
+O SYSADMIN PODE FAZER:
+
+
+
+
+
+
+
+1) CREATE E MANAGE DE OBJECTS -->  ESSE TAMBÉM É  O MAIN 
+
+PURPOSE DO SYSADMIN -> FAZER CREATE E MANAGE 
+
+GLOBAL __DE DATABASES, TABLES, WAREHOUSES, SCHEMAS, ETC...
+
+
+
+
+
+
+
+
+
+2) ALÉM DISSO, COMO APRENDEMOS,
+
+TODOS OS CUSTOM ROLES DEVEM 
+
+
+SER ASSIGNADOS AO ROLE DE "SYSADMIN",
+
+
+TER O SYSADMIN COMO 1 PARENT DELES..
+
+
+
+
+
+--> ISSO É NECESSÁRIO/BEST PRACTICE JUSTAMENTE PARA 
+
+
+__ QUE __ O SYSADMIN
+
+
+CONSIGA TAMBÉM _ _MANAGEAR___ ESSES OBJECTS,
+
+OS OBJECTS QUE 
+
+
+
+
+OS CUSTOM ROLES VAO CRIAR .... --------> OU SEJA,
+                                        QUEREMOS QUE 
+
+                                        ELE CONSIGA 
+
+                                        GERENCIAR OS PRIVILEGES
+
+                                        A WAREHOUSES, DATABASES E OUTROS OBJECTS,
+
+                                         TODAS ESSAS COISAS QUE 
+                                         FOREM CRIADAS 
+                                         PELOS CUSTOM ROLES...
+
+
+
+
+
+
+
+PORTANTO, É MT IMPORTANTE QUE, SE FORMOS CRIAR NOVOS ROLES,
+
+FACAMOS ASSIGN DELES 
+
+AO SYSADMIN (
+
+    PARA QUE 
+
+    ELE CONSIGA TAMBÉM MANAGE OS OBJECTS E CONFERIR 
+
+    PRIVILEGES AOS CUSTOM ROLES...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+AGORA DEVEMOS PRATICAR O USO DO SYSADMIN...
