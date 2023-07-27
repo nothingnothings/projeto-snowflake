@@ -1,0 +1,484 @@
+
+
+
+
+
+
+AGORA TEREMOS UMA AULA PRÁTICA SOBRE O ACCOUNTADMIN
+
+
+
+
+
+
+
+
+
+
+
+NESSA LICAO, VEREMOS:
+
+
+
+
+
+
+1) O QUE O ACCOUNTADMIN PODE FAZER...
+
+
+
+
+
+
+2) O QUE É ESPECÍFICO A ELE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> SÓ O ACCOUNTADMIN CONSEGUE VISUALIZAR 
+
+A ABA DE "ACCOUNTADMIN",
+
+
+NA GUI....
+
+
+
+
+
+
+
+--> NESSA ABA,
+TEMOS "BILLING E USAGE",
+
+
+
+e como isso difere dos outros roles...
+
+
+
+
+
+
+
+
+
+
+
+--> DEPOIS VEREMOS COMO PODEMOS CRIAR 1 "READER ACCOUNT",
+
+QUE É ALGO QUE SÓ PODE SER FEITO 
+
+
+PELO ACCOUNTADMIN...
+
+
+
+
+
+
+
+--> DEPOIS O PROFESSOR FALA QUE É IMPORTANTE 
+
+O MULTI-FACTOR AUTHENTICATION,
+
+
+
+POR ISSO 
+
+
+DEVEMOS FAZER ENROLL 
+
+
+NESSE TIPO DE AUTH....
+
+
+
+
+
+
+
+
+
+
+
+
+--> POR FIM, VEREMOS COMO PODEMOS CRIAR OUTROS 
+USERS,
+
+INCLUSIVE 
+
+1 OUTRO USER 
+
+
+
+INVESTIDO DO ROLE DE "ACCOUNTADMIN"...
+
+
+
+
+
+
+
+
+
+
+ok... estamos nas worksheets....
+
+
+
+
+
+
+
+
+
+
+--> COM O ROLE DE SYSADMIN,
+
+NAO PODEMOS VER A ABA DE "ACCOUNT"....
+
+
+
+
+
+
+
+
+
+--> MAS SE TROCARMOS O ROLE PARA 
+
+"ACCOUNTADMIN"
+
+
+OU 
+
+"SECURITYADMIN",
+
+
+podemos visualizar essa conta de ACCOUNT...
+
+
+
+
+
+
+
+
+
+--> ok... o SECURITYADMIN NAO
+
+TEM PERMISSAO 
+
+PARA VISUALIZAR 
+
+
+A USAGE,
+
+NEM A BILLING...
+
+
+
+
+
+
+
+
+
+--> MAS ELE PODE VISUALIZAR USERS, VISUALIZAR 
+
+ROLES,
+
+CRIAR USERS E CRIAR ROLES...
+
+
+
+
+
+
+
+
+
+
+
+
+---> o securityADMIN 
+
+
+
+NAO PODE CRIAR READER ACCOUNTS (
+
+    nem visualizar reader accounts...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+O ACCOUNTADMIN PODE VISUALIZAR 
+
+
+
+
+
+A USAGE,
+
+
+
+PODE VISUALIZAR A BILLING INFORMATION,
+
+
+
+
+
+
+VER E CRIAR READER ACCOUNTS,
+ETC....
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ESSA É A DIFERENCA....
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA DEVEMOS VER A OUTRA COISA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> A OUTRA COISA É O SETUP DO MULTI-FACTOR 
+AUTHENTICATION...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO É ALGO IMPORTANTE, E ALGO QUE 
+
+DEVE SER SETTADO PARA O ACCOUNTADMIN..
+
+
+
+
+
+
+
+
+
+
+
+
+---> OK... ATIVEI O MULTI-FACTOR 
+
+AUTHENTICATION..
+
+
+
+
+PRECISAMOS DO DUO ALGUMA COISA...
+
+
+
+
+
+
+
+
+--> AGORA VAMOS LÁ NAS NOSSAS WORKSHEETS, EM QUE CRIAREMOS 
+
+1 USER ADICIONAL,
+
+AO QUAL 
+
+
+ATRIBUÍREMOS O ROLE DE "ACCOUNTADMIN"...
+
+
+
+
+
+
+
+
+
+-> O CÓDIGO FICA ASSIM:
+
+
+
+---- User 1 ----
+
+CREATE USER MARIA PASSWORD = '123'
+DEFAULT_ROLE = ACCOUNTADMIN
+MUST_CHANGE_PASSWORD=TRUE;
+
+
+GRANT ROLE ACCOUNTADMIN TO USER MARIA;
+
+
+
+---- User 2 -----
+
+CREATE USER FRANK PASSWORD='123'
+DEFAULT_ROLE = SECURITYADMIN
+MUST_CHANGE_PASSWORD = TRUE;
+
+GRANT ROLE SECURITYADMIN TO USER FRANK;
+
+
+------ User 3 ------
+
+CREATE USER ADAM PASSWORD='123'
+DEFAULT_ROLE=SYSADMIN
+MUST_CHANGE_PASSWORD=TRUE;
+
+GRANT ROLE SYSADMIN TO USER ADAM;
+
+
+
+
+
+
+
+---------------------
+
+
+
+
+
+
+
+
+
+
+
+OK... 
+
+
+
+ESSE PRIMEIRO USER É O ACCOUNTADMIN,
+
+O OUTRO É O 
+
+SECURITYADMIN,
+
+E O OUTRO 
+
+
+
+1 SYSADMIN...
+
+
+
+
+
+
+
+
+COM ISSO, CRIAMOS 3 USERS 
+E ASSIGNAMOS 
+
+ROLES A ELES...
+
+
+
+
+
+-------------------------
+
+
+
+
+
+usaremos esses users mais tarde...
+
+
+
+
+
+
+
+
+
+--> CONSTRUÍMOS 1 PEQUENA HIERARQUIA, AQUI...
+
+
+
+
+
+VIMOS ALGUMAS DAS DIFERENCAS 
+
+
+DO ROLE DE "ACCOUNTADMIN"
+
+
+EM RELACAO AOS OUTROS ROLES...
+
+
+
+
+
+
+
+
+
