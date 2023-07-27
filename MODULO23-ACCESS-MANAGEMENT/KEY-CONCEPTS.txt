@@ -1,0 +1,1173 @@
+
+
+
+
+
+
+
+AGORA VEREMOS UM TÓPICO SUPER IMPORTANTE,
+
+QUE JÁ COBRIMOS ANTES,
+
+
+
+
+
+COBRIMOS 1 POUQUINHO...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> MAS AGORA QUE TEMOS MAIS XP 
+
+SOBRE O SNOWFLAKE,
+
+
+
+VAMOS REVISITAR ESSE TÓPICO COM MAIORES DETALHES..
+
+
+
+
+
+
+
+
+
+TEREMOS 1 OVERVIEW 
+
+DOS KEY CONCEPTS 
+
+
+
+
+
+DO TÓPICO DO "ACCESS CONTROL"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACCESS CONTROL:
+
+
+
+
+
+
+
+---> DEFINE 
+
+
+
+""QUEM PODE ACESSAR E REALIZAR CERTAS OPERATIONS 
+NOS NOSSOS OBJECTS, NO SNOWFLAKE""...
+
+
+
+
+
+
+
+
+
+
+
+--> NA VERDADE, O PROFESSOR EXPLICA QUE 
+
+
+__ HÁ __ 2 ASPECTOS_ 
+
+DE ACCESS CONTROL,
+
+QUE SAO __ COMBINADOS__ NO SNOWFLAKE..
+
+
+
+
+
+
+
+
+
+OS 2 ASPECTOS DO ACCESS CONTROL SAO:
+
+
+
+
+
+
+
+
+
+
+1) DISCRETIONARY ACCESS CONTROL 
+
+(DAC)  
+
+
+
+
+
+
+2) ROLE-BASED ACCESS CONTROL
+
+    (RBAC)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DISCRETIONARY --> ISSO APENAS SIGNIFICA QUE 
+
+
+
+"""CADA OBJECT TEM 1 __DONO/OWNER,
+
+QUE PODE OU NAO GARANTIR ACESSO A ESSE OBJECT"""...
+
+
+
+
+
+
+--> GERALMENTE O ___ OWNER __ DE UM OBJECT 
+
+
+É A PESSOA/ENTIDADE QUE ___ cRIOU ___ ESSE OBJECT...
+
+
+
+
+
+
+
+
+--> ESSE OWNER PODE _ GARANTIR ACESSO A ESSE OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+O SEGUNDO ASPECTO É O RBAC,
+
+
+
+O 
+
+"rOLE-BASED ACCESS CONTROL",
+
+
+QUE QUER DIZER QUE 
+
+
+
+
+NÓS SEMPRE TEMOS __ PRIVILEGES,
+
+
+PRIVILEGES QUE SAO __ ASSIGNADOS __ A ROLES....
+
+
+
+
+
+
+
+ALÉM DISSO, O RBAC DITA QUE _ CADA __ ROLE TEM 
+
+USERS ASSIGNADOS A SI....
+
+
+
+
+
+
+
+
+
+
+
+--> USERS SAO ASSIGNADOS A ROLES,
+
+
+E 
+
+
+ESSES ROLES POSSUEM PRIVILEGES SOBRE OS OBJECTS....
+
+
+
+
+
+
+
+
+--> ESSA É A TEORIA...
+
+
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+MAS AGORA TEMOS QUE DAR 1 OLHADA EM UM EXEMPLO PRÁTICO,
+
+PARA ENTENDERMOS MELHOR:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ASSUMAMOS QUE TEMOS UM ROLE 1:
+
+
+
+
+
+
+
+
+
+
+
+
+
+ROLE 1 ------- CREATE ------> A TABLE.
+
+
+
+
+
+
+
+
+ESSE ROLE/USER QUE ESTÁ DENTRO DESSE ROLE 
+
+
+__ CRIA 1 OBJECT (geralmente 1 table)..
+
+
+
+
+
+
+
+
+
+
+COMO ELE CRIOU ESSE OBJECT, ISSO QUER DIZER QUE 
+
+ELE É ___dONO (OWNS)___ DESSE OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ISSO, DE NOVO, SIGNIFICA QUE, POR DEFAULT,
+
+
+
+SE VC É O DONO DE 1 OBJECT (como 1 table),
+
+
+
+VC TEM TODOS OS PRIVILEGES sobre ela...
+
+
+
+
+
+
+
+
+
+
+--> COMO VC TEM TODOS OS PRIVILEGES,
+
+ISSO QUER DIZER QUE 
+
+
+VC 
+
+
+TEM TAMBÉM O PRIVILEGE DE GARANTIR  __ PRIVILEGES 
+
+
+A _ OUTROS ROLES, ACERCA DESSE OBJECT...
+
+
+
+
+
+
+
+
+
+
+
+
+--> E ESSES ROLES QUE RECEBEM SEUS PRIVILEGES,
+
+POR SUA VEZ,
+
+
+PODEM 
+
+TER A SI ASSIGNADOS 
+
+
+MÚLTIPLOS USERS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ou seja,
+
+
+
+O ESQUEMA FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                    i--------> user 1 
+ROLE 1 ---- CREATES --> TABLE ---- PRIVILEGE ---> ROLE 2  ---> user 2
+                        -------- PRIVILEGE ---> ROLE 3
+                                                    i----> USER 3.
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+
+
+
+
+
+ISSO QUER DIZER, EM OUTRAS PALAVRAS,
+
+QUE 
+
+SE VC 
+
+
+
+CRIAR 1 OBJECT COM 1 CERTO ROLE,
+
+VC 
+
+SERÁ O 
+
+"OWNER"
+
+DESSE OBJECT,
+
+
+E TERÁ 
+
+
+
+TODOS OS PRIVILEGES SOBRE ESSE OBJECT... E TAMBÉM QUE 
+
+
+VC PODERÁ ASSIGNAR ESSES PRIVILEGES A OUTROS ROLES... --> E, DENTRO 
+
+DESSES ROLES,
+
+TEMOS USERS,
+
+
+QUE FICAM 
+
+
+COM OS PRIVILEGES ÀS COISAS QUE HAVÍAMOS DEFINIDO (
+
+    POR EXEMPLO,
+
+
+    POSSUEM PRIVILEGE DE SELECT NA TABLE,
+    DROP NA TABLE, ETC...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+
+
+
+
+
+E OS PRIVILEGES PODEM SER CONFERIDOS, A ROLES,
+
+POR MEIO 
+
+DE 
+
+1 
+
+COMANDO SIMPLES, QUE É 
+
+
+
+
+
+
+
+
+
+GRANT <privilege> ON <object> TO <role>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE A ESTRUTURA É BEM SIMPLES,
+
+
+
+
+
+
+É REALMENTE SEMPRE ESSA...
+
+
+
+
+
+EX:
+
+
+
+GRANT SELECT ON TABLE CUSTOMERS TO ROLE SOME_GUY;
+
+
+
+
+
+
+GRANT DELETE ON TABLE ORDERS TO ROLE SOME_OTHER_GUY;
+
+
+
+
+
+GRANT USAGE ON TABLE SPC TO ROLE ANOTHER_GUY;
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+
+OUTRA COISA IMPORTANTE É ASSIGNAR USERS A CERTOS 
+
+ROLES...
+
+
+
+
+
+
+
+
+O COMANDO PARA ISSO É 
+
+
+
+
+
+
+GRANT <role> to <user>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GRANT ESSENTIAL_ROLE to NOTHINGNOTHINGS;
+
+
+
+
+
+
+---------------------------------------------------
+
+
+
+
+
+mas agora a pergunta é 
+
+
+
+""QUAIS SAO TODOS ESSES OBJECTS?""
+
+
+
+
+
+
+
+
+
+
+
+--> BEM, NA VERDADE TEMOS MUITOS OBJECTS,
+
+
+
+E TODOS ELES SAO CHAMADOS DE "ACCOUNT OBJECTS"....
+
+
+
+
+
+
+
+
+
+
+
+
+
+SAO "SECURABLE OBJECTS", NA VERDADE...
+
+
+
+
+
+
+
+
+
+
+
+
+SAO ELES:
+
+
+0) ACCOUNT {
+
+1) USER 
+
+
+
+2) ROLE 
+
+
+
+3) DATABASE 
+
+
+
+4) WAREHOUSE 
+
+
+
+
+5) OTHER ACCOUNT OBJECTS....
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+DENTRO DA ACCOUNT, TEMOS TODOS ESSES OBJECTS...
+
+
+
+
+
+
+
+
+
+
+
+e, dentro de DATABASES, SABEMOS QUE TEMOS SCHEMAS...
+
+
+
+
+
+
+
+
+
+
+
+
+POR ISSO FICA ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SAO ELES:
+
+
+0) ACCOUNT {
+
+1) USER 
+
+
+
+2) ROLE 
+
+
+
+3) DATABASE {
+
+    3x) SCHEMA {
+
+
+
+    }
+}
+
+
+
+4) WAREHOUSE 
+
+
+
+
+5) OTHER ACCOUNT OBJECTS....
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> E, DENTRO DE 1 SCHEMA,
+
+
+
+TEMOS MTOS OUTROS OBJECTS (Tables, views, stages, integrations, other schema objects)...
+
+
+
+
+
+
+
+
+
+
+EX:
+
+
+
+
+
+
+
+
+
+
+) ACCOUNT {
+
+1) USER 
+
+
+
+2) ROLE 
+
+
+
+3) DATABASE {
+
+    3x) SCHEMA {
+
+            A) TABLE 
+
+            B) VIEW 
+
+            C) STAGE 
+
+            D) INTEGRATION 
+
+            E) OTHER ONES (masking policies, file_formats, etc)
+    }
+}
+
+
+
+4) WAREHOUSE 
+
+
+
+
+5) OTHER ACCOUNT OBJECTS....
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+INTEGRATION OBJECT.. --> nao sei o que é isso....
+
+
+
+
+
+
+
+
+
+
+
+
+
+CERTO... 
+
+
+
+
+MAS O INTERESSANTE, AQUI, É QUE __ CADA 
+
+
+
+OBJECT DESSES É 
+
+
+
+"OWNED" POR 1  SINGLE ROLE... (com múltiplos users 
+vinculados a esse role)...
+
+
+
+
+
+
+
+
+
+--> E ___ O OWNER/DONO __ SEMPRE __ TEM 
+
+TODOS OS PRIVILEGES,
+
+
+POR DEFAULT...
+
+
+
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+OK... SE COMPREENDEMOS ESSE KEY CONCEPT,
+
+
+
+AÍ TUDO QUE PRECISAMOS SABER É QUE 
+
+
+
+
+
+ESSES ROLES TODOS 
+
+TERAO 
+
+UMA ___HIERARQUIA 
+
+DE ROLES...
+
+
+
+
+
+
+
+
+
+
+
+
+        EXATAMENTE COMO TÍNHAMOS 
+
+
+
+        LÁ NAS PRIMEIRAS AULAS,
+
+        AQUELE ESQUEMA:
+
+
+
+
+
+                        ACCOUNTADMIN 
+                       ^           ^
+                SECURITYADMIN      SYSADMIN
+                       ^
+                    USERADMIN 
+                       ^
+                       I
+                       ----PUBLIC
+
+
+
+
+
+
+------------------------------------
+
+
+
+
+
+e o accountadmin 
+
+
+
+TEM TODOS OS PRIVILEGES...
+
+
+
+
+
+
+
+OS PRIVILEGES SAO HERDADOS PELOS OUTROS ROLES,
+
+
+
+DE ACORDO COM ESSA HIERARQUIA...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> mas nas próximas licoes,
+
+
+
+RECAPITULAREMOS ESSES ROLES,
+
+
+
+
+REVISAREMOS O QUE ELES FAZEM...
+
+
+
+
+
+
+
+
+----> DEPOIS DISSO,
+
+
+VEREMOS TUDO NA PRÁTICA...
+
+
+
+
+
+
+
+--------------
+
+
+
+MAS AGORA ___ DEVEMOS RECAPITULAR O QUE 
+
+APRENDEMOS 
+
+ATÉ AGORA SOBRE ESSES KEY CONCEPTS SOBRE 
+ACCESS MANAGEMENT NO SNOWFLAKE....
+
+
+
+
+
+
+
+
+
+
+
+TEMOS:
+
+
+
+
+
+
+1) USERS --> NO INÍCIO, TEMOS USERS... SAO PESSOAS que usam 
+                                        o sistema.
+
+
+
+2) ROLES --> OS USERS SAO ASSIGNADOS A ROLES... --> O ROLE É A ENTIDADE A QUE OS PRIVILEGES SAO GRANTED TO...
+
+---> E TEMOS 1 "ROLE HIERARCHY", SEMPRE...
+
+
+
+3) PRIVILEGE --> SAO SEMPRE SELECT, DROP, CREATE, ETC... É SEMPRE O LEVEL 
+                                                                DE ACCESS 
+                                                             A 1 CERTO OBJECT...
+
+
+
+4) SECURABLE OBJECT --> SAO OS 
+
+"oBJECTS TO WHICH PRIVILEGES CAN BE GRANTED ON" 
+(DATABASES, TABLES, WAREHOUSES, ETC)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK... ESSES SAO OS KEY CONCEPTS...
+
+
+COM ESSE HIGH-LEVEL EXPLANATION 
+
+
+
+DO ACCESS MANAGEMENT,
+
+DEVEMOS VER MAIS E RECAPITULAR O QUE 
+
+APRENDEMOS SOBRE OS SYSTEM-DEFINED ROLES 
+
+E OS ROLES EM GERAL...
+
+
+
+
+DEPOIS TEREMOS TUDO ISSO NA PRÁTICA...
+
+
+
