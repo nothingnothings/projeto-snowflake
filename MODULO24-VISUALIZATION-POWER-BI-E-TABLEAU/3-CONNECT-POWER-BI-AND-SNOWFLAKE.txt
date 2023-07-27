@@ -1,0 +1,400 @@
+
+
+
+
+
+
+OK, MAS COMO PODEMOS CONECTAR O POWERBI 
+
+
+AO SNOWFLAKE?
+
+
+
+
+
+
+
+
+
+
+
+BEM, SEMPRE QUE QUISERMOS CONECTAR 
+
+
+__ DATA/DATABASES COM O POWERBI ,
+
+
+
+DEVEMOS 
+
+
+
+
+CLICAR NO BOTAO SUPERIOR-ESQUERDO DE 
+
+"GET DATA"...
+
+
+
+
+
+
+
+
+
+
+CLICAMOS NESSE BOTAO...
+
+
+
+
+
+
+
+
+
+--> DEPOIS CLICAMOS EM "MORE"...
+
+
+
+
+
+
+
+
+-> PQ O SNOWFLAKE É "MORE"..
+
+
+
+
+
+
+
+
+--> AÍ TEMOS 1 LIST DE 
+
+
+TODOS OS DATA SOURCES EXISTENTES...
+
+
+
+
+
+
+--> TEMOS 2 MANEIRAS DE ENCONTRAR SNOWFLAKE:
+
+
+
+
+
+
+1) ESCREVER "SNOWFLAKE"...
+
+
+
+
+
+
+
+2) CATEGORIA DE "DATABASE" --> SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+
+
+ISSO FEITO, TEMOS QUE ESPECIFICAR ALGUMAS COISAS:
+
+
+
+
+
+
+
+
+
+1) TEMOS QUE ESPECIFICAR O "SERVER"...
+
+SERVER --> É NOSSA SNOWFLAKE INSTANCE...
+
+
+
+
+PRECISAMOS DA URL DE NOSSA CONTA,
+
+QUE É ALGO COMO:
+
+bhb55148.us-east-1.snowflakecomputing.com
+
+
+
+
+
+
+
+--> USAREMOS ISSO AÍ...
+
+
+
+
+
+
+
+2) DEPOIS DISSO,
+
+TEMOS 
+
+
+"WAREHOUSE" --> essa SERÁ A COMPUTE INSTANCE 
+
+USADA PELO POWER BI, SE ELE RODAR ALGUMAS QUERIES 
+NA NOSSA TABLE...
+
+
+
+
+colocamos "PUBLIC_WH" (a que nós criamos)...
+
+
+
+
+
+3) PRECISAMOS USAR ALGUM USER DO 
+SNOWFLAKE... ALGUM USER QUE TENHA ACESSO ÀQUELA 
+WAREHOUSE...
+
+
+
+
+
+
+4) POR FIM, TEMOS 1 CHECKBOX 
+
+DE 
+"DATA CONNECTIVITY MODE"
+
+
+
+escolhemos entre 2 options 
+
+
+A) IMPORT 
+
+B) directQuery
+
+
+
+
+
+
+
+--> IMPORT -> IMPORTA TODA A DATA DO 
+SNOWFLAKE --> AÍ TODA A DATA CONTIDA 
+
+NO SNOWFLAKE SERÁ PROCESSADA __ NA NOSSA MÁQUINA,
+
+LOCALMENTE (
+    pode ocupar centenas de GB.
+)
+
+
+
+
+
+-> ESSA OPTION TAMBÉM TE DEIXA REFRESHAR A DATA,
+DE VEZ EM QUANDO...
+
+
+
+
+
+
+
+-> só escolha import mode se 
+
+voce tiver mt espaco no pc,
+
+pq essa powerbi file pode crescer MUITO.
+
+
+
+
+
+
+
+
+
+--> directQuery -> rodamos 1 query por vez,
+
+a data nao fica armazenada no nosso pc tudo de uma vez...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO FEITO, PRECISAMOS INSERIR NOSSAS CREDENTIALS,
+DE NOSSA CONTA...
+
+
+
+
+
+--> PODEMOS USAR NOSSO MAIN USER...
+
+
+
+
+
+
+
+
+---> INPUTTAMOS AS CREDENTIALS,
+
+E NOS CONECTAMOS...
+
+
+
+
+
+
+
+
+
+
+
+-> VAMOS USAR A DATABASE "SNOWFLAKE_SAMPLE_DATA"..
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS PEGAR O SCHEMA DE "TPCDS_SF100TCL"..
+
+
+
+
+
+
+
+
+
+-- PODEMOS PEGAR 1 DE NOSSAS TABLES, QUALQUER 1....
+
+
+
+
+
+
+
+
+--> AÍ PODEMOS OU TRANSFORMAR ESSA DATA,
+
+
+
+OU ENTAO 
+
+IMEDIATAMENTE CARREGAR ESSA DATA..
+
+
+
+
+
+
+
+
+
+--> PODEMOS ESCOLHER ENTRE IMPORT E directQuery,
+
+MESMA COISA...
+
+
+
+
+
+
+
+
+--> IMPORT --> COM ISSO,
+
+DEIXAMOS DE USAR OS COMPUTE 
+
+
+RESOURCES 
+
+
+DO 
+
+
+SNOWFLAKE DEPOIS DE QUERIAR, O QUE PODE SER 
+BOM PARA 
+
+ECONOMIZAR RESOURCES...
+
+
+
+
+
+
+
+
+
+
+
+
+--> A DATA SERÁ CARREGADA, E ESTAREMOS CONECTADOS 
+
+COM O DATA SOURCE...
+
+
+
+
+
+
+
+
+--> VEREMOS AS 2 TABLES DISPONÍVEIS 
+
+NA NOSSA SECTION....
+
+
+
+
+
+
+
+--> PODEMOS VISUALIZAR OS CUSTOMERS -> temos 
+
+
+várias visualization options, etc....
+
+
+
+
