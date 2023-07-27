@@ -1,0 +1,69 @@
+
+
+
+
+
+
+
+
+
+
+O POWERBI NAO PODE SER INSTALADO NO UBUNTU....
+
+
+
+
+
+
+
+
+
+
+ENFIM, ESCOLHEMOS 1 LANGUAGE, ETC ETC..
+
+
+
+
+
+
+
+
+--> É PAGO, APARENTEMENTE....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ TEMOS A INTERFACE DO POWERBI....
+
+
+
+
+
+
+
+-> É CLARO QUE ESTAMOS INTERESSADOS EM 
+
+
+"COMO PODEMOS BRING THE DATA FROM SNOWFLAKE TO POWER BI"...
+
+
+
+
+
+
+
+
+
+
+--> VEREMOS ISSO NA PRÓXIMA AULA...
