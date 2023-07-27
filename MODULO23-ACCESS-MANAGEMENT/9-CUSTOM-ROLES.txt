@@ -1,0 +1,265 @@
+
+
+
+
+
+
+
+
+NAS ÚLTIMAS AULAS,
+
+
+CRIAMOS ALGUNS 
+
+
+CUSTOM ROLES...
+
+
+
+
+
+
+
+
+
+
+SEGUINDO ESTE ESQUEMA:
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        ACCOUNTADMIN 
+                       ^           ^
+                SECURITYADMIN      SYSADMIN             HR_ADMIN
+                       ^               ^                    ^
+                    USERADMIN        SALES_ADMIN           HR
+                       ^                   ^
+                       I                  SALES
+                       ----PUBLIC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> É CLARO QUE O DEFINE DE "HR_ADMIN"
+
+
+COMO 1 ROLE AUTONOMO EM RELACAO A "SYSADMIN"
+
+
+
+É UMA PESSIMA IDEIA,
+
+PQ 
+
+
+
+ELE NAO VAI HERDAR NENHUM OBJECT CRIADO 
+
+PELO HR_ADMIN E SEUS FILHOS...
+
+
+
+
+
+
+
+
+
+
+
+--> MAS O RESUMO É:
+
+
+
+
+
+
+
+
+PODEMOS CRIAR CUSTOM ROLES DE 
+
+ACORDO COM NOSSAS NECESSIDADES,
+
+E CRIAR NOSSAS PRÓPRIAS HIERARQUIAS...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> PODEMOS CRIAR HIERARQUIAS QUE REFLETEM 
+
+A ESTRUTURA DE NOSSAS ORGANIZACAO...
+
+
+
+
+
+
+
+
+
+
+
+
+--> CUSTOM ROLES _ SAO__ GERALMENTE _ 
+
+CRIADOS __ PELO ___ SECURITYADMIN...
+
+
+
+
+
+
+
+
+
+
+--> E CUSTOM ROLES SAO GERALMENTE ___VNCULADOS/SUBMETIDOS 
+
+AO ROLE DE SYSADMIN (possuem o SYSADMIN como "PARENT")...
+
+
+
+
+
+
+
+
+
+
+
+--> FAZEMOS ISSO PARA QUE O SYSADMIN CONSIGA FAZER 
+
+MANAGE 
+
+DE TODOS OS OBJECTS 
+
+
+QUE SAO CRIADOS PELOS CUSTOM ROLES,
+
+que ficam debaixo dele (
+
+    essa é a melhor practice...
+)
+
+
+
+
+
+
+
+
+
+
+--> SE NAO SUBMETEMOS/VINCULAMOS 
+
+
+OS CUSTOM ROLES AO 
+
+
+SYSADMIN,
+
+
+
+FICAMOS INCAPAZES, COMO SYSADMIN,
+
+DE VISUALIZAR E TRABALHAR COM OS OBJECTS CRIADOS 
+POR ESSES ROLES....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--. BEM, MAS AGORA DEVEMOS ESTUDAR COMO ISSO 
+
+FUNCIONA NA PRÁTICA,
+
+
+
+
+E VER COMO ESSES ROLES SE COMPORTAM...
+
+
+
+
+
+
+
+
+
+VEREMOS TAMBÉM A DIFERENCA ENTRE 
+
+OS CENÁRIOS 
+
+DE 
+
+
+
+"SALES_ADMIN" E "HR_ADMIN"
+
+(
+
+    1 cenário em que conectamos nosso CUSTOM ROLE 
+
+    AO ROLE DE SYSADMIN,
+
+    e outro em que NAO O FIZEmos...
+)
+
+
+
+
+
+
+--------------------------------------
+
+
+
+
+
+veremos isso nas nossas worksheets...
+
