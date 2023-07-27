@@ -1,0 +1,191 @@
+
+
+
+
+
+
+
+OK... AGORA DEVEMOS ESTUDAR O "PARTNER CONNECT",
+
+
+
+
+
+QUE É USADO PARA CONECTAR ___ O SNOWFLAKE 
+
+
+A PARTNERS DO SNOWFLAKE....
+
+
+
+
+
+
+
+
+
+
+
+
+--> ISSO NOS DEIXA NOS CONECTAR COM THIRD PARTY TOOLS....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> DEVEMOS TROCAR PARA O ROLE DO ACCOUNTADMIN...
+
+
+
+
+
+
+
+
+
+
+--> CLIQUE EM "PARTNERCONNECT"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> AÍ TEMOS 1 LISTA GIGANTE DE TODOS OS 
+
+
+PARTNERS DO SNOWFLAKE...
+
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PODEMOS FACILMENTE CONECTAR NOSSA ACCOUNT 
+
+COM ESSES PARTNERS...
+
+
+
+
+
+
+
+
+
+EX: INFORMATICA,
+
+STITCH,
+
+
+HVR,
+
+
+DATAIQ,
+
+
+
+DATAROBOT,
+
+
+
+DATAOPS, ETC...
+
+
+
+
+
+
+
+
+FICA MT FÁCIL O SETUP DESSE TRIAL ACCOUNT 
+
+
+
+
+DE PARTNER 
+
+E 
+
+
+INTEGRAR COM O SNOWFLAKE...
+
+
+
+
+
+
+
+--> POR EXEMPLO, SE QUEREMOS CONECTAR NOSSO APP AO "STITCH",
+
+
+CLICAMOS NELE E ENTAO O CONECTAMOS NELE... BASTAM ALGUNS CLICKS....
+
+
+
+
+
+
+
+--> isso cria alguns objects na nossa account,
+
+
+mas nada de mais...
+
+
+
+
+
+
+
+
+
+
+
+
+--> OK... AGORA DEVEMOS VER 1 DESSAS TOOLS, PARA TER 
+
+1 SIMPLES EXEMPLO DE COMO PODEMOS USAR 1 DESSAS TOOLS,
+
+E COMO FAZER SIGNUP 
+
+
+
+
+
+AO 
+
+
+TRIAL PERIOD DELAS....
+
+
+
+
+
+
+
+VEREMOS 1 EXEMPLO DE COMO FAZER ESSE PARTNER CONNECT,
+
+NA PRÓXIMA AULA...
