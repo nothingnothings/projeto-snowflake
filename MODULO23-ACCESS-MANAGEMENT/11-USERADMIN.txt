@@ -1,0 +1,130 @@
+
+
+
+
+
+
+
+
+
+
+OK... AGORA QUEREMOS FALAR SOBRE O "USERADMIN"...
+
+
+
+
+
+
+
+O USERADMIN FAZ:
+
+
+
+
+
+
+1) O CREATE DE USERS E ROLES (USER AND ROLE MANAGEMENT)...
+
+
+
+
+
+
+
+
+
+
+-> QUER DIZER QUE ESSE ROLE TEM O PRIVILEGE DE 
+
+
+CREATE USERS E CREATE ROLES..
+
+
+
+
+
+
+
+--> ELE É DEDICADO AO USER E ROLE MANAGEMNET..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-> MAS A COISA IMPORTANTE DO USERADMIN,
+QUE VC DEVE TER EM MENTE,
+
+
+
+
+É QUE, CONTRARIAMENTE AO "SECURITYADMIN",
+
+
+
+O 
+
+USERADMIN NAO 
+TEM TODAS AS PRIVILEGES 
+
+
+
+PARA __ GARANTIR _ PRIVILEGES NOS OBJECTS... (
+
+
+    ELE APENAS PODE CONFERIR PRIVILEGES 
+
+    EM OBJECTS _ sE ELE _ REALMENTE FOR O OWNER DESSES OBJECTS...
+)
+
+
+
+
+
+
+
+
+
+
+                    i --> NAO TEM "GLOBAL GRANT PRIVILEGES"...
+                    i
+                    i
+SECURITYADMIN VS USERADMIN 
+I
+I 
+i 
+i--> TEM GLOBA GRANT PRIVILEGES...
+
+
+
+
+
+
+
+
+
+
+para ver isso,
+
+
+
+
+
+
+essa importante diferenca,
+
+
+deevms 
+
+
+
+
+
