@@ -1,0 +1,265 @@
+OK...
+
+
+AGORA VEREMOS O QUE O USERADMIN CONSEGUE FAZER....
+
+
+
+
+
+
+AO MESMO TEMPO,
+
+
+
+RESOLVEREMOS O PROBLEMA DO "HR_USERS"  E "HR_aDMIN"
+
+
+
+ESTAREM COMO 1 TREE DE HIERARQUIA SEPARADA,
+
+DENTRO DE NOSSA CONTA (
+
+
+    o problema de "sysadmin" nao conseguir 
+
+    acessar os objects/tables/coisas criados 
+
+    por esses roles, justamente por eles 
+
+
+    nao terem sido criados 
+
+
+    debaixo dele...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO....
+
+
+
+
+
+
+
+--> FAREMOS ISSO COM O "USERADMIN"...
+
+
+
+
+
+
+
+--> SABEMOS QUE O USERADMIN TEM PRIVILEGES DE 
+"CREATE USER"...
+
+
+
+
+
+
+
+
+
+--> podemos escrever assim, estando com esse role de USERADMIN:
+
+
+
+
+
+-- User 4 --
+CREATE USER BEN
+PASSWORD = '123'
+MUST_CHANGE_PASSWORD=TRUE;
+
+
+GRANT ROLE HR_ADMIN TO USER BEN;
+
+
+
+
+
+
+
+
+
+MAS SABEMOS QUE 
+
+
+
+
+ESSE ROLE DE "USERADMIN"__ NAO TEM "GLOBAL GRANT PRIVILEGES"...
+
+
+
+
+
+
+
+
+
+
+
+--> QUER DIZER QUE NAO PODEMOS ASSIGNAR 
+
+
+
+O ROLE DE "HR_ADMIN" 
+
+
+AO USER "BEN"...
+
+
+
+
+
+
+
+
+
+JUSTAMENTE PQ _ NAO TEMOS__ OS PRIVILEGES 
+
+DO ROLE 
+
+
+DE "HR_ADMIN"...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--> OS ÚNICOS ROLES QUE CONSEGUEM 
+
+
+CONFERIR O ROLE DE "HR_ADMIN" 
+
+
+
+AO USER "BEN" SAO:
+
+
+
+
+1) SECURITYADMIN (pq tem "GLOBAL GRANT PRIVILEGES")
+
+
+
+
+
+
+
+
+2) ACCOUNTADMIN...
+
+
+
+
+
+
+
+POR ISSO TROCAMOS PARA O "SECURITYADMIN"...
+
+
+
+
+
+
+
+-> E AÍ RODAMOS ESSE CÓDIGO...
+
+
+
+
+ex:
+
+
+
+
+-- switch to SECURITYADMIN
+USE ROLE SECURITYADMIN;
+
+
+GRANT ROLE HR_ADMIN TO USER BEN; -- success
+
+
+
+
+
+
+
+---------------------------
+
+
+
+
+
+
+
+
+
+
+ISSO FEITO,
+
+
+
+
+
+
+
+O ROLE DE "HR_ADMIN"
+
+FOI CONFERIDO A ESSE USER "BEN"...
+
+
+
+
+
+
+
+
+
+--> COM ISSO, PODERÍAMOS TAMBÉM RESOLVER O PROBLEMA 
+
+
+
+-- DE ""O ROLE DE HR_ADMIN NAO ESTÁ CONECTADO COM SYSADMIN""....
+
+
+
+
+
+
+
+
+
+
+--> BASTA, USANDO O SECURITYADMIN,
+RODAR ESTE COMANDO:
+
+
+
+
+
+
+
+GRANT ROLE HR_ADMIN TO ROLE SYSADMIN;
