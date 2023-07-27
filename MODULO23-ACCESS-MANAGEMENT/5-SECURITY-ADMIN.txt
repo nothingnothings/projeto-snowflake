@@ -1,0 +1,61 @@
+
+
+
+
+
+
+
+O SECURITYADMIN TAMBÉM 
+
+TEM ACESSO 
+À TAB 
+
+
+
+
+
+DE "ACCOUNT", a aba do account admin --> mas 
+
+
+
+o securityadmin ve uma versao mais limitada 
+
+dessa tela...
+
+
+
+
+
+
+
+
+
+
+OUTRAS COISAS QUE ELE FAZ:
+
+
+
+
+
+1) PODE CRIAR E MANAGEAR USERS E ROLES....
+
+
+
+
+
+2) PODE TAMBÉM FAZER GRANT E REVOKE DE QUAISQUER 
+
+PRIVILEGES CONFERIDOS A ESSES ROLES...
+
+
+
+
+
+
+
+
+
+
+
+
+-> DEVEMOS ESTUDAR ESSE ROLE NA PRÁTICA...
