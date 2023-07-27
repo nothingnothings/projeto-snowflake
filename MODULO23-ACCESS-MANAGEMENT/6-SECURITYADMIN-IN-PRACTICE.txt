@@ -1,0 +1,638 @@
+
+
+
+
+
+
+
+VEREMOS O QUE O SECURITYADMIN É CPAAZ DE FAZER,
+
+NA PRÁTICA...
+
+
+
+
+
+
+
+
+
+
+
+--> O SECURITYADMIN PODE 
+
+
+CRIAR E FAZER MANAGE DE USERS...
+
+
+
+
+
+
+
+
+--> NESSA LICAO,
+
+
+
+FAREMOS:
+
+
+
+
+
+1) O CREATE DE 1 ROLE,
+"SALES",
+
+QUE SERÁ ASSIGNADO AO "SYSADMIN" (
+
+    PQ ESSA É UMA BEST PRACTICE, 
+
+    NO SNOWFLAKE...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+2) NA VERDADE, TEREMOS ATÉ MESMO UMA PEQUENA 
+
+HIERARQUIA,
+
+TEREMOS O ROLE DE "SALES" E O DE "SALES_ADMIN",
+
+
+
+
+QUE VAI SER SUPERIOR AO SALES ROLE,
+E QUE TERÁ TODOS SEUS ROLES...
+
+
+
+
+
+
+
+
+
+3) também vamos criar ROLES PARA "HR",
+
+
+E TEREMOS "HR" E "HR_ADMIN"...
+
+
+
+
+
+
+
+
+
+
+
+--> CERTO... ENTRETANTO,
+
+NO CASO DO HR E HR_aDMIN,
+
+
+
+
+NAO _ CRIAREMOS 1 CONEXAO AO SYSADMIN,
+
+
+
+
+
+
+
+o QUE QUER DIZER QUE NOSSO ESQUEMA FICARÁ ASSIM:
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        ACCOUNTADMIN 
+                       ^           ^
+                SECURITYADMIN      SYSADMIN             HR_ADMIN
+                       ^               ^                    ^
+                    USERADMIN        SALES_ADMIN           HR
+                       ^                   ^
+                       I                  SALES
+                       ----PUBLIC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FAZEMOS ISSO DE PROPÓSITO, PARA MOSTRAR 
+
+1
+ PROBLEMA QUE PODE SURGIR MAIS TARDE (
+    problema 
+
+    relacionado com o SYSADMIN....
+ )
+
+
+
+
+
+
+
+
+
+
+
+ MAS CRIAREMOS ESSES USERS AGORA....
+
+
+
+
+
+
+
+
+
+
+
+
+ ANTES TÍNHAMOS ESTE CÓDIGO, PARA CRIAR 
+
+ ESSES 3 USERS:
+
+
+
+
+
+
+
+
+
+---- User 1 ----
+
+CREATE USER MARIA PASSWORD = '123'
+DEFAULT_ROLE = ACCOUNTADMIN
+MUST_CHANGE_PASSWORD=TRUE;
+
+
+GRANT ROLE ACCOUNTADMIN TO USER MARIA;
+
+
+
+---- User 2 -----
+
+CREATE USER FRANK PASSWORD='123'
+DEFAULT_ROLE = SECURITYADMIN
+MUST_CHANGE_PASSWORD = TRUE;
+
+GRANT ROLE SECURITYADMIN TO USER FRANK;
+
+
+------ User 3 ------
+
+CREATE USER ADAM PASSWORD='123'
+DEFAULT_ROLE=SYSADMIN
+MUST_CHANGE_PASSWORD=TRUE;
+
+GRANT ROLE SYSADMIN TO USER ADAM;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------> COMO CRIAMOS ESSE USER "FRANK",
+
+
+AGORA DEVEMOS FAZER LOGIN COM ELE...
+
+
+
+
+
+PARA ISSO, ENTRAMOS 
+
+
+
+
+
+NA NOSSA CONTA SNOWFLAKE,
+
+NO BROWSER,
+
+
+COM A URL DE ACESSO PADRAO, QUE É:
+
+
+
+
+https://app.snowflake.com/wthzwsc/znb24252
+
+
+
+
+
+
+
+OK...
+
+
+
+AÍ COLOCAMOS O USERNAME E PASSWORD DO FRANK....
+
+
+
+
+
+
+FRANK E 123...
+
+
+
+
+
+
+
+
+
+---> AÍ ELE PEDE POR 1 NOVO PASSWORD....
+
+
+definimos Exemplo123@ 
+Exemplo123@  
+
+
+
+
+
+
+
+
+
+
+
+CERTO... AGORA ESTAMOS NA CONTA DO FRANK...
+
+
+
+
+
+
+
+
+VEREMOS QUE O FRANK ESTÁ COM O ROLE DEFAULT 
+DE 
+
+"SECURITYADMIN",
+
+
+
+E QUE TAMBÉM TEM OS ROLES 
+
+"PUBLIC" 
+
+E 
+
+"USERADMIN" (
+
+
+    justamente pq o 
+
+
+    SECURITYADMIN
+
+    HERDA ESSES ROLES AÍ, ELE É HIERARQUICAMENTE SUPERIOR A ELES, E OS ENGLOBA...
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+OK.... NAO PODEMOS ACESSAR A USAGE E A BILLING,
+
+
+
+MAS TEMOS ACESSO A USERS E ROLES,
+
+COMO SECURITYADMIN...
+
+
+
+
+
+
+
+
+
+
+
+
+NESSE ROLE, O QUE 
+
+
+
+
+RODAREMOS É ESTE CÓDIGO:
+
+
+
+
+
+--- IN SECURITYADMIN ROLE, IN FRANK'S ACCOUNT --- 
+--- Create and Manage Roles and Users ----
+
+
+
+
+
+-- Create ROLES for SALES department ----
+
+
+CREATE ROLES SALES_ADMIN;
+CREATE ROLES SALES_USERS;
+
+
+
+
+-- CREATE HIERARCHY BETWEEN ROLES -- 
+GRANT ROLE SALES_USERS TO ROLE SALES_ADMIN; -- é assim que estabelecemos HIERARQUIA ENTRE ROLES...
+
+
+
+-- AS PER BEST PRACTICE, ALWAYS ASSIGN CUSTOM ROLES TO SYSADMIN ---
+GRANT ROLE SALES_ADMIN TO ROLE SYSADMIN;
+
+
+
+
+
+-- Create some sales users --
+CREATE USER SIMON_SALES
+PASSWORD = '123'
+DEFAULT_ROLE = SALES_USERS
+
+GRANT ROLE SALES_USERS TO USER SIMON_SALES;
+
+
+
+
+
+-- Create user for SALES ADMINISTRATION --
+CREATE USER OLIVIA_SALES_ADMIN
+PASSWORD = '123'
+DEFAULT_ROLE = SALES_ADMIN
+
+GRANT ROLE SALES_ADMIN TO USER OLIVIA_SALES_ADMIN;
+
+
+
+
+
+
+
+
+----------------------------
+
+
+
+
+
+
+
+
+
+CERTO... COM ISSO CRIAMOS 1 HIERARQUIA ENTRE 
+
+
+SALES E SALES_ADMIN,
+
+
+e ao mesmo tempo vinculamos esses roles 
+
+
+ao nosso role de sysadmin... (best practice)...
+
+
+
+
+
+
+
+
+
+
+------------------------------
+
+
+
+
+
+
+AGORA QUEREMOS FAZER A MESMA COISA,
+
+
+
+
+
+MAS NAO FAREMOS O GRANT DO ROLE DE "SALES_ADMIN"
+
+
+AO ROLE DE "SYSADMIN" 
+
+(ou seja,
+DEIXAREMOS DE SEGUIR A RECOMMENDATION DO SNOWFLAKE,
+
+QUE É SEMPRE ASSIGNAR CUSTOM ROLES AO SYSADMIN)...
+
+
+
+
+
+
+
+
+
+--> ESCREVEMOS:
+
+
+
+
+
+-- Incorrect create of roles for HR and HR admin --
+
+
+CREATE ROLE HR_ADMIN;
+CREATE ROLE HR_USERS;
+
+
+
+-- Create HIERARCHY -- 
+
+GRANT ROLE HR_USERS TO ROLE HR_ADMIN; -- and no connection to SYSADMIN (not a good practice)...
+
+
+
+
+-- This time we will not assign these roles to SYSADMIN (against best practice)
+-- GRANT ROLE HR_ADMIN TO ROLE SYSADMIN;
+
+
+
+
+-- Create HR user 
+CREATE USER TONY_HR PASSWORD = '123' 
+DEFAULT_ROLE = HR_USERS 
+MUST_CHANGE_PASSWORD=TRUE;
+
+GRANT ROLE HR_USERS TO USER TONY_HR;
+
+
+
+-- Create user for sales administration -- 
+CREATE USER MIKE_HR_ADMIN
+PASSWORD = '123'
+DEFAULT_ROLE=HR_ADMIN
+
+GRANT ROLE HR_ADMIN TO USER MIKE_HR_ADMIN;
+
+
+
+
+
+
+
+
+
+
+
+CERTO...
+
+
+
+
+CRIAMOS ESSES 2 USERS,
+
+
+E ASSIGNAMOS A ELES AQUELES ROWS...
+
+
+
+
+
+
+
+
+
+
+
+É ISSO QUE FIZEMOS...
+
+
+
+CRIAMOS 4 ROLES,
+
+CRIAMOS 1 HIERARQUIA,
+
+
+E AÍ ASSIGNAMOS 
+
+ESSA HIERARQUIA AO SYSADMIN,
+
+
+
+MAS NAO ASSIGNAMOS A HIERARQUIA DO HR AO ROLE DE SYSADMIN (o que nao é uma best practice)....
+
+
+
+
+
+
+
+BASICAMENTE CRIAMOS ESTE ESQUEMA:
+
+
+
+
+
+
+
+
+
+
+
+                        ACCOUNTADMIN 
+                       ^           ^
+                SECURITYADMIN      SYSADMIN             HR_ADMIN
+                       ^               ^                    ^
+                    USERADMIN        SALES_ADMIN           HR
+                       ^                   ^
+                       I                  SALES
+                       ----PUBLIC
+
+
+
+
+
+
+
+
+
+
+
+
+bem, agora DEVEMOS DAR 1 ESTUDADA NO SYSADMIN,
+
+
+PARA INVESTIGAR O QUE PODE DAR DE ERRADO 
+
+SE NAO FIZERMOS 
+
+GRANT 
+
+DOS "CUSTOM ROLES", HIERARQUICAMENTE INFERIORES,
+
+A ELE...
+
+
