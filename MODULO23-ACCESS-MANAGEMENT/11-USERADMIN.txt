@@ -122,7 +122,18 @@ para ver isso,
 essa importante diferenca,
 
 
-deevms 
+devemos 
+
+tentar resolver o problema dos roles de "HR"
+
+que criamos antes (
+    ao deixar de vincular esses custom roles 
+
+
+
+
+    ao "SYSADMIN", default...
+)
 
 
 
