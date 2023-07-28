@@ -1,0 +1,58 @@
+-- create file format
+CREATE OR REPLACE FILE FORMAT OUR_FIRST_DB.FILE_FORMATS.EXAMPLE_FORMAT
+    TYPE=CSV,
+    FIELD_DELIMITER=',',
+    SKIP_HEADER=1;
+
+
+
+
+-- create stage
+CREATE OR REPLACE STAGE OUR_FIRST_DB.STAGES.DUMMY_STAGE
+    URL='s3://snowflake-assignments-mc/gettingstarted/customers.csv';
+
+
+-- list files in stage
+LIST @OUR_FIRST_DB.STAGES.DUMMY_STAGE;
+
+
+
+-- create raw/staging table
+CREATE OR REPLACE TRANSIENT TABLE OUR_FIRST_DB.PUBLIC.RAW_CUSTOMERS_TABLE (
+        ID INT,
+        FIRST_NAME STRING,
+        LAST_NAME STRING,
+        EMAIL STRING,
+        AGE STRING,
+        LOCALE STRING
+);
+
+
+-- copy data from csv/bucket into raw/staging table
+COPY INTO OUR_FIRST_DB.PUBLIC.RAW_CUSTOMERS_TABLE
+    FROM @OUR_FIRST_DB.STAGES.DUMMY_STAGE
+    FILE_FORMAT=(
+    FORMAT_NAME=OUR_FIRST_DB.FILE_FORMATS.EXAMPLE_FORMAT
+    );
+
+
+-- Validate data
+SELECT * FROM OUR_FIRST_DB.PUBLIC.RAW_CUSTOMERS_TABLE;
+
+
+-- Create table without id and other columns
+CREATE OR REPLACE TABLE OUR_FIRST_DB.PUBLIC.PROCESSED_CUSTOMERS_TABLE
+        (
+        FIRST_NAME STRING,
+        LAST_NAME STRING,
+        EMAIL STRING
+        )
+        AS SELECT 
+        FIRST_NAME,
+        LAST_NAME,
+        EMAIL
+        FROM OUR_FIRST_DB.PUBLIC.RAW_CUSTOMERS_TABLE;
+
+
+-- Drop transient table (raw data), now unneeded
+DROP TABLE OUR_FIRST_DB.PUBLIC.RAW_CUSTOMERS_TABLE;
